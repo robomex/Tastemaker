@@ -17,6 +17,7 @@ struct Venue {
     let neighborhood: String
     let description: String
     let foodType: String
+    
 }
 
 func fetchVenues (callback: ([Venue]) -> ()) {
