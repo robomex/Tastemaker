@@ -1,0 +1,29 @@
+PODS:
+  - Firebase (2.2.2)
+  - GoogleAnalytics (3.12.0)
+  - JSQMessagesViewController (7.1.0):
+    - JSQSystemSoundPlayer (~> 2.0.1)
+  - JSQSystemSoundPlayer (2.0.1)
+  - Mixpanel (2.8.1):
+    - Mixpanel/Mixpanel (= 2.8.1)
+  - Mixpanel/Mixpanel (2.8.1):
+    - Mixpanel/MPCategoryHelpers
+  - Mixpanel/MPCategoryHelpers (2.8.1)
+  - PageMenu (1.2.8)
+
+DEPENDENCIES:
+  - Firebase (~> 2.2.0)
+  - GoogleAnalytics (~> 3.12)
+  - JSQMessagesViewController (~> 7.1)
+  - Mixpanel (~> 2.8)
+  - PageMenu
+
+SPEC CHECKSUMS:
+  Firebase: e35cdd2561bf4fea9c1e384e9400a9c173d19e47
+  GoogleAnalytics: ef2e0b800ef3c1e62688cdfc959e0d3132bc246c
+  JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
+  JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  Mixpanel: 93c4825025e6380ced273ed7178496282e385077
+  PageMenu: 703e82e173f54a4626ab88fcdca7703ee52e0cbe
+
+COCOAPODS: 0.38.0
