@@ -11,8 +11,8 @@ import UIKit
 class VenueCell: UITableViewCell {
     
     @IBOutlet weak var venueName: UILabel!
-    
     @IBOutlet weak var venueNeighborhood: UILabel!
+    @IBOutlet weak var voteButton: VoteButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,5 +24,4 @@ class VenueCell: UITableViewCell {
         
         // Configure the view for the selected state
     }
-    
 }
