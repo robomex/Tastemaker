@@ -67,7 +67,8 @@ class FeedTableViewController: UITableViewController {
         let venueInfo = venues[indexPath.row]
         cell.venueName.text = venueInfo.name
         cell.venueNeighborhood.text = venueInfo.neighborhood
-
+        cell.voteButton.venueId = venueInfo.id
+        
         return cell
     }
 
@@ -84,6 +85,10 @@ class FeedTableViewController: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    @IBAction func voteButtonPressed(sender: VoteButton) {
+        saveVenueVote(sender.venueId!)
     }
     
     /*
