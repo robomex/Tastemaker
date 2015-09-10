@@ -31,7 +31,7 @@ func saveVenueVote(venueId: String) {
     let vote = PFObject(className: "Action")
     vote.setObject(PFUser.currentUser()!.objectId!, forKey: "byUser")
     vote.setObject(venueId, forKey: "toObject")
-    vote.setObject("vote", forKey: "type")
+    vote.setObject("venueVote", forKey: "type")
     vote.saveInBackgroundWithBlock(nil)
     
     PFQuery(className: "Venue")
