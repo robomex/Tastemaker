@@ -38,7 +38,7 @@ func saveVenueVote(venueId: String) {
         .getObjectInBackgroundWithId(venueId) {
             (retrievedVenue: PFObject?, error: NSError?) -> Void in
             if error != nil {
-                println(error)
+                print(error)
             } else {
                 retrievedVenue?.incrementKey("votes", byAmount: 1)
             }

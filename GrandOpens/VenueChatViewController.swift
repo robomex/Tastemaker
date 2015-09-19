@@ -26,11 +26,11 @@ class VenueChatViewController: JSQMessagesViewController {
         
         // Do any additional setup after loading the view.
         
-        collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
+        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
         if let id = venueID {
-            fetchMessages(id, {
+            fetchMessages(id, callback: {
                 messages in
                 
                 for m in messages {
@@ -76,7 +76,7 @@ class VenueChatViewController: JSQMessagesViewController {
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         
-        var data = self.messages[indexPath.row]
+        let data = self.messages[indexPath.row]
         return data
     }
     
@@ -86,7 +86,7 @@ class VenueChatViewController: JSQMessagesViewController {
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         
-        var data = self.messages[indexPath.row]
+        let data = self.messages[indexPath.row]
         if data.senderId == PFUser.currentUser()!.objectId {
             return outgoingBubble
         } else {
@@ -99,7 +99,7 @@ class VenueChatViewController: JSQMessagesViewController {
         self.messages.append(m)
         
         if let id = venueID {
-            saveMessage(id, Message(message: text, senderID: senderId, date: date))
+            saveMessage(id, message: Message(message: text, senderID: senderId, date: date))
         }
         
         finishSendingMessage()

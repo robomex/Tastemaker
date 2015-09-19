@@ -14,6 +14,7 @@
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
 		DE1F08641B61BD440094ACA0 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F08631B61BD440094ACA0 /* Message.swift */; };
+		DE255AAB1BADE46E00F5C6D1 /* GOVenueCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */; };
 		DE283D111B61537E0003466D /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE283D101B61537E0003466D /* ParseUI.framework */; };
 		DE283D131B615F040003466D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D121B615F040003466D /* LoginViewController.swift */; };
 		DE283D151B61670E0003466D /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D141B61670E0003466D /* InitialViewController.swift */; };
@@ -76,6 +77,7 @@
 		DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		DE1F08611B61BCDE0094ACA0 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		DE1F08631B61BD440094ACA0 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOVenueCellView.swift; sourceTree = "<group>"; };
 		DE283D101B61537E0003466D /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
 		DE283D121B615F040003466D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				DEEB76101B35E7B100A94305 /* VenueCell.swift */,
+				DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */,
 				DEA5EE281B91B8A300D0F221 /* VoteButton.swift */,
 			);
 			name = Views;
@@ -345,6 +348,8 @@
 		DE61260F1B2505950009FB34 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Tony Morales";
 				TargetAttributes = {
@@ -480,6 +485,7 @@
 				DE283D131B615F040003466D /* LoginViewController.swift in Sources */,
 				DE1F08641B61BD440094ACA0 /* Message.swift in Sources */,
 				DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */,
+				DE255AAB1BADE46E00F5C6D1 /* GOVenueCellView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

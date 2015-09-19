@@ -17,7 +17,7 @@ class VenueDetailsViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
-        var venueDetailsLabel = UILabel(frame: CGRectMake(0, 0, 300, 80))
+        let venueDetailsLabel = UILabel(frame: CGRectMake(0, 0, 300, 80))
         venueDetailsLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
         venueDetailsLabel.text = venue!.description + " " + venue!.foodType
         venueDetailsLabel.textAlignment = NSTextAlignment.Center
