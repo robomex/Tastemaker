@@ -28,7 +28,7 @@ func currentUser() -> User? {
 
 func saveVenueVote(venueId: String) {
     
-    let vote = PFObject(className: "Action")
+    let vote = PFObject(className: "Activity")
     vote.setObject(PFUser.currentUser()!.objectId!, forKey: "byUser")
     vote.setObject(venueId, forKey: "toObject")
     vote.setObject("venueVote", forKey: "type")

@@ -12,6 +12,16 @@ class FeedTableViewController: UITableViewController {
 
     var venues: [Venue] = []
     
+    
+    // MARK: Initialization
+    
+    deinit {
+        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
+        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
+        defaultNotificationCenter.removeObserver(self, name: GOUserVotedUnvotedVenueNotification, object: nil)
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +32,11 @@ class FeedTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
+        
+        // Register to be notified when a voted/unvoted callback finished
+        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
+        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
+        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUserVotedUnvotedVenueNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -89,6 +104,11 @@ class FeedTableViewController: UITableViewController {
     
     @IBAction func voteButtonPressed(sender: VoteButton) {
         saveVenueVote(sender.venueId!)
+    }
+    
+    func userDidVoteOrUnvoteVenue(note: NSNotification) {
+        self.tableView.beginUpdates()
+        self.tableView.endUpdates()
     }
     
     /*

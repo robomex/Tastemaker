@@ -9,28 +9,43 @@
 import Foundation
 
 
+// MARK: NSNotification
+let GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification  = "com.grandopens.utility.userVotedUnvotedVenueCallbackFinished"
+let GOUserVotedUnvotedVenueNotification                         = "com.grandopens.userVotedUnvotedVenueNotification"
+
+
+// MARK: User Info Keys
+let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
+
+
+// MARK: Activity Class
+// Class key
+let kActivityClassKey                           = "Activity"
+
+// Field keys
+let kActivityByUserKey                          = "byUser"
+let kActivityVenueKey                           = "venue"
+let kActivityTypeKey                            = "type"
+
+// Type values
+let kActivityTypeVote                           = "vote"
+
+
 // MARK: User Class
 // Field keys
 let kUserDisplayNameKey                         = "name"
 
 
 // MARK: Venue Class
+// Class key
+let kVenueClassKey                              = "Venue"
+
 // Field keys
 let kVenueName                                  = "name"
 let kVenueAddress                               = "address"
 let kVenueNeighborhood                          = "neighborhood"
 let kVenueDescription                           = "description"
 let kVenueFoodType                              = "foodType"
-
-
-// MARK: Activity Class
-// Field keys
-let kActivityByUserKey                          = "byUser"
-let kActivityToObjectKey                        = "toObject"
-let kActivityType                               = "type"
-
-// Type values
-let kActivityTypeVote                           = "vote"
 
 
 // MARK: Cached Venue Attributes
