@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Parse
 
-class FeedTableViewController: UITableViewController {
+class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
 
     var venues: [Venue] = []
     
@@ -62,6 +63,26 @@ class FeedTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
+    // MARK: UITableViewDelegate
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return nil
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.0
+    }
+    
+    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.0
+    }
+    
+    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return nil
+    }
+    
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -105,6 +126,58 @@ class FeedTableViewController: UITableViewController {
     @IBAction func voteButtonPressed(sender: VoteButton) {
         saveVenueVote(sender.venueId!)
     }
+    
+    
+    // MARK: GOVenueCellViewDelegate
+    
+    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: PFObject) {
+        venueCellView.shouldEnableVoteButton(false)
+        
+        let voted: Bool = !button.selected
+        venueCellView.setVoteStatus(voted)
+        
+        let originalButtonTitle = button.titleLabel!.text
+        
+        var voteCount: Int = Int(button.titleLabel!.text!)!
+        if (voted) {
+            voteCount++
+            GOCache.sharedCache.incrementVoteCountForVenue(venue)
+        } else {
+            if voteCount > 0 {
+                voteCount--
+            }
+            GOCache.sharedCache.decrementVoteCountForVenue(venue)
+        }
+        
+        GOCache.sharedCache.setVenueIsVotedByCurrentUser(venue, voted: voted)
+        
+        button.setTitle(String(voteCount), forState: UIControlState.Normal)
+        
+        if voted {
+            GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
+                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+                actualVenueCellView?.shouldEnableVoteButton(true)
+                actualVenueCellView?.setVoteStatus(succeeded)
+                
+                if !succeeded {
+                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
+                }
+            })
+        } else {
+            GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
+                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+                actualVenueCellView?.shouldEnableVoteButton(false)
+                actualVenueCellView?.setVoteStatus(!succeeded)
+                
+                if !succeeded{
+                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
+                }
+            })
+        }
+    }
+    
+    
+    // MARK: ()
     
     func userDidVoteOrUnvoteVenue(note: NSNotification) {
         self.tableView.beginUpdates()
