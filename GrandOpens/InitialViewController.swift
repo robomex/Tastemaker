@@ -19,7 +19,9 @@ class InitialViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         if let currentUser = PFUser.currentUser() {
-            self.performSegueWithIdentifier("toMain", sender: self)
+
+            (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+//            self.performSegueWithIdentifier("toMain", sender: self)
         } else {
             self.performSegueWithIdentifier("toLogin", sender: self)
         }

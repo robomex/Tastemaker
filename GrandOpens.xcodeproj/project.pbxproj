@@ -38,6 +38,7 @@
 		DE61268A1B2697C80009FB34 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE6126891B2697C80009FB34 /* libsqlite3.dylib */; };
 		DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6126931B26A3CB0009FB34 /* ApiKeys.plist */; };
 		DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126951B26A4E40009FB34 /* ApiKeys.swift */; };
+		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; settings = {ASSET_TAGS = (); }; };
 		DE8F3D9F1B614BCB00E989DB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9C1B614BCB00E989DB /* Bolts.framework */; };
 		DE8F3DA01B614BCB00E989DB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9D1B614BCB00E989DB /* Parse.framework */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
@@ -104,6 +105,7 @@
 		DE6126931B26A3CB0009FB34 /* ApiKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ApiKeys.plist; sourceTree = "<group>"; };
 		DE6126951B26A4E40009FB34 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
 		DE8F3D9C1B614BCB00E989DB /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		DE8F3D9D1B614BCB00E989DB /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				DE6126211B2505950009FB34 /* ViewController.swift */,
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
 				DEA50CF01B7B094A00396BDD /* VenueViewController.swift */,
+				DE86FA151BB7154700C313E2 /* GOTabBarController.swift */,
 				DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */,
 				DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */,
 				DE283D161B61A1A30003466D /* SettingsViewController.swift */,
@@ -474,6 +477,7 @@
 				DEA5EE291B91B8A300D0F221 /* VoteButton.swift in Sources */,
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
+				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
 				DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */,
 				DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */,
