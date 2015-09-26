@@ -61,7 +61,7 @@ class GOVenueCellView: PFTableViewCell {
             // Vote button
             voteButton = UIButton(type: UIButtonType.Custom)
             containerView!.addSubview(self.voteButton!)
-            self.voteButton!.frame = CGRectMake(10, 30, 30, 30)
+            self.voteButton!.frame = CGRectMake(10, 23, 30, 30)
             self.voteButton!.backgroundColor = UIColor.clearColor()
             self.voteButton!.setTitle("", forState: UIControlState.Normal)
             self.voteButton!.setTitleColor(UIColor(red: 155.0/255.0, green: 89.0/255.0, blue: 182.0/255.0, alpha: 1.0), forState: UIControlState.Normal)
@@ -78,14 +78,14 @@ class GOVenueCellView: PFTableViewCell {
         }
         
         // Venue name label - COME BACK LATER AND FIX THIS SHITTY ARBITRARY SPACING
-        self.venueNameLabel = UILabel(frame: CGRectMake(75.0, 24.0, containerView!.bounds.size.width - 50.0 - 72.0, 26.0))
+        self.venueNameLabel = UILabel(frame: CGRectMake(50.0, 15.0, containerView!.bounds.size.width - 50.0 - 72.0, 26.0))
         containerView!.addSubview(self.venueNameLabel!)
         self.venueNameLabel!.textColor = UIColor.blackColor()
         self.venueNameLabel!.font = UIFont.systemFontOfSize(22.0)
         self.venueNameLabel!.backgroundColor = UIColor.clearColor()
         
         // Venue neighborhood label
-        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(75.0, 40.0, containerView!.bounds.size.width - 50.0 - 72.0, 18.0))
+        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(50.0, 42.0, containerView!.bounds.size.width - 50.0 - 72.0, 18.0))
         containerView!.addSubview(self.venueNeighborhoodLabel!)
         self.venueNeighborhoodLabel!.textColor = UIColor.blackColor()
         self.venueNeighborhoodLabel!.font = UIFont.systemFontOfSize(14.0)
