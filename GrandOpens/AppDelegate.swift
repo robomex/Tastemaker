@@ -12,10 +12,14 @@ import Parse
 import Bolts
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
-
+    var feedTableViewController: FeedTableViewController?
+    var initialViewController: InitialViewController?
+    
+    var tabBarController: GOTabBarController?
+    var navController: UINavigationController?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -39,6 +43,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
 //        self.window?.rootViewController = initialViewController
 //        self.window?.makeKeyAndVisible()
+        
+        self.initialViewController = InitialViewController()
+        
+        self.navController = UINavigationController(rootViewController: self.initialViewController!)
+        self.navController!.navigationBarHidden = true
+        
+        self.window!.rootViewController = self.navController
+        self.window!.makeKeyAndVisible()
         
         return true
     }
@@ -66,6 +78,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
     }
+    
+    
+    // MARK: AppDelegate
+    
+//    func isParseReachable() -> Bool {
+//        return self.networkStatus != .NotReachable
+//    }
+
+    func presentTabBarController() {
+        self.tabBarController = GOTabBarController()
+        self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
+        
+        let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
+        
+        let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Home.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 114.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        
+        feedNavigationController.tabBarItem = feedTabBarItem
+        
+        tabBarController!.delegate = self
+        tabBarController!.viewControllers = [feedNavigationController]
+        
+        navController!.setViewControllers([tabBarController!], animated: false)
+    }
+    
 
     // MARK: - Core Data stack
 
