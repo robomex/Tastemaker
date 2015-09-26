@@ -42,6 +42,7 @@ let kVenueClassKey                              = "Venue"
 
 // Field keys
 let kVenueName                                  = "name"
+let kVenueOpeningDate                           = "openingDate"
 let kVenueAddress                               = "address"
 let kVenueNeighborhood                          = "neighborhood"
 let kVenueDescription                           = "description"
