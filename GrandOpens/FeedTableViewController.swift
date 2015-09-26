@@ -11,10 +11,12 @@ import Parse
 import ParseUI
 //import Synchronized
 
-class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
 
     var venues: [Venue] = []
-    
+    var shouldReloadOnAppear: Bool = false
+    var reusableViews: Set<GOVenueCellView>!
+//    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
     
     // MARK: Initialization
     
@@ -24,6 +26,38 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
         defaultNotificationCenter.removeObserver(self, name: GOUserVotedUnvotedVenueNotification, object: nil)
     }
     
+    override init(style: UITableViewStyle, className: String?) {
+//        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
+        
+        super.init(style: style, className: kVenueClassKey)
+        
+        // The className to query on
+        self.parseClassName = kVenueClassKey
+        
+        // Whether the built-in pull-to-refresh is enabled
+        self.pullToRefreshEnabled = true
+        
+        // Whether the built-in pagination is enabled
+        self.paginationEnabled = false
+        
+        // The number of objects to show per page
+        // self.objectsPerPage = 10
+        
+        // Improve scrolling performance by reusing views
+        self.reusableViews = Set<GOVenueCellView>(minimumCapacity: 3)
+
+        self.shouldReloadOnAppear = false
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+//    required init?(coder aDecoder: NSCoder) {
+//
+//        super.init(coder: aDecoder)
+//        //        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,11 +85,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
             navigationController!.view.backgroundColor = UIColor.whiteColor()
         }
         
-        fetchVenues({
-            venues in
-            self.venues = venues
-            self.tableView.reloadData()
-        })
+//        fetchVenues({
+//            venues in
+//            self.venues = venues
+//            self.tableView.reloadData()
+//        })
         
         self.tabBarController?.tabBar.hidden = false
     }
@@ -96,10 +130,48 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return venues.count
+        return self.objects!.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> PFTableViewCell {
+    
+    // MARK: PFQueryTableViewController
+    
+    override func queryForTable() -> PFQuery {
+        if (PFUser.currentUser() == nil) {
+            let query = PFQuery(className: self.parseClassName!)
+            query.limit = 0
+            return query
+        }
+        
+        let query = PFQuery(className: self.parseClassName!)
+        query.orderByDescending("openingDate")
+        
+        // A pull-to-refresh should always trigger a network request.
+//        query.cachePolicy = PFCachePolicy.NetworkOnly
+        
+        // If no objects are loaded in memory, we look to the cache first to fill the table 
+        // and then subsequently do a query against the network.
+        //
+        // If there is no network connection, we will hit the cache first.
+
+        // COMMENTING NEXT THREE LINES AND ABOVE (query.cachePolicy = PFCachePolicy.NetworkOnly) DUE TO 'METHOD NOT ALLOWED WHEN PINNING IS ENABLED ERROR
+        //        if self.objects!.count == 0 || (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) {
+//            query.cachePolicy = PFCachePolicy.CacheThenNetwork
+//        }
+        
+        return query
+    }
+    
+    override func objectAtIndexPath(indexPath: NSIndexPath?) -> PFObject? {
+        let index = self.indexForObjectAtIndexPath(indexPath!)
+        if (index < self.objects!.count) {
+            return self.objects![index] as? PFObject
+        }
+        
+        return nil
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
 
         let CellIdentifier = "VenueCell"
         
@@ -112,16 +184,16 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-        let venue: Venue? = venues[indexPath.row]
-        venueCell!.venue = venue
+        let object: PFObject? = objectAtIndexPath(indexPath)
+        venueCell!.venue = object
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
         
-        let attributesForVenue = GOCache.sharedCache.attributesForVenue(venue!)
+        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
         
         if attributesForVenue != nil {
-            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(venue!))
-            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(venue!).description, forState: UIControlState.Normal)
+            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
+            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
             
             if venueCell!.voteButton!.alpha < 1.0 {
                 UIView.animateWithDuration(0.200, animations: {
@@ -152,23 +224,44 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
 //        return cell
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        
-        let venue = venues[indexPath.row]
-        vc.venue = venue
-        vc.venueID = venue.id
-        vc.title = venue.name
-        navigationItem.title = ""
-        vc.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(vc, animated: true)
-        
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 76.0
     }
     
-    @IBAction func voteButtonPressed(sender: VoteButton) {
-        saveVenueVote(sender.venueId!)
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+
+        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
+        
+//        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+//        
+//        let venue = venues[indexPath.row]
+//        vc.venue = venue
+//        vc.venueID = venue.id
+//        vc.title = venue.name
+//        navigationItem.title = ""
+//        vc.hidesBottomBarWhenPushed = true
+//        navigationController?.pushViewController(vc, animated: true)
+//        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+//    
+//    @IBAction func voteButtonPressed(sender: VoteButton) {
+//        saveVenueVote(sender.venueId!)
+//    }
+    
+    
+    // MARK: FeedTableViewController
+    
+    func dequeueReusableView() -> GOVenueCellView? {
+        for view: GOVenueCellView in self.reusableViews {
+            if view.superview == nil {
+                
+                // We found a section header that is no longer visible
+                return view
+            }
+        }
+        
+        return nil
     }
     
     
