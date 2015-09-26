@@ -8,6 +8,8 @@
 
 import UIKit
 import Parse
+import ParseUI
+//import Synchronized
 
 class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
 
@@ -97,15 +99,57 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
         return venues.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("VenueCell", forIndexPath: indexPath) as! VenueCell
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> PFTableViewCell {
 
-        let venueInfo = venues[indexPath.row]
-        cell.venueName.text = venueInfo.name
-        cell.venueNeighborhood.text = venueInfo.neighborhood
-        cell.voteButton.venueId = venueInfo.id
+        let CellIdentifier = "VenueCell"
         
-        return cell
+        let index: Int = self.indexForObjectAtIndexPath(indexPath)
+        
+        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? GOVenueCellView
+        if venueCell == nil {
+            venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
+            venueCell!.delegate = self
+            venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
+        }
+        
+        let venue: Venue? = venues[indexPath.row]
+        venueCell!.venue = venue
+        venueCell!.tag = index
+        venueCell!.voteButton!.tag = index
+        
+        let attributesForVenue = GOCache.sharedCache.attributesForVenue(venue!)
+        
+        if attributesForVenue != nil {
+            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(venue!))
+            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(venue!).description, forState: UIControlState.Normal)
+            
+            if venueCell!.voteButton!.alpha < 1.0 {
+                UIView.animateWithDuration(0.200, animations: {
+                    venueCell!.voteButton!.alpha = 1.0
+                })
+            }
+        } else {
+//  ADD SYNCHRONIZE SHIT COCOAPOD HERE
+//            venueCell!.voteButton!.alpha = 0.0
+//            
+//            synchronized(self) {
+//                // Check if we can update the cache
+//                let outstandingSectionHeaderQueryStatus: Int? = self.outstandingSectionHeaderQueries[index] as? Int
+//                
+//            }
+        }
+        
+        return venueCell!
+        
+
+//        let cell = tableView.dequeueReusableCellWithIdentifier("VenueCell", forIndexPath: indexPath) as! VenueCell
+//
+//        let venueInfo = venues[indexPath.row]
+//        cell.venueName.text = venueInfo.name
+//        cell.venueNeighborhood.text = venueInfo.neighborhood
+//        cell.voteButton.venueId = venueInfo.id
+//        
+//        return cell
     }
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -182,6 +226,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate {
     func userDidVoteOrUnvoteVenue(note: NSNotification) {
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
+    }
+    
+    func indexForObjectAtIndexPath(indexPath: NSIndexPath) -> Int {
+        return indexPath.row
     }
     
     /*
