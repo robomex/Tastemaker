@@ -108,10 +108,10 @@ class GOVenueCellView: PFTableViewCell {
                 self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            let venueName: String? = venue!.name as? String
+            let venueName: String = venue!.objectForKey(kVenueName) as! String
             self.venueNameLabel!.text = venueName
             
-            let venueNeighborhood: String? = venue!.neighborhood as? String
+            let venueNeighborhood: String = venue!.objectForKey(kVenueNeighborhood) as! String
             self.venueNeighborhoodLabel!.text = venueNeighborhood
             
             self.setNeedsDisplay()
