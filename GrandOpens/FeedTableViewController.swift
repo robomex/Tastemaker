@@ -9,14 +9,14 @@
 import UIKit
 import Parse
 import ParseUI
-//import Synchronized
+import Synchronized
 
 class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
 
     var venues: [Venue] = []
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
-//    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
+    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
     
     // MARK: Initialization
     
@@ -27,7 +27,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     }
     
     override init(style: UITableViewStyle, className: String?) {
-//        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
+        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
         
         super.init(style: style, className: kVenueClassKey)
         
@@ -201,14 +201,59 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                 })
             }
         } else {
-//  ADD SYNCHRONIZE SHIT COCOAPOD HERE
-//            venueCell!.voteButton!.alpha = 0.0
-//            
-//            synchronized(self) {
-//                // Check if we can update the cache
-//                let outstandingSectionHeaderQueryStatus: Int? = self.outstandingSectionHeaderQueries[index] as? Int
-//                
-//            }
+            venueCell!.voteButton!.alpha = 0.0
+            
+            synchronized(self) {
+                // Check if we can update the cache
+                let outstandingVenueCellViewQueryStatus: Int? = self.outstandingVenueCellViewQueries[index] as? Int
+                
+                if outstandingVenueCellViewQueryStatus == nil {
+                    let query: PFQuery = GOUtility.queryForActivitiesOnVenue(object!, cachePolicy: PFCachePolicy.NetworkOnly)
+                    query.findObjectsInBackgroundWithBlock{ (objects, error) in
+                        synchronized(self) {
+                            self.outstandingVenueCellViewQueries.removeValueForKey(index)
+                            
+                            if error != nil {
+                                return
+                            }
+                            
+                            var voters = [PFUser]()
+                            
+                            var isVotedByCurrentUser = false
+                            
+                            for activity in objects as! [PFObject] {
+                                if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
+                                    voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
+                                }
+                                
+                                if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
+                                    if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
+                                        isVotedByCurrentUser = true
+                                    }
+                                }
+                            }
+                            
+                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser)
+                            
+                            if venueCell!.tag != index {
+                                return
+                            }
+                            
+                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
+                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
+                            
+                            if venueCell!.voteButton!.alpha < 1.0 {
+                                UIView.animateWithDuration(0.200, animations: {
+                                    venueCell!.voteButton!.alpha = 1.0
+                                })
+                            }
+                            
+                        }
+                        
+                    }
+                }
+                
+            }
         }
         
         return venueCell!
