@@ -35,6 +35,8 @@ class GOVenueCellView: PFTableViewCell {
     var delegate: GOVenueCellViewDelegate?
     
     var containerView: UIView?
+    var venueNameLabel: UILabel?
+    var venueNeighborhoodLabel: UILabel?
     
     
     // MARK: Initialization
@@ -49,7 +51,7 @@ class GOVenueCellView: PFTableViewCell {
         self.clipsToBounds = false
         self.backgroundColor = UIColor.clearColor()
         
-        // translucent portion
+        // Translucent portion
         self.containerView = UIView(frame: CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height))
         self.containerView!.clipsToBounds = false
         self.addSubview(self.containerView!)
@@ -74,6 +76,20 @@ class GOVenueCellView: PFTableViewCell {
             self.voteButton!.setBackgroundImage(UIImage(named: "Vote.png"), forState: UIControlState.Selected)
             self.voteButton!.selected = false
         }
+        
+        // Venue name label - COME BACK LATER AND FIX THIS SHITTY ARBITRARY SPACING
+        self.venueNameLabel = UILabel(frame: CGRectMake(75.0, 24.0, containerView!.bounds.size.width - 50.0 - 72.0, 26.0))
+        containerView!.addSubview(self.venueNameLabel!)
+        self.venueNameLabel!.textColor = UIColor.blackColor()
+        self.venueNameLabel!.font = UIFont.systemFontOfSize(22.0)
+        self.venueNameLabel!.backgroundColor = UIColor.clearColor()
+        
+        // Venue neighborhood label
+        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(75.0, 40.0, containerView!.bounds.size.width - 50.0 - 72.0, 18.0))
+        containerView!.addSubview(self.venueNeighborhoodLabel!)
+        self.venueNeighborhoodLabel!.textColor = UIColor.blackColor()
+        self.venueNeighborhoodLabel!.font = UIFont.systemFontOfSize(14.0)
+        self.venueNeighborhoodLabel!.backgroundColor = UIColor.clearColor()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -91,6 +107,12 @@ class GOVenueCellView: PFTableViewCell {
                 constrainWidth = self.voteButton!.frame.origin.x
                 self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
             }
+            
+            let venueName: String? = venue!.name as? String
+            self.venueNameLabel!.text = venueName
+            
+            let venueNeighborhood: String? = venue!.neighborhood as? String
+            self.venueNeighborhoodLabel!.text = venueNeighborhood
             
             self.setNeedsDisplay()
         }
