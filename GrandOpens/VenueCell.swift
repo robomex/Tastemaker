@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import ParseUI
 
-class VenueCell: UITableViewCell {
+class VenueCell: PFTableViewCell {
     
     @IBOutlet weak var venueName: UILabel!
     @IBOutlet weak var venueNeighborhood: UILabel!
