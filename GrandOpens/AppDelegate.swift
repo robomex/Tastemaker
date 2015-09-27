@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Override point for customization after application launch.
         
         // Optional Parse local datastore enabled - helpful comment
-        Parse.enableLocalDatastore()
+        //Parse.enableLocalDatastore()
         
         // Initialize Parse
         Parse.setApplicationId(valueForAPIKey("PARSE_APPLICATION_ID"), clientKey: valueForAPIKey("PARSE_CLIENT_KEY"))
