@@ -10,6 +10,8 @@ import UIKit
 import Parse
 
 class LoginViewController: UIViewController {
+    
+    var delegate: LoginViewControllerDelegate?
 
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendCodeButton: UIButton!
@@ -19,11 +21,17 @@ class LoginViewController: UIViewController {
     
     var phoneNumber: String
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         phoneNumber = ""
         
         super.init(coder: aDecoder)
     }
+    
+//    init() {
+//        phoneNumber = ""
+//        
+//        super.init(nibName: nil, bundle: nil)
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +51,7 @@ class LoginViewController: UIViewController {
     }
     
     func step2() {
-        phoneNumber = textField.text
+        phoneNumber = textField.text!
         textField.text = ""
         textField.placeholder = "1234"
         questionLabel.text = NSLocalizedString("enterCode", comment: "Enter the 4-digit confirmation code:")
@@ -60,26 +68,29 @@ class LoginViewController: UIViewController {
     @IBAction func didTapSendCodeButton() {
         
         let preferredLanguages = NSBundle.mainBundle().preferredLocalizations
-        let preferredLanguage = preferredLanguages[0] as! String
+        let preferredLanguage = preferredLanguages[0] 
         
         if phoneNumber == "" {
             
-            if (preferredLanguage == "en" && count(textField.text) != 10)
-                || (preferredLanguage == "ja" && count(textField.text) != 11) {
+            if (preferredLanguage == "en" && textField.text!.characters.count != 10)
+                || (preferredLanguage == "ja" && textField.text!.characters.count != 11) {
                     showAlert("Phone Login", message: NSLocalizedString("warningPhone", comment: "You must enter a 10-digit US phone number including area code."))
                     return step1()
             }
             
             self.editing = false
-            let params = ["phoneNumber" : textField.text, "language" : preferredLanguage]
-            PFCloud.callFunctionInBackground("sendCode", withParameters: params) {
+            
+            let params = NSMutableDictionary()
+            params.setObject(textField.text!, forKey: "phoneNumber")
+            params.setObject(preferredLanguage, forKey: "language")
+            PFCloud.callFunctionInBackground("sendCode", withParameters: params as [NSObject: AnyObject]) {
                 (response: AnyObject?, error: NSError?) -> Void in
                 self.editing = true
                 if let error = error {
                     var description = error.description
-                    if count(description) == 0 {
+                    if description.characters.count == 0 {
                         description = NSLocalizedString("warningGeneral", comment: "Something went wrong.  Please try again.") // "There was a problem with the service.\nTry again later."
-                    } else if let message = error.userInfo?["error"] as? String {
+                    } else if let message = error.userInfo["error"] as? String {
                         description = message
                     }
                     self.showAlert("Login Error", message: description)
@@ -88,8 +99,8 @@ class LoginViewController: UIViewController {
                 return self.step2()
             }
         } else {
-            if let text = textField?.text, let code = text.toInt() {
-                if count(text) == 4 {
+            if let text = textField?.text, let code = Int(text) {
+                if text.characters.count == 4 {
                     return doLogin(phoneNumber, code: code)
                 }
             }
@@ -165,10 +176,14 @@ class LoginViewController: UIViewController {
 
 }
 
-extension LoginViewController : UITextFieldDelegate {
+extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.didTapSendCodeButton()
         
         return true
     }
+}
+
+@objc protocol LoginViewControllerDelegate: NSObjectProtocol {
+    func loginViewControllerDidLogUserIn(loginViewController: LoginViewController)
 }

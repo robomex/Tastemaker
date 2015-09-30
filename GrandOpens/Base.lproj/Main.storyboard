@@ -1,61 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <mutableArray key="Muli-Regular.ttf">
-            <string>Muli</string>
-            <string>Muli</string>
-        </mutableArray>
-    </customFonts>
     <scenes>
-        <!--Feed Table View Controller-->
-        <scene sceneID="6M8-ZD-wdi">
-            <objects>
-                <tableViewController id="XCh-FM-QEh" customClass="FeedTableViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="76" sectionHeaderHeight="22" sectionFooterHeight="22" id="Tlj-v6-nr3">
-                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="VenueCell" textLabel="Lq6-e6-baU" detailTextLabel="uKf-Dz-25P" style="IBUITableViewCellStyleSubtitle" id="ExP-gc-6df" customClass="VenueCell" customModule="GrandOpens" customModuleProvider="target">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ExP-gc-6df" id="CAB-V5-6lW">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Lq6-e6-baU">
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="Muli" family="Muli" pointSize="22"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uKf-Dz-25P">
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="Muli" family="Muli" pointSize="14"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="venueName" destination="Lq6-e6-baU" id="bzd-fj-TqP"/>
-                                    <outlet property="venueNeighborhood" destination="uKf-Dz-25P" id="fuq-0x-yZf"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="XCh-FM-QEh" id="c8M-It-7TO"/>
-                            <outlet property="delegate" destination="XCh-FM-QEh" id="eq0-Pg-ifz"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="wRF-bo-26s"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G0T-hQ-Td8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1617" y="52"/>
-        </scene>
         <!--Lists-->
         <scene sceneID="vi9-p9-kMz">
             <objects>
@@ -86,7 +35,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="1TJ-Dr-wbt">
             <objects>
-                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" customClass="GOTabBarController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="au2-CR-bep">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -94,7 +43,6 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="etH-Qb-0nd" kind="relationship" relationship="viewControllers" id="3oi-7h-tzz"/>
                         <segue destination="Pat-84-4iT" kind="relationship" relationship="viewControllers" id="90Z-EX-SBZ"/>
                         <segue destination="Q3n-Mz-lF3" kind="relationship" relationship="viewControllers" id="4no-2Q-lfM"/>
                     </connections>
@@ -103,33 +51,10 @@
             </objects>
             <point key="canvasLocation" x="-4" y="406"/>
         </scene>
-        <!--Feed-->
-        <scene sceneID="WgK-yF-phx">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="etH-Qb-0nd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Feed" image="Home" id="oOx-Rc-Igi"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3tR-r4-xyr">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.13333333333333333" green="0.65490196078431373" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <textAttributes key="titleTextAttributes">
-                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        </textAttributes>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="XCh-FM-QEh" kind="relationship" relationship="rootViewController" id="1U6-M7-ZAB"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ntK-Rx-fbU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="816" y="52"/>
-        </scene>
-        <!--Initial View Controller-->
+        <!--InitialViewController-->
         <scene sceneID="X0d-mC-fsR">
             <objects>
-                <viewController id="YDE-Yr-KVW" customClass="InitialViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InitialViewController" title="InitialViewController" id="YDE-Yr-KVW" customClass="InitialViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Lgj-cC-Vnr"/>
                         <viewControllerLayoutGuide type="bottom" id="QXb-Fk-zHL"/>
@@ -558,7 +483,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Home" width="30" height="30"/>
         <image name="Lists" width="30" height="30"/>
         <image name="Settings" width="30" height="30"/>
         <image name="lock" width="114" height="104"/>

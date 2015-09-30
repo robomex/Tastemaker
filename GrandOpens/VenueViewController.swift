@@ -51,12 +51,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func goToNextVC() {
-        let nextVC = pageViewController(self, viewControllerAfterViewController: viewControllers[0] as! UIViewController)!
+        let nextVC = pageViewController(self, viewControllerAfterViewController: viewControllers![0])!
         setViewControllers([nextVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
     }
     
     func goToPreviousVC() {
-        let previousVC = pageViewController(self, viewControllerBeforeViewController: viewControllers[0] as! UIViewController)!
+        let previousVC = pageViewController(self, viewControllerBeforeViewController: viewControllers![0])!
         setViewControllers([previousVC], direction: UIPageViewControllerNavigationDirection.Reverse, animated: true, completion: nil)
     }
     
@@ -91,7 +91,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     // MARK: UIPageViewControllerDelegate
     
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
+    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         
         if (!completed) {
             return

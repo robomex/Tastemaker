@@ -12,16 +12,20 @@ import Parse
 import Bolts
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
-
+    var feedTableViewController: FeedTableViewController?
+    var initialViewController: InitialViewController?
+    
+    var tabBarController: GOTabBarController?
+    var navController: UINavigationController?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
         // Optional Parse local datastore enabled - helpful comment
-        Parse.enableLocalDatastore()
+        //Parse.enableLocalDatastore()
         
         // Initialize Parse
         Parse.setApplicationId(valueForAPIKey("PARSE_APPLICATION_ID"), clientKey: valueForAPIKey("PARSE_CLIENT_KEY"))
@@ -29,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Track statistics around application opens with Parse
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
-//        var storyboard = UIStoryboard(name: "Main", bundle: nil)
+        var storyboard = UIStoryboard(name: "Main", bundle: nil)
 //        var initialViewController: UIViewController
 //        if PFUser.currentUser() != nil {
 //            initialViewController = storyboard.instantiateViewControllerWithIdentifier("MainNavController") as! UIViewController
@@ -39,6 +43,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        }
 //        self.window?.rootViewController = initialViewController
 //        self.window?.makeKeyAndVisible()
+        
+//        self.initialViewController = InitialViewController()
+
+        self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as! InitialViewController
+        
+        self.navController = UINavigationController(rootViewController: self.initialViewController!)
+        self.navController!.navigationBarHidden = true
+        
+        self.window!.rootViewController = self.navController
+        self.window!.makeKeyAndVisible()
         
         return true
     }
@@ -66,13 +80,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
     }
+    
+    
+    // MARK: AppDelegate
+    
+//    func isParseReachable() -> Bool {
+//        return self.networkStatus != .NotReachable
+//    }
+
+    func presentTabBarController() {
+        self.tabBarController = GOTabBarController()
+        self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
+        
+        let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
+        
+        let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Home.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 114.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        
+        feedNavigationController.tabBarItem = feedTabBarItem
+        
+        tabBarController!.delegate = self
+        tabBarController!.viewControllers = [feedNavigationController]
+        
+        navController!.setViewControllers([tabBarController!], animated: false)
+    }
+    
 
     // MARK: - Core Data stack
 
     lazy var applicationDocumentsDirectory: NSURL = {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "com.GrandOpens.GrandOpens" in the application's documents Application Support directory.
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count-1] as! NSURL
+        return urls[urls.count-1] 
     }()
 
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -88,7 +128,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("GrandOpens.sqlite")
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
-        if coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil, error: &error) == nil {
+        do {
+            try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
+        } catch var error1 as NSError {
+            error = error1
             coordinator = nil
             // Report any error we got.
             var dict = [String: AnyObject]()
@@ -100,6 +143,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog("Unresolved error \(error), \(error!.userInfo)")
             abort()
+        } catch {
+            fatalError()
         }
         
         return coordinator
@@ -121,11 +166,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func saveContext () {
         if let moc = self.managedObjectContext {
             var error: NSError? = nil
-            if moc.hasChanges && !moc.save(&error) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                NSLog("Unresolved error \(error), \(error!.userInfo)")
-                abort()
+            if moc.hasChanges {
+                do {
+                    try moc.save()
+                } catch let error1 as NSError {
+                    error = error1
+                    // Replace this implementation with code to handle the error appropriately.
+                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                    NSLog("Unresolved error \(error), \(error!.userInfo)")
+                    abort()
+                }
             }
         }
     }

@@ -6,23 +6,23 @@
 //  Copyright (c) 2015 Tony Morales. All rights reserved.
 //
 
-import UIKit
-
-class VenueCell: UITableViewCell {
-    
-    @IBOutlet weak var venueName: UILabel!
-    
-    @IBOutlet weak var venueNeighborhood: UILabel!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-    
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
-    }
-    
-}
+//import UIKit
+//import ParseUI
+//
+//class VenueCell: PFTableViewCell {
+//    
+//    @IBOutlet weak var venueName: UILabel!
+//    @IBOutlet weak var venueNeighborhood: UILabel!
+//    @IBOutlet weak var voteButton: VoteButton!
+//    
+//    override func awakeFromNib() {
+//        super.awakeFromNib()
+//        // Initialization code
+//    }
+//    
+//    override func setSelected(selected: Bool, animated: Bool) {
+//        super.setSelected(selected, animated: animated)
+//        
+//        // Configure the view for the selected state
+//    }
+//}
