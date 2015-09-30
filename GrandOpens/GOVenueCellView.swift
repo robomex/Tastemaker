@@ -64,16 +64,16 @@ class GOVenueCellView: PFTableViewCell {
             self.voteButton!.frame = CGRectMake(10, 23, 30, 30)
             self.voteButton!.backgroundColor = UIColor.clearColor()
             self.voteButton!.setTitle("", forState: UIControlState.Normal)
-            self.voteButton!.setTitleColor(UIColor(red: 155.0/255.0, green: 89.0/255.0, blue: 182.0/255.0, alpha: 1.0), forState: UIControlState.Normal)
-            self.voteButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            self.voteButton!.setTitleColor(UIColor(red: 74.0/255.0, green: 74.0/255.0, blue: 74.0/255.0, alpha: 1.0), forState: UIControlState.Normal)
+            self.voteButton!.setTitleColor(UIColor(red: 155.0/255.0, green: 89.0/255.0, blue: 182.0/255.0, alpha: 1.0), forState: UIControlState.Selected)
             self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
             self.voteButton!.titleLabel!.font = UIFont.systemFontOfSize(12.0)
             self.voteButton!.titleLabel!.minimumScaleFactor = 0.8
             self.voteButton!.titleLabel!.adjustsFontSizeToFitWidth = true
             self.voteButton!.adjustsImageWhenHighlighted = false
             self.voteButton!.adjustsImageWhenDisabled = false
-            self.voteButton!.setBackgroundImage(UIImage(named: "Vote.png"), forState: UIControlState.Normal)
-            self.voteButton!.setBackgroundImage(UIImage(named: "Vote.png"), forState: UIControlState.Selected)
+            self.voteButton!.setBackgroundImage(UIImage(named: "VoteNormal.png"), forState: UIControlState.Normal)
+            self.voteButton!.setBackgroundImage(UIImage(named: "VoteSelected.png"), forState: UIControlState.Selected)
             self.voteButton!.selected = false
         }
         
@@ -123,9 +123,9 @@ class GOVenueCellView: PFTableViewCell {
         
         // FIXME: both are the same???
         if (voted) {
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(-3.0, 0.0, 0.0, 0.0)
+            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
         } else {
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(-3.0, 0.0, 0.0, 0.0)
+            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
         }
     }
     
