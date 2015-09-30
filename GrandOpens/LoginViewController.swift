@@ -10,6 +10,8 @@ import UIKit
 import Parse
 
 class LoginViewController: UIViewController {
+    
+    var delegate: LoginViewControllerDelegate?
 
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendCodeButton: UIButton!
@@ -24,6 +26,12 @@ class LoginViewController: UIViewController {
         
         super.init(coder: aDecoder)
     }
+    
+//    init() {
+//        phoneNumber = ""
+//        
+//        super.init(nibName: nil, bundle: nil)
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -168,10 +176,14 @@ class LoginViewController: UIViewController {
 
 }
 
-extension LoginViewController : UITextFieldDelegate {
+extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         self.didTapSendCodeButton()
         
         return true
     }
+}
+
+@objc protocol LoginViewControllerDelegate: NSObjectProtocol {
+    func loginViewControllerDidLogUserIn(loginViewController: LoginViewController)
 }

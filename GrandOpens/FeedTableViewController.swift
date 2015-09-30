@@ -275,7 +275,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 
-        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
+//        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
         
 //        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
 //        

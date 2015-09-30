@@ -9,8 +9,10 @@
 import UIKit
 import Parse
 
-class InitialViewController: UIViewController {
+class InitialViewController: UIViewController, LoginViewControllerDelegate {
 
+    private var _presentedLoginViewController: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,18 +20,48 @@ class InitialViewController: UIViewController {
     }
 
     override func viewDidAppear(animated: Bool) {
-        if let currentUser = PFUser.currentUser() {
-
-            (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
-//            self.performSegueWithIdentifier("toMain", sender: self)
-        } else {
-            self.performSegueWithIdentifier("toLogin", sender: self)
+        super.viewDidAppear(animated)
+        
+        if PFUser.currentUser() == nil {
+            presentLoginViewController(false)
+            return
         }
+        
+        // Present Grand Opens UI
+        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    // MARK: InitialViewController
+    
+    func presentLoginViewController(animated: Bool) {
+        if _presentedLoginViewController {
+            return
+        }
+        
+        _presentedLoginViewController = true
+        
+//        var storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        self.performSegueWithIdentifier("toLogin", sender: self)
+//        var loginViewController = LoginViewController()
+//        loginViewController.delegate = self
+//        presentViewController(loginViewController, animated: animated, completion: nil)
+    }
+    
+    
+    // MARK: LoginViewControllerDelegate
+    
+    func loginViewControllerDidLogUserIn(loginViewController: LoginViewController) {
+        if _presentedLoginViewController {
+            _presentedLoginViewController = false
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
 
