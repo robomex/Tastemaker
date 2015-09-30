@@ -147,17 +147,16 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         query.orderByDescending("openingDate")
         
         // A pull-to-refresh should always trigger a network request.
-//        query.cachePolicy = PFCachePolicy.NetworkOnly
+        query.cachePolicy = PFCachePolicy.NetworkOnly
         
         // If no objects are loaded in memory, we look to the cache first to fill the table 
         // and then subsequently do a query against the network.
         //
         // If there is no network connection, we will hit the cache first.
-
-        // COMMENTING NEXT THREE LINES AND ABOVE (query.cachePolicy = PFCachePolicy.NetworkOnly) DUE TO 'METHOD NOT ALLOWED WHEN PINNING IS ENABLED ERROR
-        //        if self.objects!.count == 0 || (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) {
-//            query.cachePolicy = PFCachePolicy.CacheThenNetwork
-//        }
+        
+        if self.objects!.count == 0 || (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) {
+            query.cachePolicy = PFCachePolicy.CacheThenNetwork
+        }
         
         return query
     }
