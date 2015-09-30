@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Track statistics around application opens with Parse
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
-//        var storyboard = UIStoryboard(name: "Main", bundle: nil)
+        var storyboard = UIStoryboard(name: "Main", bundle: nil)
 //        var initialViewController: UIViewController
 //        if PFUser.currentUser() != nil {
 //            initialViewController = storyboard.instantiateViewControllerWithIdentifier("MainNavController") as! UIViewController
@@ -44,7 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 //        self.window?.rootViewController = initialViewController
 //        self.window?.makeKeyAndVisible()
         
-        self.initialViewController = InitialViewController()
+//        self.initialViewController = InitialViewController()
+
+        self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as! InitialViewController
         
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
         self.navController!.navigationBarHidden = true
