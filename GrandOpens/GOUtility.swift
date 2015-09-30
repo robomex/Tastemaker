@@ -134,7 +134,8 @@ class GOUtility {
         
         let query = PFQuery.orQueryWithSubqueries([queryVotes])
         query.cachePolicy = cachePolicy
-        query.includeKey(kActivityByUserKey)
+//      "Cannot include ByUser because it is not a pointer to another object, including below line caused vote icon to not display and vote count
+//        query.includeKey(kActivityByUserKey)
         query.includeKey(kActivityVenueKey)
         
         return query
