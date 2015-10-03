@@ -286,6 +286,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 //        vc.hidesBottomBarWhenPushed = true
 //        navigationController?.pushViewController(vc, animated: true)
 //        
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 //    
