@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class InitialViewController: UIViewController, LoginViewControllerDelegate {
+class InitialViewController: UIViewController {
 
     private var _presentedLoginViewController: Bool = false
     
@@ -20,15 +20,14 @@ class InitialViewController: UIViewController, LoginViewControllerDelegate {
     }
 
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+//        super.viewDidAppear(animated)
         
-        if PFUser.currentUser() == nil {
-            presentLoginViewController(false)
-            return
+        if let _ = PFUser.currentUser() {
+            // Present Grand Opens UI
+            (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+        } else {
+            self.performSegueWithIdentifier("toLogin", sender: self)
         }
-        
-        // Present Grand Opens UI
-        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
     }
     
     override func didReceiveMemoryWarning() {
@@ -38,31 +37,31 @@ class InitialViewController: UIViewController, LoginViewControllerDelegate {
     
     
     // MARK: InitialViewController
-    
-    func presentLoginViewController(animated: Bool) {
-        if _presentedLoginViewController {
-            return
-        }
-        
-        _presentedLoginViewController = true
-        
-//        var storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        self.performSegueWithIdentifier("toLogin", sender: self)
-//        var loginViewController = LoginViewController()
-//        loginViewController.delegate = self
-//        presentViewController(loginViewController, animated: animated, completion: nil)
-    }
-    
-    
-    // MARK: LoginViewControllerDelegate
-    
-    func loginViewControllerDidLogUserIn(loginViewController: LoginViewController) {
-        if _presentedLoginViewController {
-            _presentedLoginViewController = false
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
+//    
+//    func presentLoginViewController(animated: Bool) {
+//        if _presentedLoginViewController {
+//            return
+//        }
+//        
+//        _presentedLoginViewController = true
+//        
+////        var storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        
+//        self.performSegueWithIdentifier("toLogin", sender: self)
+////        var loginViewController = LoginViewController()
+////        loginViewController.delegate = self
+////        presentViewController(loginViewController, animated: animated, completion: nil)
+//    }
+//    
+//    
+//    // MARK: LoginViewControllerDelegate
+//    
+//    func loginViewControllerDidLogUserIn(loginViewController: LoginViewController) {
+//        if _presentedLoginViewController {
+//            _presentedLoginViewController = false
+//            self.dismissViewControllerAnimated(true, completion: nil)
+//        }
+//    }
     
 
     /*
