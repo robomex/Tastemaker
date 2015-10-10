@@ -79,7 +79,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.title = "Chicago"
+        navigationController!.navigationBar.topItem!.title = "Chicago"
 
         if let font = UIFont(name: "Muli", size: 26) {
             navigationController!.navigationBar.topItem!.title = "Chicago"

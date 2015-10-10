@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     var listViewController: ListViewController?
     var settingsViewController: SettingsViewController?
     
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    
     var tabBarController: GOTabBarController?
     var navController: UINavigationController?
 
@@ -36,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Track statistics around application opens with Parse
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
 //        var initialViewController: UIViewController
 //        if PFUser.currentUser() != nil {
 //            initialViewController = storyboard.instantiateViewControllerWithIdentifier("MainNavController") as! UIViewController
@@ -49,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
 //        self.initialViewController = InitialViewController()
 
-        self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as! InitialViewController
+        self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
         self.navController!.navigationBarHidden = true
@@ -97,8 +98,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     func presentTabBarController() {
         self.tabBarController = GOTabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
-        self.listViewController = ListViewController()
-        self.settingsViewController = SettingsViewController()
+        self.listViewController = storyboard.instantiateViewControllerWithIdentifier("ListViewController") as? ListViewController
+        self.settingsViewController = storyboard.instantiateViewControllerWithIdentifier("SettingsViewController") as? SettingsViewController
         
         let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
         let listNavigationController: UINavigationController = UINavigationController(rootViewController: self.listViewController!)
