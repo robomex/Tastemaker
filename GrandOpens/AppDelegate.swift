@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     var feedTableViewController: FeedTableViewController?
     var initialViewController: InitialViewController?
     var listViewController: ListViewController?
+    var settingsViewController: SettingsViewController?
     
     var tabBarController: GOTabBarController?
     var navController: UINavigationController?
@@ -97,9 +98,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.tabBarController = GOTabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
         self.listViewController = ListViewController()
+        self.settingsViewController = SettingsViewController()
         
         let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
         let listNavigationController: UINavigationController = UINavigationController(rootViewController: self.listViewController!)
+        let settingsNavigationController: UINavigationController = UINavigationController(rootViewController: self.settingsViewController!)
         
         let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Home.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
         feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.redColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
@@ -109,11 +112,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
         listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
         
+        let settingsTabBarItem: UITabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "Settings.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Settings.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
+        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
+        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 255.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        
         feedNavigationController.tabBarItem = feedTabBarItem
         listNavigationController.tabBarItem = listTabBarItem
+        settingsNavigationController.tabBarItem = settingsTabBarItem
         
         tabBarController!.delegate = self
-        tabBarController!.viewControllers = [feedNavigationController, listNavigationController]
+        tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
     }
