@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D96BFE61FC4253326A55D19E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22CA936F84D53233B4521D /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D96BFE61FC4253326A55D19E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22CA936F84D53233B4521D /* Pods.framework */; };
 		DE0B9F371B3F89A3000EA55D /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0B9F361B3F89A3000EA55D /* Muli-Regular.ttf */; };
 		DE0E0FC41B3F6DB80079B5E5 /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0E0FC31B3F6DB80079B5E5 /* Quicksand-Light.ttf */; };
 		DE1973EB1B6D29570056148B /* GrandOpens_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */; };
@@ -650,6 +650,7 @@
 			baseConfigurationReference = 474F907ED68B85B1DDA5E53D /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GrandOpens",
@@ -667,6 +668,7 @@
 			baseConfigurationReference = A1CBDC77E94829340050B45B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GrandOpens",

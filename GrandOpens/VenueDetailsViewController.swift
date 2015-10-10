@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import Parse
 
 class VenueDetailsViewController: UIViewController {
 
-    var venue: Venue?
+    var venue: PFObject?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +20,10 @@ class VenueDetailsViewController: UIViewController {
         
         let venueDetailsLabel = UILabel(frame: CGRectMake(0, 0, 300, 80))
         venueDetailsLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
-        venueDetailsLabel.text = venue!.description + " " + venue!.foodType
+        
+        let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
+        venueDetailsLabel.text = venueDescription
+        
         venueDetailsLabel.textAlignment = NSTextAlignment.Center
         venueDetailsLabel.font = UIFont(name: "Muli", size: 17)
         venueDetailsLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping

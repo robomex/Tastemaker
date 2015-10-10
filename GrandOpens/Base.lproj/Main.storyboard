@@ -8,7 +8,7 @@
         <!--Lists-->
         <scene sceneID="vi9-p9-kMz">
             <objects>
-                <viewController id="Pat-84-4iT" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ListViewController" id="Pat-84-4iT" customClass="ListViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jd8-AQ-hFP"/>
                         <viewControllerLayoutGuide type="bottom" id="XiY-TQ-82E"/>
@@ -197,7 +197,7 @@
         <!--Settings-->
         <scene sceneID="Ggi-QM-JsS">
             <objects>
-                <viewController id="Q3n-Mz-lF3" customClass="SettingsViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsViewController" id="Q3n-Mz-lF3" customClass="SettingsViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fpO-bd-ONo"/>
                         <viewControllerLayoutGuide type="bottom" id="qyS-jz-7Ba"/>

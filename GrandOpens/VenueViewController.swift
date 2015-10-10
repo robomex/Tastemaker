@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 //let pageController = ViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
 
@@ -14,7 +15,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
 
     var venueID: String?
     
-    var venue: Venue?
+    var venue: PFObject?
     
     let chatVC = VenueChatViewController()
     
@@ -30,7 +31,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         view.backgroundColor = UIColor.whiteColor()
         dataSource = self
         delegate = self
-        chatVC.venueID = venueID
+        chatVC.venueID = venue?.objectId
         detailsVC.venue = venue
         setViewControllers([chatVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
         

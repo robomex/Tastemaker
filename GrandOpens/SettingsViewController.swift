@@ -20,13 +20,7 @@ class SettingsViewController: UIViewController {
     
     @IBOutlet weak var saveSettingsButton: UIButton!
     
-    var user: PFUser?
-    
-    required init?(coder decoder: NSCoder) {
-        user = PFUser.currentUser()
-        
-        super.init(coder: decoder)
-    }
+    var user: PFUser? = PFUser.currentUser()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +32,9 @@ class SettingsViewController: UIViewController {
             if let name = user["name"] as? String {
                 nameTextField.text = name
             }
+//            else {
+//                user["name"] = ""
+//            }
             checkSettingsForUser(user)
         } else {
             dismissViewControllerAnimated(true, completion: nil)
@@ -49,7 +46,7 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func didTapLogOut(sender: AnyObject) {
-        PFUser.logOutInBackgroundWithBlock { (error: NSError?) -> Void in
+        PFUser.logOutInBackgroundWithBlock { error in
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }

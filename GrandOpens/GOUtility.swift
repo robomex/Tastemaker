@@ -19,7 +19,7 @@ class GOUtility {
     
     class func voteVenueInBackground(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
         let queryExistingVotes = PFQuery(className: kActivityClassKey)
-        queryExistingVotes.whereKey(kActivityVenueKey, equalTo: venue)
+        queryExistingVotes.whereKey(kActivityToObjectKey, equalTo: venue)
         queryExistingVotes.whereKey(kActivityTypeKey, equalTo: kActivityTypeVote)
         queryExistingVotes.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
         queryExistingVotes.cachePolicy = PFCachePolicy.NetworkOnly
@@ -34,7 +34,7 @@ class GOUtility {
             let voteActivity = PFObject(className: kActivityClassKey)
             voteActivity.setObject(kActivityTypeVote, forKey: kActivityTypeKey)
             voteActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
-            voteActivity.setObject(venue, forKey: kActivityVenueKey)
+            voteActivity.setObject(venue, forKey: kActivityToObjectKey)
             
             let voteACL = PFACL(user: PFUser.currentUser()!)
             voteACL.setPublicReadAccess(true)
@@ -76,7 +76,7 @@ class GOUtility {
     
     class func unvoteVenueInBackground(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
         let queryExistingVotes = PFQuery(className: kActivityClassKey)
-        queryExistingVotes.whereKey(kActivityVenueKey, equalTo: venue)
+        queryExistingVotes.whereKey(kActivityToObjectKey, equalTo: venue)
         queryExistingVotes.whereKey(kActivityTypeKey, equalTo: kActivityTypeVote)
         queryExistingVotes.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
         queryExistingVotes.cachePolicy = PFCachePolicy.NetworkOnly
@@ -129,14 +129,14 @@ class GOUtility {
     
     class func queryForActivitiesOnVenue(venue: PFObject, cachePolicy: PFCachePolicy) -> PFQuery {
         let queryVotes: PFQuery = PFQuery(className: kActivityClassKey)
-        queryVotes.whereKey(kActivityVenueKey, equalTo: venue)
+        queryVotes.whereKey(kActivityToObjectKey, equalTo: venue)
         queryVotes.whereKey(kActivityTypeKey, equalTo: kActivityTypeVote)
         
         let query = PFQuery.orQueryWithSubqueries([queryVotes])
         query.cachePolicy = cachePolicy
-//      "Cannot include ByUser because it is not a pointer to another object, including below line caused vote icon to not display and vote count
+//      "Cannot include ByUser because it is not a pointer to another object, including below two lines (at different points) caused vote icon to not display and vote count
 //        query.includeKey(kActivityByUserKey)
-        query.includeKey(kActivityVenueKey)
+//        query.includeKey(kActivityToObjectKey)
         
         return query
     }

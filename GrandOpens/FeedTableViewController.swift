@@ -78,7 +78,9 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        navigationController!.navigationBar.topItem!.title = "Chicago"
+
         if let font = UIFont(name: "Muli", size: 26) {
             navigationController!.navigationBar.topItem!.title = "Chicago"
             navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
@@ -276,7 +278,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 
 //        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
         
-//        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
 //        
 //        let venue = venues[indexPath.row]
 //        vc.venue = venue
@@ -286,6 +288,16 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 //        vc.hidesBottomBarWhenPushed = true
 //        navigationController?.pushViewController(vc, animated: true)
 //        
+        let object: PFObject? = objectAtIndexPath(indexPath)
+        vc.venue = object
+        vc.venueID = object?.objectId
+        
+        let venueName: String = object!.objectForKey(kVenueName) as! String
+        vc.title = venueName
+        navigationItem.title = " "
+        vc.hidesBottomBarWhenPushed = true
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationController?.pushViewController(vc, animated: true)
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
