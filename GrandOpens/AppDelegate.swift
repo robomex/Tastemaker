@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as! InitialViewController
         
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
-//        self.navController!.navigationBarHidden = true
+        self.navController!.navigationBarHidden = true
         
         // Set up Grand Open's global UIAppearance
         self.setupAppearance()
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let listNavigationController: UINavigationController = UINavigationController(rootViewController: self.listViewController!)
         
         let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Home.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
-        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.redColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
         feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
         
         let listTabBarItem: UITabBarItem = UITabBarItem(title: "List", image: UIImage(named: "Lists.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Lists.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         tabBarController!.delegate = self
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController]
     
-        navController!.setViewControllers([tabBarController!], animated: false)
+        navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
     }
     
     
@@ -127,11 +127,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().barTintColor = UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0)
+        UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+//        UINavigationBar.appearance().navigationBar.topItem!.title = "Chicago"
 //        UINavigationBar.appearance().topItem!.title = "Chicago"
-        if let font = UIFont(name: "Muli", size: 26.0) {
-            UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
+//        if let font = UIFont(name: "Muli", size: 26.0) {
+//        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "Muli-Regular", size: 26.0)!, NSForegroundColorAttributeName: UIColor.whiteColor()]
 //            navController!.view.backgroundColor = UIColor.whiteColor()
-        }
+//        }
         
         
     }
