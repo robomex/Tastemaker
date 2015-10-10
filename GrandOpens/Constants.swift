@@ -24,7 +24,7 @@ let kActivityClassKey                           = "Activity"
 
 // Field keys
 let kActivityByUserKey                          = "byUser"
-let kActivityVenueKey                           = "venue"
+let kActivityToObjectKey                        = "toObject"
 let kActivityTypeKey                            = "type"
 
 // Type values
