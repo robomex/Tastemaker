@@ -18,6 +18,10 @@ let GOUserVotedUnvotedVenueNotification                         = "com.grandopen
 let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
 
 
+// MARK: Installation Class
+let kGOInstallationKey                          = "user"
+
+
 // MARK: Activity Class
 // Class key
 let kActivityClassKey                           = "Activity"

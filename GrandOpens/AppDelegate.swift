@@ -119,6 +119,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
     }
     
+    func logOut() {
+        // Clear cache
+        GOCache.sharedCache.clear()
+        
+        // Clear NSUserDefaults
+        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        // Unsubscribe from push notifications by removing the user association from the current installation
+        PFInstallation.currentInstallation().removeObjectForKey(kGOInstallationKey)
+        PFInstallation.currentInstallation().saveInBackground()
+        
+        // Clear all caches
+        PFQuery.clearAllCachedResults()
+        
+        // Log out
+        PFUser.logOut()
+        
+        // Clear out cached data, view controllers, etc.
+        navController!.popToRootViewControllerAnimated(false)
+        
+        self.feedTableViewController = nil
+        self.listViewController = nil
+    }
+    
     
     // MARK: - ()
     
