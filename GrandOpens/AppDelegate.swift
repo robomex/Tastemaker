@@ -10,12 +10,13 @@ import UIKit
 import CoreData
 import Parse
 import Bolts
+import MBProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
-//    var networkStatus: Reachability.NetworkStatus?
+    var networkStatus: Reachability.NetworkStatus?
     var feedTableViewController: FeedTableViewController?
     var initialViewController: InitialViewController?
     var listViewController: ListViewController?
@@ -37,19 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // Track statistics around application opens with Parse
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
-        
-//        var initialViewController: UIViewController
-//        if PFUser.currentUser() != nil {
-//            initialViewController = storyboard.instantiateViewControllerWithIdentifier("MainNavController") as! UIViewController
-//        }
-//        else {
-//              initialViewController = storyboard.instantiateViewControllerWithIdentifier("LoginViewController") as! UIViewController
-//        }
-//        self.window?.rootViewController = initialViewController
-//        self.window?.makeKeyAndVisible()
-        
-//        self.initialViewController = InitialViewController()
 
+        // Use Reachability to monitor connectivity
+        self.monitorReachability()
+        
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
@@ -91,9 +83,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // MARK: AppDelegate
     
-//    func isParseReachable() -> Bool {
-//        return self.networkStatus != .NotReachable
-//    }
+    func isParseReachable() -> Bool {
+        return self.networkStatus != .NotReachable
+    }
 
     func presentTabBarController() {
         self.tabBarController = GOTabBarController()
@@ -137,16 +129,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         UINavigationBar.appearance().tintColor = UIColor.whiteColor()
         UINavigationBar.appearance().barTintColor = UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-//        UINavigationBar.appearance().navigationBar.topItem!.title = "Chicago"
-//        UINavigationBar.appearance().topItem!.title = "Chicago"
-//        if let font = UIFont(name: "Muli", size: 26.0) {
-//        UINavigationBar.appearance().titleTextAttributes = [NSFontAttributeName: UIFont(name: "Muli-Regular", size: 26.0)!, NSForegroundColorAttributeName: UIColor.whiteColor()]
-//            navController!.view.backgroundColor = UIColor.whiteColor()
-//        }
-        
-        
     }
     
+    func monitorReachability() {
+        guard let reachability = Reachability(hostname: "api.parse.com") else {
+            return
+        }
+        
+        reachability.whenReachable = { (reach: Reachability) in
+            self.networkStatus = reach.currentReachabilityStatus
+            if self.isParseReachable() && PFUser.currentUser() != nil && self.feedTableViewController!.objects!.count == 0 {
+                // Refresh home on network restoration. Takes care of freshly installed app that failed to loan the home list under bad network conditions.
+                // In this case, they'd see an empty list placeholder (once I add one) and have no way of refreshing the list
+                self.feedTableViewController!.loadObjects()
+            }
+        }
+        
+        reachability.whenUnreachable = { (reach: Reachability) in
+            self.networkStatus = reach.currentReachabilityStatus
+        }
+        
+        reachability.startNotifier()
+    }
 
     // MARK: - Core Data stack
 

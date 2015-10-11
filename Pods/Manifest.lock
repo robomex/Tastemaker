@@ -3,17 +3,20 @@ PODS:
   - JSQMessagesViewController (7.1.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - MBProgressHUD (0.9.1)
   - Synchronized (2.0.0)
 
 DEPENDENCIES:
   - Firebase (~> 2.2.0)
   - JSQMessagesViewController (~> 7.1)
+  - MBProgressHUD (~> 0.9.1)
   - Synchronized
 
 SPEC CHECKSUMS:
   Firebase: e35cdd2561bf4fea9c1e384e9400a9c173d19e47
   JSQMessagesViewController: ca11f86fa68ca70835f05e169df9244147c1dc40
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   Synchronized: 576e9b6c148d49cbb5a60cbcb2a7569768f4ec79
 
 COCOAPODS: 0.39.0
