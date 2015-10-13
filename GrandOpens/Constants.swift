@@ -11,7 +11,8 @@ import Foundation
 
 // MARK: NSNotification
 let GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification  = "com.grandopens.utility.userVotedUnvotedVenueCallbackFinished"
-let GOUserVotedUnvotedVenueNotification                         = "com.grandopens.userVotedUnvotedVenueNotification"
+let GOUtilityUserVotedUnvotedVenueNotification                  = "com.grandopens.utility.userVotedUnvotedVenueNotification"
+let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopens.utility.userSavedUnsavedVenueNotification"
 
 
 // MARK: User Info Keys
@@ -33,6 +34,7 @@ let kActivityTypeKey                            = "type"
 
 // Type values
 let kActivityTypeVote                           = "vote"
+let kActivityTypeSave                           = "save"
 
 
 // MARK: User Class
@@ -58,6 +60,7 @@ let kVenueFoodType                              = "foodType"
 let kVenueAttributesIsVotedByCurrentUserKey     = "isVotedByCurrentUser" //the example has a semicolon outside the trailing " - any reason for that?
 let kVenueAttributesVoteCountKey                = "venueVoteCount"
 let kVenueAttributesVotersKey                   = "voters"
+let kVenueAttributesIsSavedByCurrentUserKey     = "isSavedByCurrentUser"
 
 
 // MARK: Cached User Attributes
