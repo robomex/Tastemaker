@@ -28,11 +28,12 @@ final class GOCache {
         cache.removeAllObjects()
     }
     
-    func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool) {
+    func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool, savedByCurrentUser: Bool) {
         let attributes = [
             kVenueAttributesIsVotedByCurrentUserKey: votedByCurrentUser,
             kVenueAttributesVoteCountKey: voters.count,
-            kVenueAttributesVotersKey: voters
+            kVenueAttributesVotersKey: voters,
+            kVenueAttributesIsSavedByCurrentUserKey: savedByCurrentUser
         ]
         setAttributes(attributes as! [String: AnyObject], forVenue: venue)
     }
@@ -106,6 +107,22 @@ final class GOCache {
         return cache.objectForKey(key) as? [String: AnyObject]
     }
     
+    func saveStatusForVenue(venue: PFObject) -> Bool {
+        if let attributes = attributesForVenue(venue) {
+            if let saveStatus = attributes[kVenueAttributesIsSavedByCurrentUserKey] as? Bool {
+                return saveStatus
+            }
+        }
+        
+        return false
+    }
+    
+    func setSaveStatus(saved: Bool, venue: PFObject) {
+        if var attributes = attributesForVenue(venue) {
+            attributes[kVenueAttributesIsSavedByCurrentUserKey] = saved
+            setAttributes(attributes, forVenue: venue)
+        }
+    }
     
     // MARK: ()
     
