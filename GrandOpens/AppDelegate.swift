@@ -40,7 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
         // Use Reachability to monitor connectivity
-        self.monitorReachability()
+        
+        // THIS SHIT IS CRASHING
+        //self.monitorReachability()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
