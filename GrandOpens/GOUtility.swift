@@ -53,6 +53,8 @@ class GOUtility {
                         
                         var isVotedByCurrentUser = false
                         
+                        var isSavedByCurrentUser = false
+                        
                         for activity in objects as! [PFObject] {
                             if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
                                 voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
@@ -61,11 +63,13 @@ class GOUtility {
                             if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
                                 if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
                                     isVotedByCurrentUser = true
+                                } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                    isSavedByCurrentUser = true
                                 }
                             }
                         }
                         
-                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser)
+                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
                     }
                     
                     NSNotificationCenter.defaultCenter().postNotificationName(GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: venue, userInfo: [GOUserVotedUnvotedVenueNotificationUserInfoVotedKey: succeeded.boolValue])
@@ -99,6 +103,8 @@ class GOUtility {
                         
                         var isVotedByCurrentUser = false
                         
+                        var isSavedByCurrentUser = false
+                        
                         for activity in objects as! [PFObject] {
                             if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
                                 voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
@@ -107,11 +113,13 @@ class GOUtility {
                             if (activity.objectForKey(kActivityByUserKey) as! PFUser).objectId == PFUser.currentUser()!.objectId {
                                 if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
                                     isVotedByCurrentUser = true
+                                } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                    isSavedByCurrentUser = true
                                 }
                             }
                         }
                         
-                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser)
+                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
                     }
                     
                     NSNotificationCenter.defaultCenter().postNotificationName(GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: venue, userInfo: [GOUserVotedUnvotedVenueNotificationUserInfoVotedKey: false])
@@ -121,6 +129,60 @@ class GOUtility {
                     completionBlock!(succeeded: false, error: error)
                 }
             }
+        }
+    }
+    
+    
+    // MARK: Save Venues
+    
+    class func saveVenueInBackground(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
+        
+        let saveActivity = PFObject(className: kActivityClassKey)
+        saveActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
+        saveActivity.setObject(venue, forKey: kActivityToObjectKey)
+        saveActivity.setObject(kActivityTypeSave, forKey: kActivityTypeKey)
+        
+        let saveACL = PFACL(user: PFUser.currentUser()!)
+        saveACL.setPublicReadAccess(true)
+        saveActivity.ACL = saveACL
+        
+        saveActivity.saveInBackgroundWithBlock { (succeeded, error) in
+            if completionBlock != nil {
+                completionBlock!(succeeded: succeeded.boolValue, error: error)
+            }
+        }
+        
+        GOCache.sharedCache.setSaveStatus(true, venue: venue)
+    }
+    
+    class func saveVenueEventually(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
+        
+        let saveActivity = PFObject(className: kActivityClassKey)
+        saveActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
+        saveActivity.setObject(venue, forKey: kActivityToObjectKey)
+        saveActivity.setObject(kActivityTypeSave, forKey: kActivityTypeKey)
+        
+        let saveACL = PFACL(user: PFUser.currentUser()!)
+        saveACL.setPublicReadAccess(true)
+        saveActivity.ACL = saveACL
+        
+        saveActivity.saveEventually(completionBlock)
+        GOCache.sharedCache.setSaveStatus(true, venue: venue)
+    }
+    
+    class func unsaveVenueEventually(venue: PFObject) {
+        let query = PFQuery(className: kActivityClassKey)
+        query.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        query.whereKey(kActivityToObjectKey, equalTo: venue)
+        query.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        query.findObjectsInBackgroundWithBlock { (saveActivities, error) in
+            // While normally there should only be one save activity returned, we can't guarantee that, yo.
+            if error == nil {
+                for saveActivity: PFObject in saveActivities as! [PFObject] {
+                    saveActivity.deleteEventually()
+                }
+            }
+            
         }
     }
     
