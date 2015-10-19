@@ -92,7 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     func presentTabBarController() {
         self.tabBarController = GOTabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
-        self.listViewController = storyboard.instantiateViewControllerWithIdentifier("ListViewController") as? ListViewController
+        self.listViewController = ListViewController(style: UITableViewStyle.Plain)
         self.settingsViewController = storyboard.instantiateViewControllerWithIdentifier("SettingsViewController") as? SettingsViewController
         
         let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
