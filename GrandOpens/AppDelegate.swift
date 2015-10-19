@@ -40,7 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
         // Use Reachability to monitor connectivity
-        self.monitorReachability()
+        
+        // THIS SHIT IS CRASHING
+        //self.monitorReachability()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
@@ -90,7 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     func presentTabBarController() {
         self.tabBarController = GOTabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
-        self.listViewController = storyboard.instantiateViewControllerWithIdentifier("ListViewController") as? ListViewController
+        self.listViewController = ListViewController(style: UITableViewStyle.Plain)
         self.settingsViewController = storyboard.instantiateViewControllerWithIdentifier("SettingsViewController") as? SettingsViewController
         
         let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
@@ -117,6 +119,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
+    }
+    
+    func logOut() {
+        // Clear cache
+        GOCache.sharedCache.clear()
+        
+        // Clear NSUserDefaults
+        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        // Unsubscribe from push notifications by removing the user association from the current installation
+        PFInstallation.currentInstallation().removeObjectForKey(kGOInstallationKey)
+        PFInstallation.currentInstallation().saveInBackground()
+        
+        // Clear all caches
+        PFQuery.clearAllCachedResults()
+        
+        // Log out
+        PFUser.logOut()
+        
+        // Clear out cached data, view controllers, etc.
+        navController!.popToRootViewControllerAnimated(false)
+        
+        self.feedTableViewController = nil
+        self.listViewController = nil
     }
     
     

@@ -9,8 +9,6 @@
 import UIKit
 import Parse
 
-//let pageController = ViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
-
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     var venueID: String?
@@ -44,6 +42,32 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         segmentedControl.tintColor = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0)
         segmentedControl.layer.cornerRadius = 5
         self.view.addSubview(segmentedControl)
+        
+        // Save and unsave setup, check if currentUser saved this venue
+        
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        loadingActivityIndicatorView.startAnimating()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        
+        let queryIsSaved = PFQuery(className: kActivityClassKey)
+        queryIsSaved.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        queryIsSaved.whereKey(kActivityToObjectKey, equalTo: self.venue!)
+        queryIsSaved.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        queryIsSaved.cachePolicy = PFCachePolicy.CacheThenNetwork
+        queryIsSaved.countObjectsInBackgroundWithBlock { (number, error) in
+            if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
+                print("Couldn't determine save relationship: \(error)")
+                self.navigationItem.rightBarButtonItem = nil
+            } else {
+                if number == 0 {
+                    self.configureSaveButton()
+                } else {
+                    self.configureUnsaveButton()
+                }
+                
+            }
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,6 +96,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
     }
     
+    
     // MARK: UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
@@ -90,6 +115,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
     }
     
+    
     // MARK: UIPageViewControllerDelegate
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
@@ -103,5 +129,42 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         } else if segmentedControl.selectedSegmentIndex == 1 {
             segmentedControl.selectedSegmentIndex = 0
         }
+    }
+    
+    
+    // MARK: ()
+    
+    func saveButtonAction(sender: AnyObject) {
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        loadingActivityIndicatorView.startAnimating()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        
+        self.configureUnsaveButton()
+        
+        GOUtility.saveVenueEventually(self.venue!, block: { (succeeded, error) in
+            if error != nil {
+                self.configureSaveButton()
+            }
+        })
+    }
+    
+    func unsaveButtonAction(sender: AnyObject) {
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        loadingActivityIndicatorView.startAnimating()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        
+        self.configureSaveButton()
+        
+        GOUtility.unsaveVenueEventually(self.venue!)
+    }
+    
+    func configureSaveButton() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
+        GOCache.sharedCache.setSaveStatus(false, venue: self.venue!)
+    }
+    
+    func configureUnsaveButton() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
+        GOCache.sharedCache.setSaveStatus(true, venue: self.venue!)
     }
 }

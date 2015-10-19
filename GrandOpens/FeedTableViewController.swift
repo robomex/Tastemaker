@@ -13,7 +13,7 @@ import Synchronized
 
 class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
 
-    var venues: [Venue] = []
+//    var venues: [Venue] = []
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
@@ -23,7 +23,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     deinit {
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
-        defaultNotificationCenter.removeObserver(self, name: GOUserVotedUnvotedVenueNotification, object: nil)
+        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
     }
     
     override init(style: UITableViewStyle, className: String?) {
@@ -73,7 +73,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         // Register to be notified when a voted/unvoted callback finished
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
-        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUserVotedUnvotedVenueNotification, object: nil)
+        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -222,6 +222,8 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                             
                             var isVotedByCurrentUser = false
                             
+                            var isSavedByCurrentUser = false
+                            
                             for activity in objects as! [PFObject] {
                                 if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
                                     voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
@@ -230,11 +232,13 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                                 if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
                                     if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
                                         isVotedByCurrentUser = true
+                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                        isSavedByCurrentUser = true
                                     }
                                 }
                             }
                             
-                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser)
+                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
                             
                             if venueCell!.tag != index {
                                 return
