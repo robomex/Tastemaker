@@ -13,7 +13,7 @@ import Synchronized
 
 class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
 
-    var venues: [Venue] = []
+//    var venues: [Venue] = []
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
