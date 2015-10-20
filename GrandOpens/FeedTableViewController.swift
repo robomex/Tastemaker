@@ -10,13 +10,14 @@ import UIKit
 import Parse
 import ParseUI
 import Synchronized
+import CoreLocation
 
-class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CLLocationManagerDelegate {
 
-//    var venues: [Venue] = []
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
+    
     
     // MARK: Initialization
     
@@ -86,12 +87,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
             navigationController!.view.backgroundColor = UIColor.whiteColor()
         }
-        
-//        fetchVenues({
-//            venues in
-//            self.venues = venues
-//            self.tableView.reloadData()
-//        })
         
         self.tabBarController?.tabBar.hidden = false
     }
@@ -262,16 +257,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         }
         
         return venueCell!
-        
-
-//        let cell = tableView.dequeueReusableCellWithIdentifier("VenueCell", forIndexPath: indexPath) as! VenueCell
-//
-//        let venueInfo = venues[indexPath.row]
-//        cell.venueName.text = venueInfo.name
-//        cell.venueNeighborhood.text = venueInfo.neighborhood
-//        cell.voteButton.venueId = venueInfo.id
-//        
-//        return cell
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -283,15 +268,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 //        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
         
         let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-//        
-//        let venue = venues[indexPath.row]
-//        vc.venue = venue
-//        vc.venueID = venue.id
-//        vc.title = venue.name
-//        navigationItem.title = ""
-//        vc.hidesBottomBarWhenPushed = true
-//        navigationController?.pushViewController(vc, animated: true)
-//        
+       
         let object: PFObject? = objectAtIndexPath(indexPath)
         vc.venue = object
         vc.venueID = object?.objectId
