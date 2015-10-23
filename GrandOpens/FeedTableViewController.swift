@@ -17,7 +17,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
-    
+    let locationManager = CLLocationManager()
     
     // MARK: Initialization
     
@@ -54,12 +54,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         fatalError("init(coder:) has not been implemented")
     }
     
-//    required init?(coder aDecoder: NSCoder) {
-//
-//        super.init(coder: aDecoder)
-//        //        fatalError("init(coder:) has not been implemented")
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,6 +62,10 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        // CoreLocation items
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
@@ -282,10 +280,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-//    
-//    @IBAction func voteButtonPressed(sender: VoteButton) {
-//        saveVenueVote(sender.venueId!)
-//    }
     
     
     // MARK: FeedTableViewController

@@ -11,9 +11,10 @@ import CoreData
 import Parse
 import Bolts
 import MBProgressHUD
+import CoreLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
     var networkStatus: Reachability.NetworkStatus?
@@ -26,12 +27,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     var tabBarController: GOTabBarController?
     var navController: UINavigationController?
+    
+    let locationManager = CLLocationManager()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
         // Optional Parse local datastore enabled - helpful comment
-        //Parse.enableLocalDatastore()
+//        Parse.enableLocalDatastore()
         
         // Initialize Parse
         Parse.setApplicationId(valueForAPIKey("PARSE_APPLICATION_ID"), clientKey: valueForAPIKey("PARSE_CLIENT_KEY"))
@@ -41,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 
         // Use Reachability to monitor connectivity
         
-        // THIS SHIT IS CRASHING
+        // THIS SHIT IS CRASHING - fix this shit later
         //self.monitorReachability()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
@@ -52,8 +55,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Set up Grand Open's global UIAppearance
         self.setupAppearance()
         
+        // CoreLocation shit for region monitoring
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startMonitoringSignificantLocationChanges()
+        print("monitoring")
+        
         self.window!.rootViewController = self.navController
         self.window!.makeKeyAndVisible()
+        
+        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+        application.registerUserNotificationSettings(settings)
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
         
         return true
     }
@@ -177,6 +190,107 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         reachability.startNotifier()
     }
+    
+    
+    // MARK: CoreLocation
+    
+    // MARK: CLLocationManagerDelegate
+    
+    // The below will be used when/if MapViews are added to GO, this prevents the user location from being attempted to be displayed when permission may not have yet been requested
+    //    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    //        mapView.showsUserLocation = (status == .AuthorizedAlways)
+    //    }
+    
+    func regionFromVenue(venue: PFObject) -> CLCircularRegion {
+        let region = CLCircularRegion(center: venue.valueForKey(kVenueLocation) as! CLLocationCoordinate2D, radius: 40.0, identifier: venue.objectId!)
+        region.notifyOnEntry = true
+        return region
+    }
+    
+    func startMonitoringVenueVisits(venue: PFObject) {
+        
+        // I'll need to come back and fix this shit so people know that either their devices don't support visit tracking OR more importantly a lot of GO functionality is lost until they grant location permission
+//        if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
+//            showSimpleAlertWithTitle("Error", message: "Visit tracking is not supported on this device!", viewController: self)
+//            return
+//        }
+//        
+//        if CLLocationManager.authorizationStatus() != .AuthorizedAlways {
+//            showSimpleAlertWithTitle("Warning", message: "Your ability to vote, comment, and track visits will be unlocked once you grant Grand Opens permission to access the device location", viewController: self)
+//        }
+        
+        let region = regionFromVenue(venue)
+        locationManager.startMonitoringForRegion(region)
+    }
+    
+    func stopMonitoringVenueVisits(venue: PFObject) {
+        for region in locationManager.monitoredRegions {
+            if let circularRegion = region as? CLCircularRegion {
+                if circularRegion.identifier == venue.objectId! {
+                    locationManager.stopMonitoringForRegion(circularRegion)
+                }
+            }
+        }
+    }
+    
+    // TO-DO: come back and fix this shit up so the users are informed of what went wrong
+    
+    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
+        print("Monitoring failed for region with identifier: \(region?.identifier)")
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Location Manager failed with the following error: \(error)")
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("location updated")
+        
+        let location = locations.last as CLLocation?
+        let locationAsPFGeoPoint = PFGeoPoint(location: location)
+        
+        let queryNearbyVenues = PFQuery(className: kVenueClassKey)
+        queryNearbyVenues.whereKey(kVenueLocation, nearGeoPoint: locationAsPFGeoPoint, withinMiles: 50.0)
+        queryNearbyVenues.limit = 20
+        queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
+            if error == nil {
+                for venue in venues as! [PFObject] {
+                    self.startMonitoringVenueVisits(venue)
+                }
+            }
+        }
+    }
+    
+    func handleRegionEvent(region: CLRegion!) {
+        
+        let venue = PFQuery(className: kVenueClassKey)
+        venue.getObjectInBackgroundWithId(region.identifier) { (venue: PFObject?, error: NSError?) -> Void in
+            if error == nil && venue != nil {
+                let visitActivity = PFObject(className: kActivityClassKey)
+                visitActivity.setObject(kActivityTypeVisit, forKey: kActivityTypeKey)
+                visitActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
+                visitActivity.setObject(venue!, forKey: kActivityToObjectKey)
+                visitActivity.saveInBackground()
+            }
+        }
+        
+        print("Geofence triggered!")
+    }
+    
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            handleRegionEvent(region)
+        }
+    }
+    
+//    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+//        if region is CLCircularRegion {
+//            handleRegionEvent(region)
+//        }
+//    }
+    
+    
+    
 
     // MARK: - Core Data stack
 
