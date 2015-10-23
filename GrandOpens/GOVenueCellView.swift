@@ -71,9 +71,10 @@ class GOVenueCellView: PFTableViewCell {
             self.voteButton!.titleLabel!.minimumScaleFactor = 0.8
             self.voteButton!.titleLabel!.adjustsFontSizeToFitWidth = true
             self.voteButton!.adjustsImageWhenHighlighted = false
-            self.voteButton!.adjustsImageWhenDisabled = false
             self.voteButton!.setBackgroundImage(UIImage(named: "VoteNormal.png"), forState: UIControlState.Normal)
             self.voteButton!.setBackgroundImage(UIImage(named: "VoteSelected.png"), forState: UIControlState.Selected)
+            self.voteButton!.setBackgroundImage(UIImage(named: "VoteDisabled.png"), forState: UIControlState.Disabled)
+            
             self.voteButton!.selected = false
         }
         
