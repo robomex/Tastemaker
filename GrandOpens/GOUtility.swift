@@ -53,8 +53,8 @@ class GOUtility {
                         var voters = [PFUser]()
                         
                         var isVotedByCurrentUser = false
-                        
                         var isSavedByCurrentUser = false
+                        var isVisitedByCurrentUser = false
                         
                         for activity in objects as! [PFObject] {
                             if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
@@ -66,11 +66,13 @@ class GOUtility {
                                     isVotedByCurrentUser = true
                                 } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
                                     isSavedByCurrentUser = true
+                                } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                    isVisitedByCurrentUser = true
                                 }
                             }
                         }
                         
-                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
+                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
                     }
                     
                     NSNotificationCenter.defaultCenter().postNotificationName(GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: venue, userInfo: [GOUserVotedUnvotedVenueNotificationUserInfoVotedKey: succeeded.boolValue])
@@ -103,8 +105,8 @@ class GOUtility {
                         var voters = [PFUser]()
                         
                         var isVotedByCurrentUser = false
-                        
                         var isSavedByCurrentUser = false
+                        var isVisitedByCurrentUser = false
                         
                         for activity in objects as! [PFObject] {
                             if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
@@ -116,11 +118,13 @@ class GOUtility {
                                     isVotedByCurrentUser = true
                                 } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
                                     isSavedByCurrentUser = true
+                                } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                    isVisitedByCurrentUser = true
                                 }
                             }
                         }
                         
-                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
+                        GOCache.sharedCache.setAttributesForVenue(venue, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
                     }
                     
                     NSNotificationCenter.defaultCenter().postNotificationName(GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: venue, userInfo: [GOUserVotedUnvotedVenueNotificationUserInfoVotedKey: false])
@@ -224,5 +228,11 @@ func zoomToUserLocationInMapView(mapView: MKMapView) {
     if let coordinate = mapView.userLocation.location?.coordinate {
         let region = MKCoordinateRegionMakeWithDistance(coordinate, 10000, 10000)
         mapView.setRegion(region, animated: true)
+    }
+}
+
+extension PFGeoPoint {
+    func locationCoordinate2D() -> CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
     }
 }

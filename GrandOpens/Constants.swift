@@ -62,6 +62,7 @@ let kVenueAttributesIsVotedByCurrentUserKey     = "isVotedByCurrentUser" //the e
 let kVenueAttributesVoteCountKey                = "venueVoteCount"
 let kVenueAttributesVotersKey                   = "voters"
 let kVenueAttributesIsSavedByCurrentUserKey     = "isSavedByCurrentUser"
+let kVenueAttributesIsVisitedByCurrentUserKey   = "isVisitedByCurrentUser"
 
 
 // MARK: Cached User Attributes

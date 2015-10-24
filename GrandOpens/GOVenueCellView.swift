@@ -138,6 +138,10 @@ class GOVenueCellView: PFTableViewCell {
         }
     }
     
+    func setVisitStatus(visited: Bool) {
+        self.voteButton!.enabled = visited
+    }
+    
     
     // MARK: ()
     

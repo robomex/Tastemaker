@@ -58,8 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // CoreLocation shit for region monitoring
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
-        locationManager.startMonitoringSignificantLocationChanges()
-        print("monitoring")
         
         self.window!.rootViewController = self.navController
         self.window!.makeKeyAndVisible()
@@ -130,6 +128,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         tabBarController!.delegate = self
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
+        
+        for CLRegion in self.locationManager.monitoredRegions {
+            self.locationManager.stopMonitoringForRegion(CLRegion)
+        }
+        
+        locationManager.startMonitoringSignificantLocationChanges()
+        print("monitoring")
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
     }
@@ -202,7 +207,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     //    }
     
     func regionFromVenue(venue: PFObject) -> CLCircularRegion {
-        let region = CLCircularRegion(center: venue.valueForKey(kVenueLocation) as! CLLocationCoordinate2D, radius: 40.0, identifier: venue.objectId!)
+
+        let venueLocation = venue.objectForKey(kVenueLocation) as? PFGeoPoint
+        let venueLocation2D = venueLocation?.locationCoordinate2D()
+        let region = CLCircularRegion(center: venueLocation2D!, radius: 40.0, identifier: venue.objectId!)
+        //        let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: (venue.objectForKey(kVenueLocation)?.latitude)!, longitude: (venue.objectForKey(kVenueLocation)?.longitude)!), radius: 40.0, identifier: venue.objectId!)
         region.notifyOnEntry = true
         return region
     }
