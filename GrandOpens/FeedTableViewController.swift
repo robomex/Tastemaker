@@ -10,13 +10,14 @@ import UIKit
 import Parse
 import ParseUI
 import Synchronized
+import CoreLocation
 
-class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate {
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CLLocationManagerDelegate {
 
-//    var venues: [Venue] = []
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
+    let locationManager = CLLocationManager()
     
     // MARK: Initialization
     
@@ -53,12 +54,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         fatalError("init(coder:) has not been implemented")
     }
     
-//    required init?(coder aDecoder: NSCoder) {
-//
-//        super.init(coder: aDecoder)
-//        //        fatalError("init(coder:) has not been implemented")
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -67,6 +62,10 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        // CoreLocation items
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
@@ -86,12 +85,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.whiteColor()]
             navigationController!.view.backgroundColor = UIColor.whiteColor()
         }
-        
-//        fetchVenues({
-//            venues in
-//            self.venues = venues
-//            self.tableView.reloadData()
-//        })
         
         self.tabBarController?.tabBar.hidden = false
     }
@@ -193,6 +186,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
         
         if attributesForVenue != nil {
+            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
             venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
             venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
             
@@ -221,8 +215,8 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                             var voters = [PFUser]()
                             
                             var isVotedByCurrentUser = false
-                            
                             var isSavedByCurrentUser = false
+                            var isVisitedByCurrentUser = false
                             
                             for activity in objects as! [PFObject] {
                                 if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
@@ -234,16 +228,19 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                                         isVotedByCurrentUser = true
                                     } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
                                         isSavedByCurrentUser = true
+                                    } else if (activity.objectForKey(kActivityTypeVisit) as! String) == kActivityTypeVisit {
+                                        isVisitedByCurrentUser = true
                                     }
                                 }
                             }
                             
-                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
+                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
                             
                             if venueCell!.tag != index {
                                 return
                             }
                             
+                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
                             venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
                             venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
                             
@@ -262,16 +259,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         }
         
         return venueCell!
-        
-
-//        let cell = tableView.dequeueReusableCellWithIdentifier("VenueCell", forIndexPath: indexPath) as! VenueCell
-//
-//        let venueInfo = venues[indexPath.row]
-//        cell.venueName.text = venueInfo.name
-//        cell.venueNeighborhood.text = venueInfo.neighborhood
-//        cell.voteButton.venueId = venueInfo.id
-//        
-//        return cell
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -283,15 +270,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 //        super.tableView(tableView, didDeselectRowAtIndexPath: indexPath)
         
         let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-//        
-//        let venue = venues[indexPath.row]
-//        vc.venue = venue
-//        vc.venueID = venue.id
-//        vc.title = venue.name
-//        navigationItem.title = ""
-//        vc.hidesBottomBarWhenPushed = true
-//        navigationController?.pushViewController(vc, animated: true)
-//        
+       
         let object: PFObject? = objectAtIndexPath(indexPath)
         vc.venue = object
         vc.venueID = object?.objectId
@@ -305,10 +284,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-//    
-//    @IBAction func voteButtonPressed(sender: VoteButton) {
-//        saveVenueVote(sender.venueId!)
-//    }
     
     
     // MARK: FeedTableViewController

@@ -111,6 +111,7 @@ class ListViewController: FeedTableViewController {
         let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
         
         if attributesForVenue != nil {
+            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
             venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
             venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
             
@@ -139,8 +140,8 @@ class ListViewController: FeedTableViewController {
                             var voters = [PFUser]()
                             
                             var isVotedByCurrentUser = false
-                            
                             var isSavedByCurrentUser = false
+                            var isVisitedByCurrentUser = false
                             
                             for activity in objects as! [PFObject] {
                                 if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
@@ -152,16 +153,19 @@ class ListViewController: FeedTableViewController {
                                         isVotedByCurrentUser = true
                                     } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
                                         isSavedByCurrentUser = true
+                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                        isVisitedByCurrentUser = true
                                     }
                                 }
                             }
                             
-                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser)
+                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
                             
                             if venueCell!.tag != index {
                                 return
                             }
                             
+                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
                             venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
                             venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
                             

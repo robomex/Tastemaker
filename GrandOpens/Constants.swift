@@ -35,7 +35,7 @@ let kActivityTypeKey                            = "type"
 // Type values
 let kActivityTypeVote                           = "vote"
 let kActivityTypeSave                           = "save"
-
+let kActivityTypeVisit                          = "visit"
 
 // MARK: User Class
 // Field keys
@@ -53,6 +53,7 @@ let kVenueAddress                               = "address"
 let kVenueNeighborhood                          = "neighborhood"
 let kVenueDescription                           = "description"
 let kVenueFoodType                              = "foodType"
+let kVenueLocation                              = "location"
 
 
 // MARK: Cached Venue Attributes
@@ -61,6 +62,7 @@ let kVenueAttributesIsVotedByCurrentUserKey     = "isVotedByCurrentUser" //the e
 let kVenueAttributesVoteCountKey                = "venueVoteCount"
 let kVenueAttributesVotersKey                   = "voters"
 let kVenueAttributesIsSavedByCurrentUserKey     = "isSavedByCurrentUser"
+let kVenueAttributesIsVisitedByCurrentUserKey   = "isVisitedByCurrentUser"
 
 
 // MARK: Cached User Attributes

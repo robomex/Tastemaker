@@ -28,12 +28,13 @@ final class GOCache {
         cache.removeAllObjects()
     }
     
-    func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool, savedByCurrentUser: Bool) {
+    func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool, savedByCurrentUser: Bool, visitedByCurrentUser: Bool) {
         let attributes = [
             kVenueAttributesIsVotedByCurrentUserKey: votedByCurrentUser,
             kVenueAttributesVoteCountKey: voters.count,
             kVenueAttributesVotersKey: voters,
-            kVenueAttributesIsSavedByCurrentUserKey: savedByCurrentUser
+            kVenueAttributesIsSavedByCurrentUserKey: savedByCurrentUser,
+            kVenueAttributesIsVisitedByCurrentUserKey: visitedByCurrentUser
         ]
         setAttributes(attributes as! [String: AnyObject], forVenue: venue)
     }
@@ -123,6 +124,22 @@ final class GOCache {
             setAttributes(attributes, forVenue: venue)
         }
     }
+    
+    func setVenueIsVisitedByCurrentUser(venue: PFObject, visited: Bool) {
+        var attributes = attributesForVenue(venue)
+        attributes![kVenueAttributesIsVisitedByCurrentUserKey] = visited
+        setAttributes(attributes!, forVenue: venue)
+    }
+    
+    func isVenueVistedByCurrentUser(venue: PFObject) -> Bool {
+        let attributes = attributesForVenue(venue)
+        if attributes != nil {
+            return attributes![kVenueAttributesIsVisitedByCurrentUserKey] as! Bool
+        }
+        
+        return false
+    }
+    
     
     // MARK: ()
     
