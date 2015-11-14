@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D96BFE61FC4253326A55D19E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22CA936F84D53233B4521D /* Pods.framework */; };
-		DE04C1831BC9DE3700222FE7 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE04C1821BC9DE3700222FE7 /* Reachability.swift */; settings = {ASSET_TAGS = (); }; };
+		DE04C1831BC9DE3700222FE7 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE04C1821BC9DE3700222FE7 /* Reachability.swift */; };
 		DE0B9F371B3F89A3000EA55D /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0B9F361B3F89A3000EA55D /* Muli-Regular.ttf */; };
 		DE0E0FC41B3F6DB80079B5E5 /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0E0FC31B3F6DB80079B5E5 /* Quicksand-Light.ttf */; };
 		DE1973EB1B6D29570056148B /* GrandOpens_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */; };
@@ -39,7 +39,7 @@
 		DE61268A1B2697C80009FB34 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE6126891B2697C80009FB34 /* libsqlite3.dylib */; };
 		DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6126931B26A3CB0009FB34 /* ApiKeys.plist */; };
 		DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126951B26A4E40009FB34 /* ApiKeys.swift */; };
-		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; settings = {ASSET_TAGS = (); }; };
+		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
 		DE8F3D9F1B614BCB00E989DB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9C1B614BCB00E989DB /* Bolts.framework */; };
 		DE8F3DA01B614BCB00E989DB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9D1B614BCB00E989DB /* Parse.framework */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
@@ -365,6 +365,7 @@
 					};
 					DE6126161B2505950009FB34 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 25A3U75D5Z;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -659,6 +660,8 @@
 			baseConfigurationReference = 474F907ED68B85B1DDA5E53D /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -668,6 +671,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
 			};
 			name = Debug;
@@ -677,6 +681,8 @@
 			baseConfigurationReference = A1CBDC77E94829340050B45B /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -686,6 +692,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
 			};
 			name = Release;
