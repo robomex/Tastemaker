@@ -157,7 +157,7 @@ class GOUtility {
             }
         }
         
-        GOCache.sharedCache.setSaveStatus(true, venue: venue)
+        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: venue)
     }
     
     class func saveVenueEventually(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
@@ -172,7 +172,7 @@ class GOUtility {
         saveActivity.ACL = saveACL
         
         saveActivity.saveEventually(completionBlock)
-        GOCache.sharedCache.setSaveStatus(true, venue: venue)
+        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: venue)
     }
     
     class func unsaveVenueEventually(venue: PFObject) {
@@ -189,6 +189,8 @@ class GOUtility {
             }
             
         }
+        
+        GOCache.sharedCache.setVenueIsSavedByCurrentUser(false, venue: venue)
     }
     
     

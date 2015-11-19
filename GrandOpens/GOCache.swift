@@ -118,7 +118,7 @@ final class GOCache {
         return false
     }
     
-    func setSaveStatus(saved: Bool, venue: PFObject) {
+    func setVenueIsSavedByCurrentUser(saved: Bool, venue: PFObject) {
         if var attributes = attributesForVenue(venue) {
             attributes[kVenueAttributesIsSavedByCurrentUserKey] = saved
             setAttributes(attributes, forVenue: venue)

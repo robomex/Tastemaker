@@ -160,11 +160,11 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     func configureSaveButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
-        GOCache.sharedCache.setSaveStatus(false, venue: self.venue!)
+        GOCache.sharedCache.setVenueIsSavedByCurrentUser(false, venue: self.venue!)
     }
     
     func configureUnsaveButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
-        GOCache.sharedCache.setSaveStatus(true, venue: self.venue!)
+        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: self.venue!)
     }
 }
