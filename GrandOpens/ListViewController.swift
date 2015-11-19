@@ -60,6 +60,7 @@ class ListViewController: FeedTableViewController {
         navigationController!.navigationBar.topItem!.title = "My List"
         
         self.tabBarController?.tabBar.hidden = false
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
         self.loadObjects()
     }

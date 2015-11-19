@@ -45,14 +45,12 @@
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
 		DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */; };
 		DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */; };
-		DEA5EE291B91B8A300D0F221 /* VoteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE281B91B8A300D0F221 /* VoteButton.swift */; };
 		DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2A1B9E698900D0F221 /* Constants.swift */; };
 		DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2C1BA1408600D0F221 /* GOCache.swift */; };
 		DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */; };
 		DEEB760A1B3298B600A94305 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76091B3298B600A94305 /* User.swift */; };
 		DEEB760C1B32990700A94305 /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760B1B32990700A94305 /* Venue.swift */; };
 		DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */; };
-		DEEB76111B35E7B100A94305 /* VenueCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76101B35E7B100A94305 /* VenueCell.swift */; };
 		DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */; };
 		DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C711B27FA40004D2D3D /* Social.framework */; };
 		DEEF8C741B27FA46004D2D3D /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C731B27FA46004D2D3D /* Accounts.framework */; };
@@ -113,14 +111,12 @@
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
 		DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueChatViewController.swift; sourceTree = "<group>"; };
 		DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueDetailsViewController.swift; sourceTree = "<group>"; };
-		DEA5EE281B91B8A300D0F221 /* VoteButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoteButton.swift; sourceTree = "<group>"; };
 		DEA5EE2A1B9E698900D0F221 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DEA5EE2C1BA1408600D0F221 /* GOCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOCache.swift; sourceTree = "<group>"; };
 		DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUtility.swift; sourceTree = "<group>"; };
 		DEEB76091B3298B600A94305 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DEEB760B1B32990700A94305 /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
-		DEEB76101B35E7B100A94305 /* VenueCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueCell.swift; sourceTree = "<group>"; };
 		DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		DEEF8C711B27FA40004D2D3D /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		DEEF8C731B27FA46004D2D3D /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -300,9 +296,7 @@
 		DEEB760F1B35E79A00A94305 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DEEB76101B35E7B100A94305 /* VenueCell.swift */,
 				DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */,
-				DEA5EE281B91B8A300D0F221 /* VoteButton.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -481,9 +475,7 @@
 				DEEB760C1B32990700A94305 /* Venue.swift in Sources */,
 				DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */,
 				DE283D151B61670E0003466D /* InitialViewController.swift in Sources */,
-				DEEB76111B35E7B100A94305 /* VenueCell.swift in Sources */,
 				DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */,
-				DEA5EE291B91B8A300D0F221 /* VoteButton.swift in Sources */,
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
 				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
