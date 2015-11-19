@@ -31,7 +31,7 @@ class GOUtility {
                 }
             }
             
-            // proceed to creating new vote
+            // Proceed to creating new vote
             let voteActivity = PFObject(className: kActivityClassKey)
             voteActivity.setObject(kActivityTypeVote, forKey: kActivityTypeKey)
             voteActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
@@ -142,22 +142,38 @@ class GOUtility {
     
     class func saveVenueInBackground(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
         
-        let saveActivity = PFObject(className: kActivityClassKey)
-        saveActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
-        saveActivity.setObject(venue, forKey: kActivityToObjectKey)
-        saveActivity.setObject(kActivityTypeSave, forKey: kActivityTypeKey)
+        let queryExistingSaves = PFQuery(className: kActivityClassKey)
+        queryExistingSaves.whereKey(kActivityToObjectKey, equalTo: venue)
+        queryExistingSaves.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        queryExistingSaves.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        queryExistingSaves.cachePolicy = PFCachePolicy.NetworkOnly
+        queryExistingSaves.findObjectsInBackgroundWithBlock{ (activities, error) in
+            if error == nil {
+                for activity in activities as! [PFObject] {
+                    activity.deleteInBackground()
+                }
+            }
         
-        let saveACL = PFACL(user: PFUser.currentUser()!)
-        saveACL.setPublicReadAccess(true)
-        saveActivity.ACL = saveACL
-        
-        saveActivity.saveInBackgroundWithBlock { (succeeded, error) in
-            if completionBlock != nil {
-                completionBlock!(succeeded: succeeded.boolValue, error: error)
+            // Proceed to creating new save
+            let saveActivity = PFObject(className: kActivityClassKey)
+            saveActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
+            saveActivity.setObject(venue, forKey: kActivityToObjectKey)
+            saveActivity.setObject(kActivityTypeSave, forKey: kActivityTypeKey)
+            
+            let saveACL = PFACL(user: PFUser.currentUser()!)
+            saveACL.setPublicReadAccess(true)
+            saveActivity.ACL = saveACL
+            
+            saveActivity.saveInBackgroundWithBlock { (succeeded, error) in
+                if completionBlock != nil {
+                    completionBlock!(succeeded: succeeded.boolValue, error: error)
+                }
+                
+                GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: venue)
+
+                NSNotificationCenter.defaultCenter().postNotificationName(GOUtilityUserSavedUnsavedVenueNotification, object: venue, userInfo: [GOUserSavedUnsavedVenueNotificationUserInfoSavedKey: succeeded.boolValue])
             }
         }
-        
-        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: venue)
     }
     
     class func saveVenueEventually(venue: PFObject, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
@@ -184,10 +200,9 @@ class GOUtility {
             // While normally there should only be one save activity returned, we can't guarantee that, yo.
             if error == nil {
                 for saveActivity: PFObject in saveActivities as! [PFObject] {
-                    saveActivity.deleteEventually()
+                    saveActivity.deleteInBackground()
                 }
             }
-            
         }
         
         GOCache.sharedCache.setVenueIsSavedByCurrentUser(false, venue: venue)

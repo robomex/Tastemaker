@@ -17,6 +17,7 @@ let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopen
 
 // MARK: User Info Keys
 let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
+let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"
 
 
 // MARK: Installation Class

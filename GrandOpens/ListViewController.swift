@@ -13,6 +13,12 @@ import Synchronized
 
 class ListViewController: FeedTableViewController {
     
+    // MARK: Initialization
+    
+    deinit {
+        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
+        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
+    }
     
     override init(style: UITableViewStyle, className: String?) {
 //        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
@@ -44,7 +50,8 @@ class ListViewController: FeedTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
+        defaultNotificationCenter.addObserver(self, selector: "userDidSaveOrUnsaveVenue:", name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -53,6 +60,8 @@ class ListViewController: FeedTableViewController {
         navigationController!.navigationBar.topItem!.title = "My List"
         
         self.tabBarController?.tabBar.hidden = false
+        
+        self.loadObjects()
     }
     
     override func queryForTable() -> PFQuery {
@@ -66,20 +75,8 @@ class ListViewController: FeedTableViewController {
         activityQuery.cachePolicy = PFCachePolicy.NetworkOnly
         activityQuery.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
         activityQuery.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
-        activityQuery.orderByDescending("createdAt")
+        activityQuery.orderByAscending("createdAt")
         activityQuery.includeKey(kActivityToObjectKey)
-        
-//        let venueQuery = PFQuery(className: self.parseClassName!)
-//        venueQuery.cachePolicy = PFCachePolicy.NetworkOnly
-//        venueQuery.whereKey("objectId", matchesQuery: activityQuery)
-//        venueQuery.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
-//        venueQuery.includeKey(kActivityToObjectKey)
-//        venueQuery.orderByDescending("createdAt")
-
-//        If reformatting the activity object works, come back and implement a check like the following 3 lines
-//        if self.objects!.count == 0 {
-//            venueQuery.cachePolicy = PFCachePolicy.CacheThenNetwork
-//        }
         
         return activityQuery
     }
@@ -206,6 +203,14 @@ class ListViewController: FeedTableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
 
+    
+    // MARK: ()
+    
+    @objc func userDidSaveOrUnsaveVenue(note: NSNotification) {
+        self.loadObjects()
+    }
+    
+    
     /*
     // MARK: - Navigation
 
