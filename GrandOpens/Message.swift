@@ -19,7 +19,7 @@ class MessageListener {
     var currentHandle: UInt?
     
     init (venueID: String, startDate: NSDate, callback: (Message) -> ()) {
-        let handle = ref.childByAppendingPath(venueID).queryStartingAtValue(dateFormatter().stringFromDate(startDate)).observeEventType(FEventType.ChildAdded, withBlock: {
+        let handle = ref.childByAppendingPath(venueID).queryOrderedByKey().queryStartingAtValue(dateFormatter().stringFromDate(startDate)).observeEventType(FEventType.ChildAdded, withBlock: {
             snapshot in
             let message = snapshotToMessage(snapshot)
             callback(message)

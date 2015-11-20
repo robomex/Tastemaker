@@ -51,7 +51,6 @@ class VenueChatViewController: JSQMessagesViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
@@ -64,7 +63,6 @@ class VenueChatViewController: JSQMessagesViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
         
 //        self.inputToolbar.contentView.textView.becomeFirstResponder()
     }
