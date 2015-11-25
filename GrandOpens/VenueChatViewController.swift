@@ -46,6 +46,7 @@ class VenueChatViewController: JSQMessagesViewController {
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
 
         automaticallyScrollsToMostRecentMessage = true
+                
 //        self.inputToolbar.loadToolbarContentView()
 //        self.inputToolbar.contentView.rightBarButtonItem = JSQMessagesToolbarButtonFactory.defaultSendButtonItem()
     }
