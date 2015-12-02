@@ -18,17 +18,35 @@ class VenueDetailsViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
-        let venueDetailsLabel = UILabel(frame: CGRectMake(0, 0, 300, 80))
-        venueDetailsLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
+        let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, 355, 80))
+        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 165)
         
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
-        venueDetailsLabel.text = venueDescription
+        venueDescriptionLabel.text = venueDescription
+        venueDescriptionLabel.textAlignment = NSTextAlignment.Left
+        venueDescriptionLabel.font = UIFont(name: "Muli", size: 17)
+        venueDescriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        venueDescriptionLabel.numberOfLines = 2
+        venueDescriptionLabel.sizeToFit()
+        venueDescriptionLabel.backgroundColor = UIColor.blueColor()
+        self.view.addSubview(venueDescriptionLabel)
         
-        venueDetailsLabel.textAlignment = NSTextAlignment.Center
-        venueDetailsLabel.font = UIFont(name: "Muli", size: 17)
-        venueDetailsLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        venueDetailsLabel.numberOfLines = 3
-        self.view.addSubview(venueDetailsLabel)
+        let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, 355, 40))
+        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 190)
+        
+        let venueFoodType: String = venue!.objectForKey(kVenueFoodType) as! String
+        let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MMMM d"
+        let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate.dateByAddingTimeInterval(60 * 60 * 24))
+        venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
+        venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
+        venueFoodTypeAndOpeningDateLabel.font = UIFont.italicSystemFontOfSize(13.0) //UIFont(name: "Muli", size: 13)
+        venueFoodTypeAndOpeningDateLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        venueFoodTypeAndOpeningDateLabel.numberOfLines = 1
+        venueFoodTypeAndOpeningDateLabel.sizeToFit()
+        venueFoodTypeAndOpeningDateLabel.backgroundColor = UIColor.lightGrayColor()
+        self.view.addSubview(venueFoodTypeAndOpeningDateLabel)
     }
     
     override func didReceiveMemoryWarning() {
