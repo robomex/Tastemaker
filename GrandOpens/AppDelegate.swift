@@ -13,6 +13,7 @@ import Bolts
 import MBProgressHUD
 import CoreLocation
 
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
 
@@ -202,9 +203,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     // MARK: CLLocationManagerDelegate
     
     // The below will be used when/if MapViews are added to GO, this prevents the user location from being attempted to be displayed when permission may not have yet been requested
-    //    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-    //        mapView.showsUserLocation = (status == .AuthorizedAlways)
-    //    }
+//        func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+//            mapView!.showsUserLocation = (status == .AuthorizedAlways)
+//        }
     
     func regionFromVenue(venue: PFObject) -> CLCircularRegion {
 

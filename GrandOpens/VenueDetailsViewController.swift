@@ -8,15 +8,18 @@
 
 import UIKit
 import Parse
+import MapKit
 
-class VenueDetailsViewController: UIViewController {
+class VenueDetailsViewController: UIViewController, MKMapViewDelegate {
 
     var venue: PFObject?
+    let regionRadius: CLLocationDistance = 500
+    var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // Description label
         
         let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, 355, 80))
         venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 165)
@@ -31,6 +34,8 @@ class VenueDetailsViewController: UIViewController {
         venueDescriptionLabel.backgroundColor = UIColor.blueColor()
         self.view.addSubview(venueDescriptionLabel)
         
+        // Opening date and food type label
+        
         let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, 355, 40))
         venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 190)
         
@@ -38,6 +43,7 @@ class VenueDetailsViewController: UIViewController {
         let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMMM d"
+        // Need to add a day in seconds since iOS is reading a 00:00 time as the previous day
         let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate.dateByAddingTimeInterval(60 * 60 * 24))
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
@@ -47,6 +53,28 @@ class VenueDetailsViewController: UIViewController {
         venueFoodTypeAndOpeningDateLabel.sizeToFit()
         venueFoodTypeAndOpeningDateLabel.backgroundColor = UIColor.lightGrayColor()
         self.view.addSubview(venueFoodTypeAndOpeningDateLabel)
+        
+        // Map
+        
+        let mapView = MKMapView()
+        mapView.mapType = .Standard
+        mapView.delegate = self
+        mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
+        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 275)
+        
+        let venueAddress = venue!.objectForKey(kVenueAddress) as! String
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(venueAddress, completionHandler: {(placemarks, error) -> Void in
+            if ((error) != nil) {
+                print("Error", error)
+            }
+            if let placemark = placemarks?.first {
+                let venueLocation: CLLocation = placemark.location!
+                let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
+                mapView.setRegion(coordinateRegion, animated: false)
+            }
+        })
+        view.addSubview(mapView)
     }
     
     override func didReceiveMemoryWarning() {
@@ -63,4 +91,9 @@ class VenueDetailsViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+//    
+//    func centerMapOnLocation(location: CLLocation) {
+//        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
+//        mapView.setRegion(coordinateRegion, animated: true)
+//    }
 }
