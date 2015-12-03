@@ -9,12 +9,14 @@
 import UIKit
 import Parse
 import MapKit
+import Contacts
 
-class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource {
+class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate {
 
     var venue: PFObject?
     let regionRadius: CLLocationDistance = 500
     var mapView: MKMapView!
+    var mapItem: MKMapItem? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +72,12 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             }
             if let placemark = placemarks?.first {
                 let venueLocation: CLLocation = placemark.location!
+                
+                // Next three lines for Maps directions
+                let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.objectForKey(kVenueName) as! String]
+                let mapPlacemark = MKPlacemark(coordinate: venueLocation.coordinate, addressDictionary: addressDictionary)
+                self.mapItem = MKMapItem(placemark: mapPlacemark)
+                
                 let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
                 mapView.setRegion(coordinateRegion, animated: false)
                 
@@ -86,6 +94,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let addressAndNeighborhoodTableView = UITableView()
         addressAndNeighborhoodTableView.frame = CGRectMake(0, 400, UIScreen.mainScreen().bounds.width, 80)
         addressAndNeighborhoodTableView.dataSource = self
+        addressAndNeighborhoodTableView.delegate = self
         addressAndNeighborhoodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.view.addSubview(addressAndNeighborhoodTableView)
     }
@@ -94,12 +103,26 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         return 1
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
-        
-        cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as! String
-        
+        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
+        cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as? String
+        cell.detailTextLabel?.text = venue!.objectForKey(kVenueNeighborhood) as? String
+        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         return cell
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        let alertController = UIAlertController(title: "Default Title", message: "A standard message", preferredStyle: .Alert)
+//        alertController.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
+//        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+        mapItem?.openInMapsWithLaunchOptions(launchOptions)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     override func didReceiveMemoryWarning() {
