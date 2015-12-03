@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Parse
 
 struct Venue {
     let id: String

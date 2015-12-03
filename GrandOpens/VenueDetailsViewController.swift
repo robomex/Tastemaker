@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import MapKit
 
-class VenueDetailsViewController: UIViewController, MKMapViewDelegate {
+class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource {
 
     var venue: PFObject?
     let regionRadius: CLLocationDistance = 500
@@ -72,9 +72,34 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate {
                 let venueLocation: CLLocation = placemark.location!
                 let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
                 mapView.setRegion(coordinateRegion, animated: false)
+                
+                // Add annotation pin
+                let venuePin = MKPointAnnotation()
+                venuePin.coordinate = venueLocation.coordinate
+                mapView.addAnnotation(venuePin)
             }
         })
-        view.addSubview(mapView)
+        self.view.addSubview(mapView)
+        
+        // Address and neighborhood
+        
+        let addressAndNeighborhoodTableView = UITableView()
+        addressAndNeighborhoodTableView.frame = CGRectMake(0, 400, UIScreen.mainScreen().bounds.width, 80)
+        addressAndNeighborhoodTableView.dataSource = self
+        addressAndNeighborhoodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.view.addSubview(addressAndNeighborhoodTableView)
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
+        
+        cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as! String
+        
+        return cell
     }
     
     override func didReceiveMemoryWarning() {
