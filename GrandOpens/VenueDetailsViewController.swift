@@ -29,7 +29,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
         venueDescriptionLabel.text = venueDescription
         venueDescriptionLabel.textAlignment = NSTextAlignment.Left
-        venueDescriptionLabel.font = UIFont(name: "Muli", size: 17)
+        venueDescriptionLabel.font = UIFont.systemFontOfSize(17) //(name: "Muli", size: 17)
         venueDescriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         venueDescriptionLabel.numberOfLines = 2
         venueDescriptionLabel.sizeToFit()
