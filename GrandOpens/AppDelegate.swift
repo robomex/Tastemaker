@@ -111,17 +111,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let listNavigationController: UINavigationController = UINavigationController(rootViewController: self.listViewController!)
         let settingsNavigationController: UINavigationController = UINavigationController(rootViewController: self.settingsViewController!)
         
-        let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Home.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
-        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.redColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
-        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        let feedTabBarItem: UITabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "Home.png"), selectedImage: UIImage(named: "Home.png"))
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Selected)
+        feedTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.grayColor(), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Normal)
         
-        let listTabBarItem: UITabBarItem = UITabBarItem(title: "My List", image: UIImage(named: "Lists.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Lists.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
-        listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
-        listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 114.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        let listTabBarItem: UITabBarItem = UITabBarItem(title: "My List", image: UIImage(named: "Lists.png"), selectedImage: UIImage(named: "Lists.png"))
+        listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Selected)
+        listTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.grayColor(), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Normal)
         
-        let settingsTabBarItem: UITabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "Settings.png")!.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal), selectedImage: UIImage(named: "Settings.png")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal))
-        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Selected)
-        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 114.0/255.0, green: 255.0/255.0, blue: 14.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.boldSystemFontOfSize(13)], forState: UIControlState.Normal)
+        let settingsTabBarItem: UITabBarItem = UITabBarItem(title: "Settings", image: UIImage(named: "Settings.png"), selectedImage: UIImage(named: "Settings.png"))
+        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Selected)
+        settingsTabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.grayColor(), NSFontAttributeName: UIFont.systemFontOfSize(13)], forState: UIControlState.Normal)
         
         feedNavigationController.tabBarItem = feedTabBarItem
         listNavigationController.tabBarItem = listTabBarItem

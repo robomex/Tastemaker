@@ -18,8 +18,8 @@ class GOTabBarController: UITabBarController, UINavigationControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tabBar.tintColor = UIColor(red: 254.0/255.0, green: 149.0/255.0, blue: 50.0/255.0, alpha: 1.0)
-        self.tabBar.barTintColor = UIColor(red: 0.0/255.0, green: 0.0/255.0, blue: 0.0/255.0, alpha: 1.0)
+        self.tabBar.tintColor = UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0)
+        self.tabBar.barTintColor = UIColor.whiteColor()
         
         self.navController = UINavigationController()
     }
