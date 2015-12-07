@@ -116,12 +116,20 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        let alertController = UIAlertController(title: "Default Title", message: "A standard message", preferredStyle: .Alert)
-//        alertController.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
-//        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        let alertController = UIAlertController(title: "Open the Maps app to navigate to this venue?", message: nil,
+            //"Choose below to navigate to this venue in the Maps app", 
+            preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) in
+            print("Cancel")
+        }))
+        alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+            let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+            self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+        }))
+        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         
-        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-        mapItem?.openInMapsWithLaunchOptions(launchOptions)
+//        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+//        mapItem?.openInMapsWithLaunchOptions(launchOptions)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
