@@ -24,7 +24,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Description label
         
         let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, 355, 80))
-        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 165)
+        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 150)
         
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
         venueDescriptionLabel.text = venueDescription
@@ -33,13 +33,13 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         venueDescriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         venueDescriptionLabel.numberOfLines = 2
         venueDescriptionLabel.sizeToFit()
-        venueDescriptionLabel.backgroundColor = UIColor.blueColor()
+        venueDescriptionLabel.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(venueDescriptionLabel)
         
         // Opening date and food type label
         
         let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, 355, 40))
-        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 190)
+        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 175)
         
         let venueFoodType: String = venue!.objectForKey(kVenueFoodType) as! String
         let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
@@ -53,7 +53,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         venueFoodTypeAndOpeningDateLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         venueFoodTypeAndOpeningDateLabel.numberOfLines = 1
         venueFoodTypeAndOpeningDateLabel.sizeToFit()
-        venueFoodTypeAndOpeningDateLabel.backgroundColor = UIColor.lightGrayColor()
+        venueFoodTypeAndOpeningDateLabel.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(venueFoodTypeAndOpeningDateLabel)
         
         // Map
@@ -62,7 +62,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.mapType = .Standard
         mapView.delegate = self
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
-        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 275)
+        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 265)
         
         let venueAddress = venue!.objectForKey(kVenueAddress) as! String
         let geocoder = CLGeocoder()
@@ -92,7 +92,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Address and neighborhood
         
         let addressAndNeighborhoodTableView = UITableView()
-        addressAndNeighborhoodTableView.frame = CGRectMake(0, 400, UIScreen.mainScreen().bounds.width, 80)
+        addressAndNeighborhoodTableView.frame = CGRectMake(0, 350, UIScreen.mainScreen().bounds.width, 80)
         addressAndNeighborhoodTableView.dataSource = self
         addressAndNeighborhoodTableView.delegate = self
         addressAndNeighborhoodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
