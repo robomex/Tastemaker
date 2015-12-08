@@ -18,7 +18,7 @@ class VenueChatViewController: JSQMessagesViewController {
     
     var messageListener: MessageListener?
     
-    let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
+    let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0))
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
         
     override func viewDidLoad() {
@@ -64,7 +64,7 @@ class VenueChatViewController: JSQMessagesViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
-        
+//        collectionView?.collectionViewLayout.springinessEnabled = true
 //        self.inputToolbar.contentView.textView.becomeFirstResponder()
     }
     
@@ -91,6 +91,19 @@ class VenueChatViewController: JSQMessagesViewController {
         } else {
             return incomingBubble
         }
+    }
+    
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
+        
+        let message = messages[indexPath.item]
+        if message.senderId == PFUser.currentUser()!.objectId {
+            cell.textView?.textColor = UIColor.whiteColor()
+        } else {
+            cell.textView?.textColor = UIColor.blackColor()
+        }
+        
+        return cell
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
