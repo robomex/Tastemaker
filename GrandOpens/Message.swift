@@ -12,6 +12,7 @@ import Parse
 struct Message {
     let message: String
     let senderID: String
+    let senderName: String
     let date: NSDate
 }
 
@@ -44,14 +45,15 @@ private func dateFormatter() -> NSDateFormatter {
 }
 
 func saveMessage(venueID: String, message: Message) {
-    ref.childByAppendingPath(venueID).updateChildValues([dateFormatter().stringFromDate(message.date) : ["message" : message.message, "sender" : message.senderID]])
+    ref.childByAppendingPath(venueID).updateChildValues([dateFormatter().stringFromDate(message.date) : ["message": message.message, "sender": message.senderID, "senderName": message.senderName]])
 }
 
 private func snapshotToMessage(snapshot: FDataSnapshot) -> Message {
     let date = dateFormatter().dateFromString(snapshot.key)
     let sender = snapshot.value["sender"] as? String
     let text = snapshot.value["message"] as? String
-    return Message(message: text!, senderID: sender!, date: date!)
+    let senderName = snapshot.value["senderName"] as? String
+    return Message(message: text!, senderID: sender!, senderName: senderName!, date: date!)
 }
 
 func fetchMessages(venueID: String, callback: ([Message]) -> ()) {
