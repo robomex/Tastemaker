@@ -488,7 +488,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Settings" width="30" height="30"/>
+        <image name="Settings" width="25" height="25"/>
         <image name="lock" width="114" height="104"/>
         <image name="logo" width="114" height="104"/>
         <image name="pound" width="114" height="104"/>

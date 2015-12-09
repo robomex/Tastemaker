@@ -103,7 +103,7 @@ class LoginViewController: UIViewController {
                         self.editing = true
                         return self.step1()
                     }
-                    return self.dismissViewControllerAnimated(true, completion: nil)
+                    return (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController() //self.dismissViewControllerAnimated(true, completion: nil)
                 }
             } else {
                 self.editing = true

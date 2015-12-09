@@ -41,6 +41,10 @@ class SettingsViewController: UIViewController {
         }
     }
     
+    override func viewWillAppear(animated: Bool) {
+        self.navigationController?.navigationBar.hidden = true
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
