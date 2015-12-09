@@ -14,10 +14,6 @@ class SettingsViewController: UIViewController {
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var nameTextField: UITextField!
     
-    @IBOutlet weak var setting1: UISwitch!
-    @IBOutlet weak var setting2: UISwitch!
-    @IBOutlet weak var setting3: UISwitch!
-    
     @IBOutlet weak var saveSettingsButton: UIButton!
     
     var user: PFUser? = PFUser.currentUser()
@@ -32,17 +28,16 @@ class SettingsViewController: UIViewController {
             if let name = user["name"] as? String {
                 nameTextField.text = name
             }
-//            else {
-//                user["name"] = ""
-//            }
-            checkSettingsForUser(user)
         } else {
             dismissViewControllerAnimated(true, completion: nil)
         }
     }
     
     override func viewWillAppear(animated: Bool) {
-        self.navigationController?.navigationBar.hidden = true
+        self.navigationController!.navigationBar.topItem!.title = "Settings"
+        self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        self.navigationController!.view.backgroundColor = UIColor.whiteColor()
+        self.tabBarController?.tabBar.hidden = false
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -60,15 +55,6 @@ class SettingsViewController: UIViewController {
             if nameTextField.text != "" {
                 user["name"] = nameTextField.text
             }
-            if checkSetting(user, settingName: "setting1") != setting1.on {
-                user["setting1"] = setting1.on
-            }
-            if checkSetting(user, settingName: "setting2") != setting2.on {
-                user["setting2"] = setting2.on
-            }
-            if checkSetting(user, settingName: "setting3") != setting3.on {
-                user["setting3"] = setting3.on
-            }
             user.saveEventually()
         } else {
             dismissViewControllerAnimated(true, completion: nil)
@@ -80,18 +66,6 @@ class SettingsViewController: UIViewController {
             return value
         }
         return false
-    }
-    
-    func checkSettingsForUser(user: PFUser) {
-        if checkSetting(user, settingName: "setting1") {
-            setting1.setOn(true, animated: false)
-        }
-        if checkSetting(user, settingName: "setting2") {
-            setting2.setOn(true, animated: false)
-        }
-        if checkSetting(user, settingName: "setting3") {
-            setting3.setOn(true, animated: false)
-        }
     }
 }
 
