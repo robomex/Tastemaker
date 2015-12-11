@@ -127,9 +127,6 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
         }))
         UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
-        
-//        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-//        mapItem?.openInMapsWithLaunchOptions(launchOptions)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     

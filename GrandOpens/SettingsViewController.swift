@@ -19,7 +19,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     var settingsTableView: UITableView!
     
-    var settingsHeadings = ["My Account", "Additional Information"]
+    var settingsHeadings = ["My Account", "Additional Information", ""]
     var myAccountRows = ["Username", "Phone Number"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
@@ -53,17 +53,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
     }
     
-    @IBAction func didTapSaveSettings(sender: AnyObject) {
-        if let user = self.user {
-            if nameTextField.text != "" {
-                user["name"] = nameTextField.text
-            }
-            user.saveEventually()
-        } else {
-            dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
     func checkSetting(user: PFUser, settingName : String) -> Bool {
         if let value = user[settingName] as? Bool {
             return value
@@ -74,11 +63,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     // TableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        if section == 2 {
+            return 1
+        } else {
+            return 2
+        }
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -99,6 +92,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case 1:
             cell.textLabel?.text = additionalInformationRows[indexPath.row]
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        case 2:
+            cell.textLabel?.text = "Log Out"
         default:
             cell.textLabel?.text = "Oh shit something broke"
         }
@@ -122,7 +117,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationItem.title = " "
             navigationController!.view.backgroundColor = UIColor.whiteColor()
             navigationController?.pushViewController(vc, animated: true)
-            
+        } else if indexPath.section == 2 && indexPath.row == 0 {
+            let alertController = UIAlertController(title: "Are you sure?", message: nil, preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) in
+                print("Cancel")
+            }))
+            alertController.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                PFUser.logOutInBackgroundWithBlock { error in
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
+                }
+            }))
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
