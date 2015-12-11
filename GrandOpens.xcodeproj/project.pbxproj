@@ -43,6 +43,8 @@
 		DE8F3D9F1B614BCB00E989DB /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9C1B614BCB00E989DB /* Bolts.framework */; };
 		DE8F3DA01B614BCB00E989DB /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE8F3D9D1B614BCB00E989DB /* Parse.framework */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
+		DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */; };
+		DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5F1C19FD06007CB294 /* TextField.swift */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
 		DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */; };
 		DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */; };
@@ -110,6 +112,8 @@
 		DE8F3D9C1B614BCB00E989DB /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		DE8F3D9D1B614BCB00E989DB /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUsernameEntryViewController.swift; sourceTree = "<group>"; };
+		DEA2DF5F1C19FD06007CB294 /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
 		DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueChatViewController.swift; sourceTree = "<group>"; };
 		DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueDetailsViewController.swift; sourceTree = "<group>"; };
@@ -223,6 +227,7 @@
 				DE6126261B2505950009FB34 /* Images.xcassets */,
 				DE6126281B2505950009FB34 /* LaunchScreen.xib */,
 				DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */,
+				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
 				DE04C1821BC9DE3700222FE7 /* Reachability.swift */,
 				DE61261A1B2505950009FB34 /* Supporting Files */,
 			);
@@ -247,6 +252,7 @@
 			children = (
 				DE6126211B2505950009FB34 /* ViewController.swift */,
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
+				DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */,
 				DEA50CF01B7B094A00396BDD /* VenueViewController.swift */,
 				DE86FA151BB7154700C313E2 /* GOTabBarController.swift */,
 				DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */,
@@ -480,6 +486,7 @@
 			files = (
 				DE6126221B2505950009FB34 /* ViewController.swift in Sources */,
 				DEEB760C1B32990700A94305 /* Venue.swift in Sources */,
+				DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */,
 				DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */,
 				DE283D151B61670E0003466D /* InitialViewController.swift in Sources */,
 				DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */,
@@ -495,6 +502,7 @@
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
+				DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */,
 				DE283D131B615F040003466D /* LoginViewController.swift in Sources */,
 				DE1F08641B61BD440094ACA0 /* Message.swift in Sources */,
 				DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */,

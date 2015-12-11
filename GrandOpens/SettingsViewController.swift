@@ -122,8 +122,25 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if indexPath.section == 0 && indexPath.row == 0 {
+            let vc = GOUsernameEntryViewController()
+            vc.user = user
+            vc.title = "Username"
+            navigationItem.title = " "
+            navigationController!.view.backgroundColor = UIColor.whiteColor()
+            navigationController?.pushViewController(vc, animated: true)
+            
+        }
+        
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
+//    
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        let backItem = UIBarButtonItem()
+//        backItem.title = " "
+//        navigationItem.backBarButtonItem = backItem
+//    }
 }
 
 
