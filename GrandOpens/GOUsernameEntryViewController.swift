@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
+class GOUsernameEntryViewController: UIViewController {
 
     var user: PFUser? = PFUser.currentUser()
     var usernameTextField: TextField!
@@ -28,7 +28,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(usernameExplanationLabel)
         
         // Username entry field
-        let usernameTextField = TextField(frame: CGRectMake(0, 125, UIScreen.mainScreen().bounds.width, 40))
+        usernameTextField = TextField(frame: CGRectMake(0, 125, UIScreen.mainScreen().bounds.width, 40))
         usernameTextField.placeholder = "Joey Joe Joe Jr. Shabadoo"
         usernameTextField.font = UIFont.systemFontOfSize(18)
         usernameTextField.borderStyle = UITextBorderStyle.None
@@ -87,9 +87,9 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
 
 }
 
-//extension GOUsernameEntryViewController: UITextFieldDelegate {
-//    func textFieldShouldReturn(textField: UITextField) -> Bool {
-//        usernameTextField.resignFirstResponder()
-//        return true
-//    }
-//}
+extension GOUsernameEntryViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        usernameTextField.resignFirstResponder()
+        return true
+    }
+}
