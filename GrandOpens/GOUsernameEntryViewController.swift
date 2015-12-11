@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class GOUsernameEntryViewController: UIViewController {
+class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
 
     var user: PFUser? = PFUser.currentUser()
     var usernameTextField: TextField!
@@ -29,7 +29,7 @@ class GOUsernameEntryViewController: UIViewController {
         
         // Username entry field
         usernameTextField = TextField(frame: CGRectMake(0, 125, UIScreen.mainScreen().bounds.width, 40))
-        usernameTextField.placeholder = "Joey Joe Joe Jr. Shabadoo"
+        usernameTextField.placeholder = "Joey Joe Joe Jr. S."
         usernameTextField.font = UIFont.systemFontOfSize(18)
         usernameTextField.borderStyle = UITextBorderStyle.None
         usernameTextField.autocorrectionType = UITextAutocorrectionType.No
@@ -68,12 +68,19 @@ class GOUsernameEntryViewController: UIViewController {
     
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let destinationVC = segue.destinationViewController as? SettingsViewController {
-            destinationVC.navigationController?.navigationBar.topItem!.title = "Settings"
+        if let destinationVC = segue.destinationViewController as? UINavigationController {
+            let targetController = destinationVC.topViewController as? SettingsViewController
+            targetController!.title = "Settings"
         }
-            
     }
 
+    // UITextFieldDelegate
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        guard let text = usernameTextField.text else {return true}
+        
+        let newLength = text.utf16.count + string.utf16.count - range.length
+        return newLength <= 20
+    }
     
     /*
     // MARK: - Navigation
@@ -85,11 +92,4 @@ class GOUsernameEntryViewController: UIViewController {
     }
     */
 
-}
-
-extension GOUsernameEntryViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        usernameTextField.resignFirstResponder()
-        return true
-    }
 }

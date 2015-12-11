@@ -17,25 +17,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     var user: PFUser? = PFUser.currentUser()
     
+    var settingsTableView: UITableView!
+    
     var settingsHeadings = ["My Account", "Additional Information"]
     var myAccountRows = ["Username", "Phone Number"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        nameTextField.delegate = self
-//        saveSettingsButton.layer.cornerRadius = 3
-//        if let user = self.user {
-//            usernameLabel.text = user.username
-//            if let name = user["name"] as? String {
-//                nameTextField.text = name
-//            }
-//        } else {
-//            dismissViewControllerAnimated(true, completion: nil)
-//        }
         
-        let settingsTableView = UITableView(frame: CGRectZero, style: UITableViewStyle.Grouped)
+        settingsTableView = UITableView(frame: CGRectZero, style: UITableViewStyle.Grouped)
         settingsTableView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
         settingsTableView.dataSource = self
         settingsTableView.delegate = self
@@ -49,6 +40,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
+        self.settingsTableView.reloadData()
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -142,13 +134,3 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 //        navigationItem.backBarButtonItem = backItem
 //    }
 }
-
-
-// Extension from AnyPhone code
-//
-//extension SettingsViewController : UITextFieldDelegate {
-//    func textFieldShouldReturn(textField: UITextField) -> Bool {
-//        nameTextField.resignFirstResponder()
-//        return true
-//    }
-//}
