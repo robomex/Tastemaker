@@ -8,8 +8,9 @@
 
 import UIKit
 import Parse
+import SafariServices
 
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
     var usernameLabel: UILabel!
     var nameTextField: UITextField!
@@ -117,6 +118,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             navigationItem.title = " "
             navigationController!.view.backgroundColor = UIColor.whiteColor()
             navigationController?.pushViewController(vc, animated: true)
+        } else if indexPath.section == 1 {
+            switch (indexPath.row) {
+            case 0:
+                let safariVC = SFSafariViewController(URL: NSURL(string: "https://www.apple.com")!)
+                safariVC.delegate = self
+                self.presentViewController(safariVC, animated: true, completion: nil)
+            case 1:
+                let safariVC = SFSafariViewController(URL: NSURL(string: "https://www.google.com")!)
+                safariVC.delegate = self
+                self.presentViewController(safariVC, animated: true, completion: nil)
+            default:
+                return
+            }
         } else if indexPath.section == 2 && indexPath.row == 0 {
             let alertController = UIAlertController(title: "Are you sure?", message: nil, preferredStyle: .Alert)
             alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) in
@@ -131,6 +145,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 //    
 //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
