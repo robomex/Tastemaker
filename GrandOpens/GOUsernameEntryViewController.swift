@@ -46,6 +46,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         let saveButton = UIButton(frame: CGRect(x: 40, y: 175, width: UIScreen.mainScreen().bounds.width - 80, height: 40))
         saveButton.backgroundColor = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0)
         saveButton.setTitle("Save", forState: .Normal)
+        saveButton.titleLabel?.font = UIFont.boldSystemFontOfSize(18.0)
         saveButton.addTarget(self, action: "didTapSaveButton:", forControlEvents: .TouchUpInside)
         saveButton.layer.cornerRadius = 5
         self.view.addSubview(saveButton)
