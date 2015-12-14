@@ -64,6 +64,12 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
             user!["name"] = username
         }
         user!.saveEventually()
+        
+        if (self.navigationController != nil) {
+            self.navigationController?.popViewControllerAnimated(true)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
 
