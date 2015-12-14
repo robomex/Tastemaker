@@ -30,9 +30,9 @@ class LoginViewController: UIViewController {
     
     func step1() {
         phoneNumber = ""
-        textField.placeholder = NSLocalizedString("numberDefault", comment: "555-333-6726")
-        questionLabel.text = NSLocalizedString("enterPhone", comment: "Please enter your phone number to log in.")
-        subtitleLabel.text = NSLocalizedString("enterPhoneExtra", comment: "This example is limited to 10-digit US number.")
+        textField.placeholder = "555-649-2568"
+        questionLabel.text = "Enter your 10-digit US phone number to log in."
+        subtitleLabel.text = "Grand Opens will send an SMS to your number to verify you're a real person and create your account. We will not display your phone number to other users."
         sendCodeButton.enabled = true
     }
     
@@ -40,8 +40,8 @@ class LoginViewController: UIViewController {
         phoneNumber = textField.text!
         textField.text = ""
         textField.placeholder = "1234"
-        questionLabel.text = NSLocalizedString("enterCode", comment: "Enter the 4-digit confirmation code:")
-        subtitleLabel.text = NSLocalizedString("enterCodeExtra", comment: "It was sent in an SMS message to +1" + phoneNumber) + phoneNumber
+        questionLabel.text = "Enter your 4-digit confirmation code"
+        subtitleLabel.text = "It was sent in an SMS message to +1" + phoneNumber
         sendCodeButton.enabled = true
     }
     
