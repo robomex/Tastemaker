@@ -86,7 +86,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             case 1:
                 let phoneNumber = user?.username
-                cell.detailTextLabel?.text = phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
+                cell.detailTextLabel?.text = "(" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + ") " + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
             default:
                 cell.detailTextLabel?.text = ""
             }
