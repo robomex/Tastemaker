@@ -121,11 +121,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         } else if indexPath.section == 1 {
             switch (indexPath.row) {
             case 0:
-                let safariVC = SFSafariViewController(URL: NSURL(string: "https://www.apple.com")!)
+                let safariVC = SFSafariViewController(URL: NSURL(string: kPrivacyPolicyURL)!)
                 safariVC.delegate = self
                 self.presentViewController(safariVC, animated: true, completion: nil)
             case 1:
-                let safariVC = SFSafariViewController(URL: NSURL(string: "https://www.google.com")!)
+                let safariVC = SFSafariViewController(URL: NSURL(string: kTermsOfServiceURL)!)
                 safariVC.delegate = self
                 self.presentViewController(safariVC, animated: true, completion: nil)
             default:

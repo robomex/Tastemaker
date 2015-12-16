@@ -9,8 +9,9 @@
 import UIKit
 import Parse
 import Bolts
+import TTTAttributedLabel
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, TTTAttributedLabelDelegate {
     
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendCodeButton: UIButton!
@@ -18,7 +19,8 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var welcomeLabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
-    @IBOutlet weak var disclaimerLabel: UILabel!
+    @IBOutlet weak var disclaimerLabel: TTTAttributedLabel!
+
     
     var phoneNumber: String = ""
     
@@ -37,6 +39,13 @@ class LoginViewController: UIViewController {
         subtitleLabel.text = "Grand Opens will send an SMS to your number to verify your account (standard SMS rates may apply)."
         sendCodeButton.setTitle("Continue", forState: UIControlState.Normal)
 //        sendCodeButton.setTitle("Let's Go!", forState: UIControlState.Selected)
+        let disclaimerText: NSString = "By tapping Continue you agree to our Terms of Service and confirm you have read our Privacy Policy."
+        disclaimerLabel.delegate = self
+        disclaimerLabel.text = disclaimerText as String
+        let termsOfServiceRange: NSRange = disclaimerText.rangeOfString("Terms of Service")
+        disclaimerLabel.addLinkToURL(NSURL(string: kTermsOfServiceURL)!, withRange: termsOfServiceRange)
+        let privacyPolicyRange: NSRange = disclaimerText.rangeOfString("Privacy Policy")
+        disclaimerLabel.addLinkToURL(NSURL(string: kPrivacyPolicyURL)!, withRange: privacyPolicyRange)
         sendCodeButton.enabled = true
     }
     
@@ -129,6 +138,11 @@ class LoginViewController: UIViewController {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .Default
+    }
+    
+    // TTTAttributedLabelDelegate
+    func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
+        UIApplication.sharedApplication().openURL(url)
     }
 }
 

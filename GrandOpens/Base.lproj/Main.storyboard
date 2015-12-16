@@ -118,7 +118,7 @@
                                     <constraint firstItem="q4t-e7-CGo" firstAttribute="centerY" secondItem="n0N-Zi-uyX" secondAttribute="centerY" id="hbm-Uz-wSG"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By tapping Continue you agree to our Terms of Service and confirm you have read our Privacy Policy." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-QV-YXK">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By tapping Continue you agree to our Terms of Service and confirm you have read our Privacy Policy." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-QV-YXK" customClass="TTTAttributedLabel">
                                 <rect key="frame" x="20" y="294" width="560" height="12"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="0.80000000000000004" colorSpace="calibratedRGB"/>
@@ -153,7 +153,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="disclaimerLabel" destination="gFC-QV-YXK" id="hDC-Dt-nt8"/>
+                        <outlet property="disclaimerLabel" destination="gFC-QV-YXK" id="tTB-eq-u1b"/>
                         <outlet property="questionLabel" destination="DcV-is-TjW" id="ezD-ix-drf"/>
                         <outlet property="sendCodeButton" destination="NyN-75-oTW" id="EkS-fI-f5q"/>
                         <outlet property="subtitleLabel" destination="mfs-06-kBh" id="4rM-oG-kHy"/>

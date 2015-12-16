@@ -15,6 +15,11 @@ let GOUtilityUserVotedUnvotedVenueNotification                  = "com.grandopen
 let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopens.utility.userSavedUnsavedVenueNotification"
 
 
+// MARK: URLs
+let kPrivacyPolicyURL = "https://www.apple.com"
+let kTermsOfServiceURL = "https://www.google.com"
+
+
 // MARK: User Info Keys
 let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
 let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"

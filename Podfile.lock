@@ -5,12 +5,14 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - MBProgressHUD (0.9.1)
   - Synchronized (2.0.0)
+  - TTTAttributedLabel (1.13.4)
 
 DEPENDENCIES:
   - Firebase (~> 2.2.0)
   - JSQMessagesViewController (~> 7.1)
   - MBProgressHUD (~> 0.9.1)
   - Synchronized
+  - TTTAttributedLabel
 
 SPEC CHECKSUMS:
   Firebase: e35cdd2561bf4fea9c1e384e9400a9c173d19e47
@@ -18,5 +20,6 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   Synchronized: 576e9b6c148d49cbb5a60cbcb2a7569768f4ec79
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
 COCOAPODS: 0.39.0
