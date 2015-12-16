@@ -62,7 +62,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         textField.text = ""
         textField.placeholder = "1234"
         questionLabel.text = "Enter your 4-digit confirmation code"
-        subtitleLabel.text = "It was sent in an SMS message to +1" + phoneNumber
+        subtitleLabel.text = "It was sent in an SMS message to +1 " + phoneNumber
         disclaimerLabel.text = ""
         sendCodeButton.setTitle("Log In", forState: UIControlState.Normal)
         sendCodeButton.enabled = true
@@ -80,14 +80,18 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         let textFieldText = textField.text ?? ""
         
         if phoneNumber == "" {
-            if (preferredLanguage == "en" && textFieldText.characters.count != 10)
-                || (preferredLanguage == "ja" && textFieldText.characters.count != 11) {
+            
+            // Deformat the phone number by removing parentheses and dashes for saving and processing
+            let stringArray = textFieldText.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
+            let unformattedPhoneNumber = stringArray.joinWithSeparator("")
+            if (preferredLanguage == "en" && unformattedPhoneNumber.characters.count != 10)
+                || (preferredLanguage == "ja" && unformattedPhoneNumber.characters.count != 11) {
                     showSimpleAlertWithTitle("Invalid Phone Number", message: "You must enter a 10-digit US phone number including area code.", actionTitle: "OK", viewController: self)
                     return step1()
             }
             
             self.editing = false
-            let params = ["phoneNumber" : textFieldText, "language" : preferredLanguage]
+            let params = ["phoneNumber" : unformattedPhoneNumber, "language" : preferredLanguage]
             PFCloud.callFunctionInBackground("sendCode", withParameters: params) { response, error in
                 self.editing = true
                 if let error = error {
@@ -150,7 +154,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     // TTTAttributedLabelDelegate
     func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
-//        UIApplication.sharedApplication().openURL(url)
         let safariVC = SFSafariViewController(URL: url)
         safariVC.delegate = self
         self.presentViewController(safariVC, animated: true, completion: nil)
@@ -159,6 +162,47 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // SFSafariViewControllerDelegate
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // Phone number formatting
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if textField == textField && phoneNumber == "" {
+            let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+            let components = newString.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
+            
+            let decimalString = components.joinWithSeparator("") as NSString
+            let length = decimalString.length
+            let hasLeadingOne = length > 0 && decimalString.characterAtIndex(0) == (1 as unichar)
+            
+            if length == 0 || (length > 10 && !hasLeadingOne) || length > 11 {
+                let newLength = (textField.text! as NSString).length + (string as NSString).length - range.length as Int
+                return (newLength > 10) ? false : true
+            }
+            var index = 0 as Int
+            let formattedString = NSMutableString()
+            
+            if hasLeadingOne {
+                formattedString.appendString("1")
+                index += 1
+            }
+            if (length - index) > 3 {
+                let areaCode = decimalString.substringWithRange(NSMakeRange(index, 3))
+                formattedString.appendFormat("(%@) ", areaCode)
+                index += 3
+            }
+            if (length - index) > 3 {
+                let prefix = decimalString.substringWithRange(NSMakeRange(index, 3))
+                formattedString.appendFormat("%@-", prefix)
+                index += 3
+            }
+            
+            let remainder = decimalString.substringFromIndex(index)
+            formattedString.appendString(remainder)
+            textField.text = formattedString as String
+            return false
+        } else {
+            return true
+        }
     }
 }
 
