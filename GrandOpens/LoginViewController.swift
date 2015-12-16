@@ -15,8 +15,10 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendCodeButton: UIButton!
     
+    @IBOutlet weak var welcomeLabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var disclaimerLabel: UILabel!
     
     var phoneNumber: String = ""
     
@@ -32,7 +34,9 @@ class LoginViewController: UIViewController {
         phoneNumber = ""
         textField.placeholder = "555-649-2568"
         questionLabel.text = "Enter your 10-digit US phone number to log in."
-        subtitleLabel.text = "Grand Opens will send an SMS to your number to verify you're a real person and create your account. We will not display your phone number to other users."
+        subtitleLabel.text = "Grand Opens will send an SMS to your number to verify your account (standard SMS rates may apply)."
+        sendCodeButton.setTitle("Continue", forState: UIControlState.Normal)
+//        sendCodeButton.setTitle("Let's Go!", forState: UIControlState.Selected)
         sendCodeButton.enabled = true
     }
     
@@ -42,6 +46,8 @@ class LoginViewController: UIViewController {
         textField.placeholder = "1234"
         questionLabel.text = "Enter your 4-digit confirmation code"
         subtitleLabel.text = "It was sent in an SMS message to +1" + phoneNumber
+        disclaimerLabel.text = ""
+        sendCodeButton.setTitle("Log In", forState: UIControlState.Normal)
         sendCodeButton.enabled = true
     }
     
@@ -59,7 +65,7 @@ class LoginViewController: UIViewController {
         if phoneNumber == "" {
             if (preferredLanguage == "en" && textFieldText.characters.count != 10)
                 || (preferredLanguage == "ja" && textFieldText.characters.count != 11) {
-                    showAlert("Phone Login", message: NSLocalizedString("warningPhone", comment: "You must enter a 10-digit US phone number including area code."))
+                    showSimpleAlertWithTitle("Invalid Phone Number", message: "You must enter a 10-digit US phone number including area code.", actionTitle: "OK", viewController: self)
                     return step1()
             }
             
@@ -70,11 +76,11 @@ class LoginViewController: UIViewController {
                 if let error = error {
                     var description = error.description
                     if description.characters.count == 0 {
-                        description = NSLocalizedString("warningGeneral", comment: "Something went wrong. Please try again.") // "There was a problem with the service.\nTry again later."
+                        description = "Something went wrong. Please try again." // "There was a problem with the service.\nTry again later."
                     } else if let message = error.userInfo["error"] as? String {
                         description = message
                     }
-                    self.showAlert("Login Error", message: description)
+                    showSimpleAlertWithTitle("Login Error", message: description, actionTitle: "OK", viewController: self)
                     return self.step1()
                 }
                 return self.step2()
@@ -83,8 +89,7 @@ class LoginViewController: UIViewController {
             if textFieldText.characters.count == 4, let code = Int(textFieldText) {
                 return doLogin(phoneNumber, code: code)
             }
-            
-            showAlert("Code Entry", message: NSLocalizedString("warningCodeLength", comment: "You must enter the 4 digit code texted to your phone number."))
+            showSimpleAlertWithTitle("Invalid Code Length", message: "You must enter the 4 digit code texted to your phone number.", actionTitle: "OK", viewController: self)
         }
     }
     
@@ -94,12 +99,13 @@ class LoginViewController: UIViewController {
         PFCloud.callFunctionInBackground("logIn", withParameters: params) { response, error in
             if let description = error?.description {
                 self.editing = true
-                return self.showAlert("Login Error", message: description)
+                showSimpleAlertWithTitle("Login Error", message: description, actionTitle: "OK", viewController: self)
+                return self.step1()
             }
             if let token = response as? String {
                 PFUser.becomeInBackground(token) { user, error in
                     if let _ = error {
-                        self.showAlert("Login Error", message: NSLocalizedString("warningGeneral", comment: "Something happened while trying to log in.\nPlease try again."))
+                        showSimpleAlertWithTitle("Login Error", message: "Something happened while trying to log in. Please try again.", actionTitle: "OK", viewController: self)
                         self.editing = true
                         return self.step1()
                     }
@@ -107,7 +113,7 @@ class LoginViewController: UIViewController {
                 }
             } else {
                 self.editing = true
-                self.showAlert("Login Error", message: NSLocalizedString("warningGeneral", comment: "Something went wrong.  Please try again."))
+                showSimpleAlertWithTitle("Login Error", message: "Something went wrong, please try again.", actionTitle: "OK", viewController: self)
                 return self.step1()
             }
         }
@@ -119,10 +125,6 @@ class LoginViewController: UIViewController {
         if editing {
             textField.becomeFirstResponder()
         }
-    }
-    
-    func showAlert(title: String, message: String) {
-        return UIAlertView(title: title, message: message, delegate: nil, cancelButtonTitle: NSLocalizedString("alertOK", comment: "OK")).show()
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
