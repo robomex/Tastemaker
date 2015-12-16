@@ -39,10 +39,17 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         questionLabel.text = "Enter your 10-digit US phone number to log in."
         subtitleLabel.text = "Grand Opens will send an SMS to your number to verify your account (standard SMS rates may apply)."
         sendCodeButton.setTitle("Continue", forState: UIControlState.Normal)
+        sendCodeButton.backgroundColor = kPurple
 //        sendCodeButton.setTitle("Let's Go!", forState: UIControlState.Selected)
         let disclaimerText: NSString = "By tapping Continue you agree to our Terms of Service and confirm you have read our Privacy Policy."
         disclaimerLabel.delegate = self
         disclaimerLabel.text = disclaimerText as String
+        let disclaimerLabelLinkAttributes: [NSObject: AnyObject] = [
+            kCTForegroundColorAttributeName: kBlue,
+            NSUnderlineStyleAttributeName: NSNumber(bool: false)
+        ]
+        disclaimerLabel.linkAttributes = disclaimerLabelLinkAttributes
+        disclaimerLabel.inactiveLinkAttributes = nil
         let termsOfServiceRange: NSRange = disclaimerText.rangeOfString("Terms of Service")
         disclaimerLabel.addLinkToURL(NSURL(string: kTermsOfServiceURL)!, withRange: termsOfServiceRange)
         let privacyPolicyRange: NSRange = disclaimerText.rangeOfString("Privacy Policy")
