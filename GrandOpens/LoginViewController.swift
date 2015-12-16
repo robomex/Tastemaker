@@ -10,8 +10,9 @@ import UIKit
 import Parse
 import Bolts
 import TTTAttributedLabel
+import SafariServices
 
-class LoginViewController: UIViewController, TTTAttributedLabelDelegate {
+class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate {
     
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sendCodeButton: UIButton!
@@ -142,7 +143,15 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate {
     
     // TTTAttributedLabelDelegate
     func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
-        UIApplication.sharedApplication().openURL(url)
+//        UIApplication.sharedApplication().openURL(url)
+        let safariVC = SFSafariViewController(URL: url)
+        safariVC.delegate = self
+        self.presentViewController(safariVC, animated: true, completion: nil)
+    }
+    
+    // SFSafariViewControllerDelegate
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
