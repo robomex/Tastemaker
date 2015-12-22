@@ -22,6 +22,10 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var disclaimerLabel: TTTAttributedLabel!
 
+    // Onboarding code for testing
+    var gradient: CAGradientLayer?
+    var toColors: AnyObject?
+    var fromColors: AnyObject?
     
     var phoneNumber: String = ""
     
@@ -31,17 +35,24 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         sendCodeButton.layer.cornerRadius = 3
         
         self.editing = true
+        
+        self.gradient = CAGradientLayer()
+        self.gradient?.frame = self.view.bounds
+        self.gradient?.colors = [kBlue.CGColor, UIColor.whiteColor().CGColor, UIColor.whiteColor().CGColor]
+        self.view.layer.insertSublayer(self.gradient!, atIndex: 0)
+        self.toColors = [UIColor.whiteColor().CGColor, UIColor.whiteColor().CGColor, kRed.CGColor]
+        animateBackgroundGradient()
     }
     
     func step1() {
         phoneNumber = ""
         textField.placeholder = "555-649-2568"
-        questionLabel.text = "Enter your 10-digit US phone number to log in."
-        subtitleLabel.text = "Grand Opens will send an SMS to your number to verify your account (standard SMS rates may apply)."
-        sendCodeButton.setTitle("Continue", forState: UIControlState.Normal)
+        questionLabel.text = "Enter your 10-digit US phone number to discover and chat about the newest places around."
+        subtitleLabel.text = "We will send you an SMS to verify your account (standard SMS rates may apply)."
+        sendCodeButton.setTitle("Log In", forState: UIControlState.Normal)
         sendCodeButton.backgroundColor = kPurple
 //        sendCodeButton.setTitle("Let's Go!", forState: UIControlState.Selected)
-        let disclaimerText: NSString = "By tapping Continue you agree to our Terms of Service and confirm you have read our Privacy Policy."
+        let disclaimerText: NSString = "By tapping Log In you agree to our Terms of Service and confirm you have read our Privacy Policy."
         disclaimerLabel.delegate = self
         disclaimerLabel.text = disclaimerText as String
         let disclaimerLabelLinkAttributes: [NSObject: AnyObject] = [
@@ -61,8 +72,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         phoneNumber = textField.text!
         textField.text = ""
         textField.placeholder = "1234"
-        questionLabel.text = "Enter your 4-digit confirmation code"
-        subtitleLabel.text = "It was sent in an SMS message to +1 " + phoneNumber
+        questionLabel.text = "Enter your 4-digit confirmation code."
+        subtitleLabel.text = "It was sent in an SMS message to +1 " + phoneNumber + "."
         disclaimerLabel.text = ""
         sendCodeButton.setTitle("Log In", forState: UIControlState.Normal)
         sendCodeButton.enabled = true
@@ -203,6 +214,29 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         } else {
             return true
         }
+    }
+    
+    // Onboarding code for testing
+    func animateBackgroundGradient() {
+        self.fromColors = self.gradient?.colors
+        self.gradient!.colors = self.toColors! as! [AnyObject]
+        
+        let animation: CABasicAnimation = CABasicAnimation(keyPath: "colors")
+        animation.fromValue = fromColors
+        animation.toValue = toColors
+        animation.duration = 17.00
+        animation.removedOnCompletion = true
+        animation.fillMode = kCAFillModeForwards
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        animation.delegate = self
+        
+        self.gradient?.addAnimation(animation, forKey: "animateGradient")
+    }
+    
+    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+        self.toColors = self.fromColors
+        self.fromColors = self.gradient?.colors
+        animateBackgroundGradient()
     }
 }
 
