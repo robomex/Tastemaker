@@ -8,6 +8,8 @@
 
 import UIKit
 import Parse
+// test for Onboard
+import Onboard
 
 class InitialViewController: UIViewController {
 
@@ -23,6 +25,20 @@ class InitialViewController: UIViewController {
 //        super.viewDidAppear(animated)
         
         if let _ = PFUser.currentUser() {
+            
+            let firstOnboardingPage = OnboardingContentViewController(title: "Let's get set up", body: "To discover the newest places around tap \"OK\" to share your location and get notifications", image: nil, buttonText: "OK", action: nil)
+            let secondOnboardingPage = OnboardingContentViewController(title: "Second page yo", body: "cunt cunt cunt", image: nil, buttonText: "second page button", action: nil)
+            let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage, secondOnboardingPage])
+            onboardingVC.shouldMaskBackground = false
+            onboardingVC.shouldFadeTransitions = true
+            onboardingVC.titleFontSize = 20
+            onboardingVC.bodyFontSize = 16
+            onboardingVC.topPadding = 5
+            onboardingVC.underIconPadding = 5
+            onboardingVC.fontName = UIFont.systemFontOfSize(UIFont.systemFontSize()).familyName
+            self.presentViewController(onboardingVC, animated: false, completion: nil)
+
+            
             // Present Grand Opens UI
             (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
         } else {
