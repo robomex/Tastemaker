@@ -10,10 +10,12 @@ import UIKit
 import Parse
 // test for Onboard
 import Onboard
+import CoreLocation
 
 class InitialViewController: UIViewController {
 
     private var _presentedLoginViewController: Bool = false
+    let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +30,11 @@ class InitialViewController: UIViewController {
             
             let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
             if !launchedBefore {
-                let firstOnboardingPage = OnboardingContentViewController(title: "Let's get set up", body: "To discover the newest places around tap \"OK\" to share your location and get notifications", image: UIImage(named: "Permission.png"), buttonText: "OK", action: nil)
+                let firstOnboardingPage = OnboardingContentViewController(title: "Let's get set up", body: "To discover the newest places around tap \"OK\" to share your location and get notifications", image: UIImage(named: "Permission.png"), buttonText: "OK") { () -> Void in
+                    self.locationManager.requestAlwaysAuthorization()
+                    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+                }
 //                let secondOnboardingPage = OnboardingContentViewController(title: "Second page yo", body: "cunt cunt cunt", image: nil, buttonText: "second page button", action: nil)
                 let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage])
                 onboardingVC.shouldMaskBackground = false
