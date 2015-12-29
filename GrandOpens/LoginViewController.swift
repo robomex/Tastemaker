@@ -26,6 +26,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     var gradient: CAGradientLayer?
     var toColors: AnyObject?
     var fromColors: AnyObject?
+//    var initialVC: InitialViewController?
+//    let storyboard = UIStoryboard(name: "main", bundle: nil)
     
     var phoneNumber: String = ""
     
@@ -141,7 +143,10 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         self.editing = true
                         return self.step1()
                     }
-                    return (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController() //self.dismissViewControllerAnimated(true, completion: nil)
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+
+//                    self.initialVC = super.storyboard!.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
+//                    return self.presentViewController(self.initialVC!, animated: true, completion: nil)//(UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController() //self.dismissViewControllerAnimated(true, completion: nil)
                 }
             } else {
                 self.editing = true

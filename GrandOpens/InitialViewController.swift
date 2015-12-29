@@ -34,6 +34,10 @@ class InitialViewController: UIViewController {
                     self.locationManager.requestAlwaysAuthorization()
                     let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
                     UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+                    self.dismissViewControllerAnimated(true, completion: {
+                        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+                    })
+                    // Present Grand Opens UI
                 }
 //                let secondOnboardingPage = OnboardingContentViewController(title: "Second page yo", body: "cunt cunt cunt", image: nil, buttonText: "second page button", action: nil)
                 let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage])
@@ -44,11 +48,13 @@ class InitialViewController: UIViewController {
                 onboardingVC.topPadding = 150
                 onboardingVC.underIconPadding = -340
                 onboardingVC.fontName = UIFont.systemFontOfSize(UIFont.systemFontSize()).familyName
+                onboardingVC.hidePageControl = true
                 self.presentViewController(onboardingVC, animated: false, completion: nil)
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
+            } else {
+                // Present Grand Opens UI
+                (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
             }
-
-            // Present Grand Opens UI
-            (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
         } else {
             self.performSegueWithIdentifier("toLogin", sender: self)
         }
