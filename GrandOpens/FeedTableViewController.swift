@@ -361,14 +361,23 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     // MARK: CoachMarksControllerDataSource
     
     func numberOfCoachMarksForCoachMarksController(coachMarksController: CoachMarksController) -> Int {
-        return 1
+        return 3
     }
     
     func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
         switch(index) {
         case 0:
-            let index = NSIndexPath(forRow: 0, inSection: 0)
-            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(index) as? UIView)
+            let indexOfFirstTip = NSIndexPath(forRow: 0, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfFirstTip) as? UIView)
+        case 1:
+            let indexOfSecondTip = NSIndexPath(forRow: 3, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
+        case 2:
+            let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
+                (frame: CGRect) -> UIBezierPath in
+                return UIBezierPath(ovalInRect: CGRectMake(0, 305, 50, 50))
+            }
         default:
             return coachMarksController.coachMarkForView()
         }
@@ -381,7 +390,13 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         switch(index) {
         case 0:
             coachViews.bodyView.hintLabel.text = "Newest places show up on top automatically"
+            coachViews.bodyView.nextLabel.text = "OK!"
+        case 1:
+            coachViews.bodyView.hintLabel.text = "After you visit somewhere, it'll be highlighted and you unlock that venue's chat and voting (each city also has a general chat open to everyone)"
             coachViews.bodyView.nextLabel.text = "Got it!"
+        case 2:
+            coachViews.bodyView.hintLabel.text = "If you check out somewhere great, vote for it so others know what's good"
+            coachViews.bodyView.nextLabel.text = "K!"
         default: break
         }
         
