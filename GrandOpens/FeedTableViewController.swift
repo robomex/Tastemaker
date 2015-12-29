@@ -72,6 +72,8 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 //        locationManager.requestAlwaysAuthorization()
         
         self.coachMarksController.datasource = self
+        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        self.coachMarksController.allowOverlayTap = true
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
