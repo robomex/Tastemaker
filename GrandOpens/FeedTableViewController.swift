@@ -10,14 +10,18 @@ import UIKit
 import Parse
 import ParseUI
 import Synchronized
-import CoreLocation
+//import CoreLocation
+import Instructions
 
-class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CLLocationManagerDelegate {
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource
+//, CLLocationManagerDelegate 
+{
 
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
-    let locationManager = CLLocationManager()
+//    let locationManager = CLLocationManager()
+    let coachMarksController = CoachMarksController()
     
     // MARK: Initialization
     
@@ -64,8 +68,10 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
         // CoreLocation items
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.delegate = self
+//        locationManager.requestAlwaysAuthorization()
+        
+        self.coachMarksController.datasource = self
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
@@ -85,6 +91,10 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        self.coachMarksController.startOn(self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -343,6 +353,37 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                 }
             })
         }
+    }
+    
+    
+    // MARK: CoachMarksControllerDataSource
+    
+    func numberOfCoachMarksForCoachMarksController(coachMarksController: CoachMarksController) -> Int {
+        return 1
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
+        switch(index) {
+        case 0:
+            let index = NSIndexPath(forRow: 0, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(index) as? UIView)
+        default:
+            return coachMarksController.coachMarkForView()
+        }
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarkViewsForIndex index: Int, coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
+        
+        let coachViews = coachMarksController.defaultCoachViewsWithArrow(true, arrowOrientation: coachMark.arrowOrientation)
+        
+        switch(index) {
+        case 0:
+            coachViews.bodyView.hintLabel.text = "Newest places show up on top automatically"
+            coachViews.bodyView.nextLabel.text = "Got it!"
+        default: break
+        }
+        
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
     
     
