@@ -374,10 +374,13 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
         case 2:
             let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
-            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
+            var thirdCoachMark = coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
                 (frame: CGRect) -> UIBezierPath in
                 return UIBezierPath(ovalInRect: CGRectMake(0, 305, 50, 50))
             }
+            thirdCoachMark.maxWidth = 390
+            thirdCoachMark.horizontalMargin = 5
+            return thirdCoachMark
         default:
             return coachMarksController.coachMarkForView()
         }
