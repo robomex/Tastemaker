@@ -59,13 +59,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // CoreLocation shit for region monitoring
         locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.requestAlwaysAuthorization()
         
         self.window!.rootViewController = self.navController
         self.window!.makeKeyAndVisible()
         
-        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
-        application.registerUserNotificationSettings(settings)
+//        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+//        application.registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().cancelAllLocalNotifications()
         
         return true

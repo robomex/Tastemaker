@@ -24,7 +24,7 @@ let kTermsOfServiceURL = "https://www.google.com"
 let kBlue = UIColor(red: 0x22/255, green: 0xa7/255, blue: 0xf0/255, alpha: 1.0) // Picton Blue
 let kRed = UIColor(red: 0xd9/255, green: 0x1e/255, blue: 0x18/255, alpha: 1.0) // Thunderbird
 let kPurple = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0) // Wisteria
-
+let kGray = UIColor(red: 0x4a/255, green: 0x4a/255, blue: 0x4a/255, alpha: 1.0)
 
 // MARK: User Info Keys
 let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"

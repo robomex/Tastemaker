@@ -10,14 +10,18 @@ import UIKit
 import Parse
 import ParseUI
 import Synchronized
-import CoreLocation
+//import CoreLocation
+import Instructions
 
-class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CLLocationManagerDelegate {
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource
+//, CLLocationManagerDelegate 
+{
 
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
-    let locationManager = CLLocationManager()
+//    let locationManager = CLLocationManager()
+    let coachMarksController = CoachMarksController()
     
     // MARK: Initialization
     
@@ -64,8 +68,12 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
         // CoreLocation items
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.delegate = self
+//        locationManager.requestAlwaysAuthorization()
+        
+        self.coachMarksController.datasource = self
+        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        self.coachMarksController.allowOverlayTap = true
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         
@@ -78,13 +86,20 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-//        if let font = UIFont(name: "Muli",name: default, size: 26) {
-
         navigationController!.navigationBar.topItem!.title = "Chicago"
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
+        if !hasSeenInstructions {
+            self.coachMarksController.startOn(self)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -343,6 +358,59 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                 }
             })
         }
+    }
+    
+    
+    // MARK: CoachMarksControllerDataSource
+    
+    func numberOfCoachMarksForCoachMarksController(coachMarksController: CoachMarksController) -> Int {
+        return 3
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
+        switch(index) {
+        case 0:
+            let indexOfFirstTip = NSIndexPath(forRow: 0, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfFirstTip) as? UIView)
+        case 1:
+            let indexOfSecondTip = NSIndexPath(forRow: 3, inSection: 0)
+            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
+        case 2:
+            let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
+            var thirdCoachMark = coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
+                (frame: CGRect) -> UIBezierPath in
+                return UIBezierPath(ovalInRect: CGRectMake(0, 305, 50, 50))
+            }
+            thirdCoachMark.maxWidth = 390
+            thirdCoachMark.horizontalMargin = 5
+            return thirdCoachMark
+        default:
+            return coachMarksController.coachMarkForView()
+        }
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarkViewsForIndex index: Int, coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
+        
+        let coachViews = coachMarksController.defaultCoachViewsWithArrow(true, arrowOrientation: coachMark.arrowOrientation)
+        
+        switch(index) {
+        case 0:
+            coachViews.bodyView.hintLabel.text = "Newest places show up on top automatically"
+            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        case 1:
+            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted, visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+            coachViews.bodyView.nextLabel.text = "Got it!"
+        case 2:
+            coachViews.bodyView.hintLabel.text = "If you check out somewhere great, vote for it so others know what's good"
+            coachViews.bodyView.nextLabel.text = "K!"
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        default: break
+        }
+        
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
     
     

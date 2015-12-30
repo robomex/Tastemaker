@@ -23,7 +23,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         usernameExplanationLabel.textAlignment = NSTextAlignment.Center
         usernameExplanationLabel.font = UIFont.systemFontOfSize(14)
         usernameExplanationLabel.numberOfLines = 0
-        usernameExplanationLabel.text = "Your username is how you appear on Grand Opens, pick one so friends and others can recognize you"
+        usernameExplanationLabel.text = "Pick a username (no pressure, you can change it at any time)"
         usernameExplanationLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         self.view.addSubview(usernameExplanationLabel)
         
@@ -69,7 +69,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         if (self.navigationController != nil) {
             self.navigationController?.popViewControllerAnimated(true)
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.view.window!.rootViewController?.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     

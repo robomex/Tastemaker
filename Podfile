@@ -6,5 +6,6 @@ pod 'Synchronized'
 pod 'MBProgressHUD', '~> 0.9.1'
 pod 'TTTAttributedLabel'
 pod 'Onboard'
+pod 'Instructions', '~> 0.3'
 
 use_frameworks!

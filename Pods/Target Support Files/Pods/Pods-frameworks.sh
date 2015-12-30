@@ -84,6 +84,7 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods/Instructions.framework"
   install_framework "Pods/JSQMessagesViewController.framework"
   install_framework "Pods/JSQSystemSoundPlayer.framework"
   install_framework "Pods/MBProgressHUD.framework"
@@ -92,6 +93,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/TTTAttributedLabel.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods/Instructions.framework"
   install_framework "Pods/JSQMessagesViewController.framework"
   install_framework "Pods/JSQSystemSoundPlayer.framework"
   install_framework "Pods/MBProgressHUD.framework"

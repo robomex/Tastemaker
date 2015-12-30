@@ -13,12 +13,10 @@ import JSQMessagesViewController
 class VenueChatViewController: JSQMessagesViewController {
     
     var messages: [JSQMessage] = []
-    
     var venueID: String?
-    
     var messageListener: MessageListener?
     
-    let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(UIColor(red: 34.0/255.0, green: 167.0/255.0, blue: 240.0/255.0, alpha: 1.0))
+    let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
         
     override func viewDidLoad() {

@@ -12,14 +12,11 @@ import Parse
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     var venueID: String?
-    
     var venue: PFObject?
+    var segmentedControl: UISegmentedControl!
     
     let chatVC = VenueChatViewController()
-    
     let detailsVC = VenueDetailsViewController()
-    
-    var segmentedControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +36,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: "venueSegmentedControlAction:", forControlEvents: .ValueChanged)
         segmentedControl.backgroundColor = UIColor.whiteColor()
-        segmentedControl.tintColor = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0)
+        segmentedControl.tintColor = kPurple
         segmentedControl.layer.cornerRadius = 5
         self.view.addSubview(segmentedControl)
         
