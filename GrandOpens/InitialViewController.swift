@@ -34,12 +34,9 @@ class InitialViewController: UIViewController {
                     self.locationManager.requestAlwaysAuthorization()
                     let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
                     UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-                    self.dismissViewControllerAnimated(true, completion: {
-                        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
-                    })
-                    // Present Grand Opens UI
+                    let vc = GOUsernameEntryViewController()
+                    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentedViewController!.presentViewController(vc, animated: true, completion: nil)
                 }
-//                let secondOnboardingPage = OnboardingContentViewController(title: "Second page yo", body: "cunt cunt cunt", image: nil, buttonText: "second page button", action: nil)
                 let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage])
                 onboardingVC.shouldMaskBackground = false
                 onboardingVC.shouldFadeTransitions = true
