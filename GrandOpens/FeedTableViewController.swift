@@ -86,8 +86,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-//        if let font = UIFont(name: "Muli",name: default, size: 26) {
-
         navigationController!.navigationBar.topItem!.title = "Chicago"
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()

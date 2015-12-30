@@ -26,7 +26,7 @@
 	<string>Grand Opens uses your location to confirm venue visits and find the newest places around</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Muli-Regular.ttf</string>
+		<string></string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

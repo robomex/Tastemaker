@@ -29,7 +29,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
         venueDescriptionLabel.text = venueDescription
         venueDescriptionLabel.textAlignment = NSTextAlignment.Left
-        venueDescriptionLabel.font = UIFont.systemFontOfSize(17) //(name: "Muli", size: 17)
+        venueDescriptionLabel.font = UIFont.systemFontOfSize(17)
         venueDescriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         venueDescriptionLabel.numberOfLines = 2
         venueDescriptionLabel.sizeToFit()
@@ -49,7 +49,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate.dateByAddingTimeInterval(60 * 60 * 24))
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
-        venueFoodTypeAndOpeningDateLabel.font = UIFont.italicSystemFontOfSize(13.0) //UIFont(name: "Muli", size: 13)
+        venueFoodTypeAndOpeningDateLabel.font = UIFont.italicSystemFontOfSize(13.0)
         venueFoodTypeAndOpeningDateLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         venueFoodTypeAndOpeningDateLabel.numberOfLines = 1
         venueFoodTypeAndOpeningDateLabel.sizeToFit()
