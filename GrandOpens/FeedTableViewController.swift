@@ -96,7 +96,12 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     }
     
     override func viewDidAppear(animated: Bool) {
-        self.coachMarksController.startOn(self)
+        
+        let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
+        if !hasSeenInstructions {
+            self.coachMarksController.startOn(self)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -396,7 +401,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             coachViews.bodyView.nextLabel.text = "OK!"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
         case 1:
-            coachViews.bodyView.hintLabel.text = "Places you've been are highlighted - visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
+            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted, visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
             coachViews.bodyView.nextLabel.text = "Got it!"
         case 2:
             coachViews.bodyView.hintLabel.text = "If you check out somewhere great, vote for it so others know what's good"
