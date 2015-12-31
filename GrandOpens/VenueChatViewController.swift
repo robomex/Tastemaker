@@ -43,7 +43,7 @@ class VenueChatViewController: JSQMessagesViewController {
         
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
 
-        automaticallyScrollsToMostRecentMessage = true
+        self.automaticallyScrollsToMostRecentMessage = true
         self.topContentAdditionalInset = 64.0
         
         if let id = venueID {
@@ -59,16 +59,17 @@ class VenueChatViewController: JSQMessagesViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
-        
+        super.viewWillAppear(true)
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(true)
 //        collectionView?.collectionViewLayout.springinessEnabled = true
 //        self.inputToolbar.contentView.textView.becomeFirstResponder()
     }
     
     override func viewWillDisappear(animated: Bool) {
-        
+        super.viewWillDisappear(true)
         messageListener?.stop()
     }
     
