@@ -45,6 +45,7 @@ class VenueChatViewController: JSQMessagesViewController {
 
         self.automaticallyScrollsToMostRecentMessage = true
         self.topContentAdditionalInset = 64.0
+        self.inputToolbar?.contentView!.leftBarButtonItem = nil
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
