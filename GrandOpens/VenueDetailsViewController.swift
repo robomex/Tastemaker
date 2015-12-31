@@ -23,7 +23,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
 
         // Description label
         
-        let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, 355, 80))
+        let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 80))
         venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 150)
         
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
@@ -38,7 +38,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         // Opening date and food type label
         
-        let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, 355, 40))
+        let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
         venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 175)
         
         let venueFoodType: String = venue!.objectForKey(kVenueFoodType) as! String
