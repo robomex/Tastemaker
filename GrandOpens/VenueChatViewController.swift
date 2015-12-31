@@ -64,13 +64,13 @@ class VenueChatViewController: JSQMessagesViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-//        collectionView?.collectionViewLayout.springinessEnabled = true
 //        self.inputToolbar.contentView.textView.becomeFirstResponder()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
         messageListener?.stop()
+        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
