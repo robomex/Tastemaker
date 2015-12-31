@@ -44,6 +44,7 @@ class VenueChatViewController: JSQMessagesViewController {
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
 
         automaticallyScrollsToMostRecentMessage = true
+        self.topContentAdditionalInset = 64.0
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
