@@ -40,12 +40,17 @@ class VenueChatViewController: JSQMessagesViewController {
         
         self.senderId = currentUser()!.id
         self.senderDisplayName = currentUser()!.name
-        
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
 
-        self.automaticallyScrollsToMostRecentMessage = true
         self.topContentAdditionalInset = 64.0
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
+
+//        self.inputToolbar?.hidden = true
+        
+        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
@@ -55,17 +60,15 @@ class VenueChatViewController: JSQMessagesViewController {
             })
         }
         
-//        self.inputToolbar.loadToolbarContentView()
-//        self.inputToolbar.contentView.rightBarButtonItem = JSQMessagesToolbarButtonFactory.defaultSendButtonItem()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
+        self.automaticallyScrollsToMostRecentMessage = true
+        self.scrollToBottomAnimated(true)
+//        self.inputToolbar?.contentView?.textView?.becomeFirstResponder()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
-//        self.inputToolbar.contentView.textView.becomeFirstResponder()
+        
+//        self.inputToolbar?.contentView?.textView?.becomeFirstResponder()
     }
     
     override func viewWillDisappear(animated: Bool) {
