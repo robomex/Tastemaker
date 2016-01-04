@@ -288,7 +288,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         
         let venueName: String = object!.objectForKey(kVenueName) as! String
         vc.title = venueName
-        navigationItem.title = " "
         vc.hidesBottomBarWhenPushed = true
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationController?.pushViewController(vc, animated: true)

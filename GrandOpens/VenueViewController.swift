@@ -65,6 +65,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             }
             
         }
+        
+        let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+        self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
     }
 
     override func didReceiveMemoryWarning() {
