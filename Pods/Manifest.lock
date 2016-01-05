@@ -1,4 +1,5 @@
 PODS:
+  - DZNEmptyDataSet (1.7.3)
   - Firebase (2.2.2)
   - Instructions (0.3.0)
   - JSQMessagesViewController (7.2.0):
@@ -10,6 +11,7 @@ PODS:
   - TTTAttributedLabel (1.13.4)
 
 DEPENDENCIES:
+  - DZNEmptyDataSet
   - Firebase (~> 2.2.0)
   - Instructions (~> 0.3)
   - JSQMessagesViewController (~> 7.2)
@@ -19,6 +21,7 @@ DEPENDENCIES:
   - TTTAttributedLabel
 
 SPEC CHECKSUMS:
+  DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
   Firebase: e35cdd2561bf4fea9c1e384e9400a9c173d19e47
   Instructions: 9434fd16d3c53c85b92d3faa33f36983add62369
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5

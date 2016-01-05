@@ -10,8 +10,9 @@ import UIKit
 import ParseUI
 import Parse
 import Synchronized
+import DZNEmptyDataSet
 
-class ListViewController: FeedTableViewController {
+class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     // MARK: Initialization
     
@@ -52,6 +53,10 @@ class ListViewController: FeedTableViewController {
 
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.addObserver(self, selector: "userDidSaveOrUnsaveVenue:", name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
+        
+        self.tableView.emptyDataSetSource = self
+        self.tableView.emptyDataSetDelegate = self
+        self.tableView.tableFooterView = UIView()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -209,6 +214,21 @@ class ListViewController: FeedTableViewController {
     
     @objc func userDidSaveOrUnsaveVenue(note: NSNotification) {
         self.loadObjects()
+    }
+    
+    
+    // MARK: DZNEmptyDataSet
+    
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let title = "/.-("
+        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
+        return NSAttributedString(string: title, attributes: attributes)
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let description = "You haven't saved any venues yet. \nIf a new place catches your eye, save it and it'll pop up here!"
+        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+        return NSAttributedString(string: description, attributes: attributes)
     }
     
     
