@@ -106,7 +106,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         }
         
         let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as! PFObject
+        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as? PFObject
         venueCell!.venue = object
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
@@ -195,7 +195,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
 
         
         let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as! PFObject
+        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as? PFObject
         vc.venue = object
         vc.venueID = object?.objectId
         
