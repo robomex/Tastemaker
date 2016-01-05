@@ -52,6 +52,11 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(saveButton)
         
         self.view.backgroundColor = UIColor(red: 239.0/255.0, green: 239.0/255.0, blue: 244.0/255.0, alpha: 1.0)
+        
+        if (navigationController != nil) {
+            let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+            self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -73,13 +78,6 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let destinationVC = segue.destinationViewController as? UINavigationController {
-            let targetController = destinationVC.topViewController as? SettingsViewController
-            targetController!.title = "Settings"
-        }
-    }
 
     // UITextFieldDelegate
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {

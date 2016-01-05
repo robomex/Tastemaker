@@ -115,7 +115,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             let vc = GOUsernameEntryViewController()
             vc.user = user
             vc.title = "Username"
-            navigationItem.title = " "
             navigationController!.view.backgroundColor = UIColor.whiteColor()
             navigationController?.pushViewController(vc, animated: true)
         } else if indexPath.section == 1 {
