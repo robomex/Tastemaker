@@ -132,9 +132,9 @@ class GOVenueCellView: PFTableViewCell {
     
     func shouldEnableVoteButton(enable: Bool) {
         if enable {
-            self.voteButton!.removeTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
-        } else {
             self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
+        } else {
+            self.voteButton!.removeTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
         }
     }
     

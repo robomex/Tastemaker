@@ -130,14 +130,10 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
         return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
         return self.objects!.count
     }
 
@@ -314,7 +310,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     // MARK: GOVenueCellViewDelegate
     
     func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: PFObject) {
-        venueCellView.shouldEnableVoteButton(false)
+        venueCellView.shouldEnableVoteButton(true)
         
         let voted: Bool = !button.selected
         venueCellView.setVoteStatus(voted)
@@ -339,7 +335,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         if voted {
             GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
                 let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(true)
+                actualVenueCellView?.shouldEnableVoteButton(false)
                 actualVenueCellView?.setVoteStatus(succeeded)
                 
                 if !succeeded {
@@ -349,7 +345,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         } else {
             GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
                 let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(false)
+                actualVenueCellView?.shouldEnableVoteButton(true)
                 actualVenueCellView?.setVoteStatus(!succeeded)
                 
                 if !succeeded{
