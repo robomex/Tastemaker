@@ -64,8 +64,8 @@ class GOVenueCellView: PFTableViewCell {
             self.voteButton!.frame = CGRectMake(10, 23, 30, 30)
             self.voteButton!.backgroundColor = UIColor.clearColor()
             self.voteButton!.setTitle("", forState: UIControlState.Normal)
-            self.voteButton!.setTitleColor(UIColor(red: 74.0/255.0, green: 74.0/255.0, blue: 74.0/255.0, alpha: 1.0), forState: UIControlState.Normal)
-            self.voteButton!.setTitleColor(UIColor(red: 155.0/255.0, green: 89.0/255.0, blue: 182.0/255.0, alpha: 1.0), forState: UIControlState.Selected)
+            self.voteButton!.setTitleColor(kGray, forState: UIControlState.Normal)
+            self.voteButton!.setTitleColor(kPurple, forState: UIControlState.Selected)
             self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
             self.voteButton!.titleLabel!.font = UIFont.systemFontOfSize(12.0)
             self.voteButton!.titleLabel!.minimumScaleFactor = 0.8
