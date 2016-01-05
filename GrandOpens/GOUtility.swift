@@ -212,10 +212,11 @@ class GOUtility {
     // MARK: Activities
     
     class func queryForActivitiesOnVenue(venue: PFObject, cachePolicy: PFCachePolicy) -> PFQuery {
-        let queryVotes: PFQuery = PFQuery(className: kActivityClassKey)
-        queryVotes.whereKey(kActivityToObjectKey, equalTo: venue)
-        queryVotes.whereKey(kActivityTypeKey, equalTo: kActivityTypeVote)
-        queryVotes.cachePolicy = cachePolicy
+        let activitiesQuery: PFQuery = PFQuery(className: kActivityClassKey)
+        activitiesQuery.whereKey(kActivityToObjectKey, equalTo: venue)
+        let activities = [kActivityTypeVote, kActivityTypeSave, kActivityTypeVisit]
+        activitiesQuery.whereKey(kActivityTypeKey, containedIn: activities)
+        activitiesQuery.cachePolicy = cachePolicy
 
         // No need to use the next two lines since we're only getting results from one query, not two
 //        let query = PFQuery.orQueryWithSubqueries([queryVotes])
@@ -225,7 +226,7 @@ class GOUtility {
 //        query.includeKey(kActivityByUserKey)
 //        query.includeKey(kActivityToObjectKey)
         
-        return queryVotes
+        return activitiesQuery
     }
 }
 

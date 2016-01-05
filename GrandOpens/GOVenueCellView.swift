@@ -140,6 +140,9 @@ class GOVenueCellView: PFTableViewCell {
     
     func setVisitStatus(visited: Bool) {
         self.voteButton!.enabled = visited
+        if visited {
+            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.25)
+        }
     }
     
     

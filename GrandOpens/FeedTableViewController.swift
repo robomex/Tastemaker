@@ -237,7 +237,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                                         isVotedByCurrentUser = true
                                     } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
                                         isSavedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeVisit) as! String) == kActivityTypeVisit {
+                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
                                         isVisitedByCurrentUser = true
                                     }
                                 }
