@@ -9,8 +9,9 @@
 import Foundation
 import Parse
 import JSQMessagesViewController
+import DZNEmptyDataSet
 
-class VenueChatViewController: JSQMessagesViewController {
+class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     var messages: [JSQMessage] = []
     var venueID: String?
@@ -47,6 +48,9 @@ class VenueChatViewController: JSQMessagesViewController {
 //        self.inputToolbar?.hidden = true
         
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+        
+        self.collectionView?.emptyDataSetSource = self
+        self.collectionView?.emptyDataSetDelegate = self
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -162,5 +166,20 @@ class VenueChatViewController: JSQMessagesViewController {
         }
         
         return kJSQMessagesCollectionViewCellLabelHeightDefault
+    }
+    
+    
+    // MARK: DZNEmptyDataSet
+    
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let title = ":-x"
+        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
+        return NSAttributedString(string: title, attributes: attributes)
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let description = "It's quiet around here. \nGo check this place out and be first to join the chat!"
+        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+        return NSAttributedString(string: description, attributes: attributes)
     }
 }

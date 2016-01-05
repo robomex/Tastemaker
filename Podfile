@@ -7,5 +7,6 @@ pod 'MBProgressHUD', '~> 0.9.1'
 pod 'TTTAttributedLabel'
 pod 'Onboard'
 pod 'Instructions', '~> 0.3'
+pod 'DZNEmptyDataSet'
 
 use_frameworks!
