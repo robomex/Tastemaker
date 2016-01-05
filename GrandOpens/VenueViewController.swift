@@ -66,9 +66,15 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             
         }
         
+        // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
             self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+        }
+        
+        // Hide the chat inputToolbar unless they've visited the venue
+        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) {
+            chatVC.inputToolbar?.hidden = true
         }
     }
 
