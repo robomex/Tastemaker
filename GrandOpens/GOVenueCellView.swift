@@ -142,6 +142,9 @@ class GOVenueCellView: PFTableViewCell {
         self.voteButton!.enabled = visited
         if visited {
             self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.25)
+        } else if venueNameLabel!.text == "Chicago Chat" {
+            self.voteButton!.enabled = true
+            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.25)
         }
     }
     

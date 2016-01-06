@@ -147,7 +147,15 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             return query
         }
         
+        var today = NSDate()
+        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+        calendar.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
+        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
+        
         let query = PFQuery(className: self.parseClassName!)
+        query.whereKey("openingDate", greaterThanOrEqualTo: standardOpeningDateCoverage)
+        query.whereKey("openingDate", lessThan: today)
         query.orderByDescending("openingDate")
         
         // A pull-to-refresh should always trigger a network request.
