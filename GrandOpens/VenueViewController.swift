@@ -73,7 +73,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
         
         // Hide the chat inputToolbar unless they've visited the venue
-        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) {
+        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) && venue!.objectForKey("name") as! String != "Chicago Chat" {
             chatVC.inputToolbar?.hidden = true
         }
     }
