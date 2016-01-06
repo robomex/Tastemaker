@@ -26,6 +26,11 @@ let kRed = UIColor(red: 0xd9/255, green: 0x1e/255, blue: 0x18/255, alpha: 1.0) /
 let kPurple = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0) // Wisteria
 let kGray = UIColor(red: 0x4a/255, green: 0x4a/255, blue: 0x4a/255, alpha: 1.0)
 
+
+// MARK: Timeframes
+let kStandardDaysOfOpeningsCovered = 47
+
+
 // MARK: User Info Keys
 let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
 let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"
