@@ -81,6 +81,11 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
                 mapView.setRegion(coordinateRegion, animated: false)
                 
+                // Show user location on map if location services are .AuthorizedAlways
+                if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
+                    mapView.showsUserLocation = true
+                }
+                
                 // Add annotation pin
                 let venuePin = MKPointAnnotation()
                 venuePin.coordinate = venueLocation.coordinate
