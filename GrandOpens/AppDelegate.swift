@@ -203,17 +203,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // MARK: CLLocationManagerDelegate
     
-    // The below will be used when/if MapViews are added to GO, this prevents the user location from being attempted to be displayed when permission may not have yet been requested
-//        func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-//            mapView!.showsUserLocation = (status == .AuthorizedAlways)
-//        }
-    
     func regionFromVenue(venue: PFObject) -> CLCircularRegion {
 
         let venueLocation = venue.objectForKey(kVenueLocation) as? PFGeoPoint
         let venueLocation2D = venueLocation?.locationCoordinate2D()
         let region = CLCircularRegion(center: venueLocation2D!, radius: 40.0, identifier: venue.objectId!)
-        //        let region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: (venue.objectForKey(kVenueLocation)?.latitude)!, longitude: (venue.objectForKey(kVenueLocation)?.longitude)!), radius: 40.0, identifier: venue.objectId!)
         region.notifyOnEntry = true
         return region
     }
