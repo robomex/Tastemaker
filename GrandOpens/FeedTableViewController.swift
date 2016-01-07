@@ -10,7 +10,6 @@ import UIKit
 import Parse
 import ParseUI
 import Synchronized
-//import CoreLocation
 import Instructions
 
 class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource
@@ -66,10 +65,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
-        // CoreLocation items
-//        locationManager.delegate = self
-//        locationManager.requestAlwaysAuthorization()
         
         self.coachMarksController.datasource = self
         self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
