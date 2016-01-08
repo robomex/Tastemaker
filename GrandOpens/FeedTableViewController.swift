@@ -393,12 +393,12 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         
         switch(index) {
         case 0:
-            coachViews.bodyView.hintLabel.text = "Newest places show up on top automatically"
+            coachViews.bodyView.hintLabel.text = "Newest places show up on top automatically, 30+ new places a month"
             coachViews.bodyView.nextLabel.text = "OK!"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted, visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
+            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted blue, visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
             coachViews.bodyView.hintLabel.textAlignment = .Left
             coachViews.bodyView.nextLabel.text = "Got it!"
         case 2:
