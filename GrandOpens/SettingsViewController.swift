@@ -34,6 +34,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         settingsTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "settingsCell")
         settingsTableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         self.view.addSubview(settingsTableView)
+        
+        self.navigationController!.navigationBar.translucent = false
     }
     
     override func viewWillAppear(animated: Bool) {

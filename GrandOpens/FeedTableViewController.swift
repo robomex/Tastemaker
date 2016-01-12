@@ -71,6 +71,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         self.coachMarksController.allowOverlayTap = true
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
+        self.navigationController!.navigationBar.translucent = false
         
         // Register to be notified when a voted/unvoted callback finished
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
