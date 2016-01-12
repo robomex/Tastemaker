@@ -96,16 +96,16 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         // Address and neighborhood
         
-        let addressAndNeighborhoodTableView = UITableView()
-        addressAndNeighborhoodTableView.frame = CGRectMake(0, 285, UIScreen.mainScreen().bounds.width, 80)
-        addressAndNeighborhoodTableView.dataSource = self
-        addressAndNeighborhoodTableView.delegate = self
-        addressAndNeighborhoodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        self.view.addSubview(addressAndNeighborhoodTableView)
+        let addressNeighborhoodPhoneTableView = UITableView()
+        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 285, UIScreen.mainScreen().bounds.width, 88)
+        addressNeighborhoodPhoneTableView.dataSource = self
+        addressNeighborhoodPhoneTableView.delegate = self
+        addressNeighborhoodPhoneTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.view.addSubview(addressNeighborhoodPhoneTableView)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -113,25 +113,46 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
-        cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as? String
-        cell.detailTextLabel?.text = venue!.objectForKey(kVenueNeighborhood) as? String
-        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-        return cell
+        switch (indexPath.row) {
+        case 0:
+            let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
+            cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as? String
+            cell.detailTextLabel?.text = venue!.objectForKey(kVenueNeighborhood) as? String
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            return cell
+        case 1:
+            let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+            cell.textLabel?.text = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Not Found"
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            return cell
+        default:
+            return UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+        }
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let alertController = UIAlertController(title: "Open the Maps app to navigate to this venue?", message: nil,
-            //"Choose below to navigate to this venue in the Maps app", 
-            preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) in
-            print("Cancel")
-        }))
-        alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
-            let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-            self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
-        }))
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+
+        switch (indexPath.row) {
+        case 0:
+            let alertController = UIAlertController(title: "Open the Maps app to navigate to this venue?", message: nil, preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) in
+                print("Cancel")
+            }))
+            alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+                self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+            }))
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        case 1:
+            let formattedPhoneNumber = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Not Found"
+            let stringArray = formattedPhoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
+            let phoneNumber = stringArray.joinWithSeparator("")
+            if let url = NSURL(string: "tel://\(phoneNumber)") {
+                UIApplication.sharedApplication().openURL(url)
+            }
+        default:
+            return
+        }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     

@@ -71,6 +71,7 @@ let kVenueNeighborhood                          = "neighborhood"
 let kVenueDescription                           = "description"
 let kVenueFoodType                              = "foodType"
 let kVenueLocation                              = "location"
+let kVenuePhoneNumber                           = "phoneNumber"
 
 
 // MARK: Cached Venue Attributes
