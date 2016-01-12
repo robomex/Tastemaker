@@ -19,7 +19,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,15 +45,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
         self.edgesForExtendedLayout = UIRectEdge.None
         self.navigationController!.navigationBar.translucent = false
-        
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
-        
+
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
@@ -62,6 +57,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.finishReceivingMessage()
             })
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         
         self.automaticallyScrollsToMostRecentMessage = true
         self.scrollToBottomAnimated(true)
