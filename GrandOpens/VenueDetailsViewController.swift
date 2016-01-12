@@ -46,7 +46,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMMM d"
         // Need to add a day in seconds since iOS is reading a 00:00 time as the previous day
-        let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate.dateByAddingTimeInterval(60 * 60 * 24))
+        let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
         venueFoodTypeAndOpeningDateLabel.font = UIFont.italicSystemFontOfSize(13.0)
@@ -149,9 +149,4 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Pass the selected object to the new view controller.
     }
     */
-//    
-//    func centerMapOnLocation(location: CLLocation) {
-//        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
-//        mapView.setRegion(coordinateRegion, animated: true)
-//    }
 }
