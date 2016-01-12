@@ -79,14 +79,14 @@ class GOVenueCellView: PFTableViewCell {
         }
         
         // Venue name label - COME BACK LATER AND FIX THIS SHITTY ARBITRARY SPACING
-        self.venueNameLabel = UILabel(frame: CGRectMake(50.0, 15.0, containerView!.bounds.size.width - 50.0 - 72.0, 26.0))
+        self.venueNameLabel = UILabel(frame: CGRectMake(50.0, 15.0, containerView!.bounds.size.width - 50.0, 26.0))
         containerView!.addSubview(self.venueNameLabel!)
         self.venueNameLabel!.textColor = UIColor.blackColor()
         self.venueNameLabel!.font = UIFont.systemFontOfSize(22.0)
         self.venueNameLabel!.backgroundColor = UIColor.clearColor()
         
         // Venue neighborhood label
-        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(50.0, 42.0, containerView!.bounds.size.width - 50.0 - 72.0, 18.0))
+        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(50.0, 42.0, containerView!.bounds.size.width - 50.0, 18.0))
         containerView!.addSubview(self.venueNeighborhoodLabel!)
         self.venueNeighborhoodLabel!.textColor = UIColor.blackColor()
         self.venueNeighborhoodLabel!.font = UIFont.systemFontOfSize(14.0)
