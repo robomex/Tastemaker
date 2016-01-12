@@ -30,9 +30,10 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         detailsVC.venue = venue
         setViewControllers([chatVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
         
-        let frame = UIScreen.mainScreen().bounds
+        let segmentedControlWidth = 140 as CGFloat
+        let screenWidth = self.view.frame.size.width
         segmentedControl = UISegmentedControl(items: ["Chat", "Details"])
-        segmentedControl.frame = CGRectMake(frame.minX + 100, frame.minY + 70, frame.width - 200, frame.height * 0.04)
+        segmentedControl.frame = CGRectMake((screenWidth / 2) - (segmentedControlWidth / 2), 10, segmentedControlWidth, 25)
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.addTarget(self, action: "venueSegmentedControlAction:", forControlEvents: .ValueChanged)
         segmentedControl.backgroundColor = UIColor.whiteColor()

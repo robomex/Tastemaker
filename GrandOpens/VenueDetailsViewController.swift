@@ -24,7 +24,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Description label
         
         let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 80))
-        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 150)
+        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 85)
         
         let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
         venueDescriptionLabel.text = venueDescription
@@ -39,7 +39,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Opening date and food type label
         
         let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
-        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 175)
+        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 110)
         
         let venueFoodType: String = venue!.objectForKey(kVenueFoodType) as! String
         let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
@@ -62,7 +62,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.mapType = .Standard
         mapView.delegate = self
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
-        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 265)
+        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
         
         let venueAddress = venue!.objectForKey(kVenueAddress) as! String
         let geocoder = CLGeocoder()
@@ -97,7 +97,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Address and neighborhood
         
         let addressAndNeighborhoodTableView = UITableView()
-        addressAndNeighborhoodTableView.frame = CGRectMake(0, 350, UIScreen.mainScreen().bounds.width, 80)
+        addressAndNeighborhoodTableView.frame = CGRectMake(0, 285, UIScreen.mainScreen().bounds.width, 80)
         addressAndNeighborhoodTableView.dataSource = self
         addressAndNeighborhoodTableView.delegate = self
         addressAndNeighborhoodTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")

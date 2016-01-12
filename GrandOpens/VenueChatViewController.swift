@@ -42,10 +42,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.senderId = currentUser()!.id
         self.senderDisplayName = currentUser()!.name
 
-        self.topContentAdditionalInset = 64.0
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
-
-//        self.inputToolbar?.hidden = true
+        self.edgesForExtendedLayout = UIRectEdge.None
+        self.navigationController!.navigationBar.translucent = false
         
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         
@@ -66,13 +65,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         self.automaticallyScrollsToMostRecentMessage = true
         self.scrollToBottomAnimated(true)
-//        self.inputToolbar?.contentView?.textView?.becomeFirstResponder()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         
-//        self.inputToolbar?.contentView?.textView?.becomeFirstResponder()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -119,9 +116,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        // Commenting out the next two lines in an attempt to prevent duplicate messages from displaying due to the messageListener picking up multiple appends, even if multiple messages aren't being saved to Firebase
-        //        let m = JSQMessage(senderId: senderId, senderDisplayName: senderDisplayName, date: date, text: text)
-        //        self.messages.append(m)
         
         if let id = venueID {
             saveMessage(id, message: Message(message: text, senderID: senderId, senderName: senderDisplayName, date: date))
