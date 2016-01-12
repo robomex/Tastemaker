@@ -48,7 +48,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     func step1() {
         phoneNumber = ""
-        textField.placeholder = "555-649-2568"
+        textField.placeholder = "(555) 649-2568"
         questionLabel.text = "Enter your 10-digit US phone number to discover and chat about the newest places around."
         subtitleLabel.text = "We will send you an SMS to verify your account (standard SMS rates may apply)."
         sendCodeButton.setTitle("Log In", forState: UIControlState.Normal)
