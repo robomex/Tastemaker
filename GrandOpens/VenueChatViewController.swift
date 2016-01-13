@@ -40,7 +40,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         }
         
         self.senderId = currentUser()!.id
-        self.senderDisplayName = currentUser()!.name
+            
+        if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
+            self.senderDisplayName = "A No-Name Person"
+        } else {
+            self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
+        }
 
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
         self.edgesForExtendedLayout = UIRectEdge.None
