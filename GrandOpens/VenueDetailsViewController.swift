@@ -122,7 +122,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             return cell
         case 1:
             let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
-            cell.textLabel?.text = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Not Found"
+            cell.textLabel?.text = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Phone Number Not Found"
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             return cell
         default:
@@ -144,7 +144,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         case 1:
-            let formattedPhoneNumber = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Not Found"
+            let formattedPhoneNumber = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Phone Number Not Found"
             let stringArray = formattedPhoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
             let phoneNumber = stringArray.joinWithSeparator("")
             if let url = NSURL(string: "tel://\(phoneNumber)") {
