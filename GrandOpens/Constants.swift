@@ -16,8 +16,8 @@ let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopen
 
 
 // MARK: URLs
-let kPrivacyPolicyURL = "https://www.apple.com"
-let kTermsOfServiceURL = "https://www.google.com"
+let kPrivacyPolicyURL = "https://grandopens.com/privacy"
+let kTermsOfServiceURL = "https://grandopens.com/terms"
 
 
 // MARK: Colors
