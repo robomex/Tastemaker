@@ -90,8 +90,10 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/JSQSystemSoundPlayer.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/Onboard.framework"
+  install_framework "Pods/ReachabilitySwift.framework"
   install_framework "Pods/Synchronized.framework"
   install_framework "Pods/TTTAttributedLabel.framework"
+  install_framework "Pods/Whisper.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/DZNEmptyDataSet.framework"
@@ -100,6 +102,8 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/JSQSystemSoundPlayer.framework"
   install_framework "Pods/MBProgressHUD.framework"
   install_framework "Pods/Onboard.framework"
+  install_framework "Pods/ReachabilitySwift.framework"
   install_framework "Pods/Synchronized.framework"
   install_framework "Pods/TTTAttributedLabel.framework"
+  install_framework "Pods/Whisper.framework"
 fi

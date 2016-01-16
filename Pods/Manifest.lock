@@ -7,8 +7,10 @@ PODS:
   - JSQSystemSoundPlayer (2.0.1)
   - MBProgressHUD (0.9.1)
   - Onboard (2.1.7)
+  - ReachabilitySwift (2.3.3)
   - Synchronized (2.0.0)
   - TTTAttributedLabel (1.13.4)
+  - Whisper (2.0.2)
 
 DEPENDENCIES:
   - DZNEmptyDataSet
@@ -17,8 +19,10 @@ DEPENDENCIES:
   - JSQMessagesViewController (~> 7.2)
   - MBProgressHUD (~> 0.9.1)
   - Onboard
+  - ReachabilitySwift
   - Synchronized
   - TTTAttributedLabel
+  - Whisper
 
 SPEC CHECKSUMS:
   DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
@@ -28,7 +32,9 @@ SPEC CHECKSUMS:
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
+  ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   Synchronized: 576e9b6c148d49cbb5a60cbcb2a7569768f4ec79
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
+  Whisper: 49abcba82d23dd20f0a9a025797cacd09c8aa3bb
 
 COCOAPODS: 0.39.0
