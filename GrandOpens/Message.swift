@@ -1,5 +1,5 @@
 //
-//  Message.swift
+//  ChatMessage.swift
 //  GrandOpens
 //
 //  Created by Tony Morales on 7/23/15.
@@ -9,7 +9,7 @@
 import Foundation
 import Parse
 
-struct Message {
+struct ChatMessage {
     let message: String
     let senderID: String
     let senderName: String
@@ -19,10 +19,10 @@ struct Message {
 class MessageListener {
     var currentHandle: UInt?
     
-    init (venueID: String, startDate: NSDate, callback: (Message) -> ()) {
+    init (venueID: String, startDate: NSDate, callback: (ChatMessage) -> ()) {
         let handle = ref.childByAppendingPath(venueID).queryOrderedByKey().queryStartingAtValue(dateFormatter().stringFromDate(startDate)).observeEventType(FEventType.ChildAdded, withBlock: {
             snapshot in
-            let message = snapshotToMessage(snapshot)
+            let message = snapshotToChatMessage(snapshot)
             callback(message)
         })
         self.currentHandle = handle
@@ -44,27 +44,27 @@ private func dateFormatter() -> NSDateFormatter {
     return dateFormatter
 }
 
-func saveMessage(venueID: String, message: Message) {
+func saveChatMessage(venueID: String, message: ChatMessage) {
     ref.childByAppendingPath(venueID).updateChildValues([dateFormatter().stringFromDate(message.date) : ["message": message.message, "sender": message.senderID, "senderName": message.senderName]])
 }
 
-private func snapshotToMessage(snapshot: FDataSnapshot) -> Message {
+private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
     let date = dateFormatter().dateFromString(snapshot.key)
     let sender = snapshot.value["sender"] as? String
     let text = snapshot.value["message"] as? String
     let senderName = snapshot.value["senderName"] as? String
-    return Message(message: text!, senderID: sender!, senderName: senderName!, date: date!)
+    return ChatMessage(message: text!, senderID: sender!, senderName: senderName!, date: date!)
 }
 
-func fetchMessages(venueID: String, callback: ([Message]) -> ()) {
+func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
     ref.childByAppendingPath(venueID).queryLimitedToFirst(25).observeSingleEventOfType(FEventType.Value, withBlock: {
         snapshot in
         
-        var messages = Array<Message>()
+        var messages = Array<ChatMessage>()
         let enumerator = snapshot.children
         
         while let data = enumerator.nextObject() as? FDataSnapshot {
-            messages.append(snapshotToMessage(data))
+            messages.append(snapshotToChatMessage(data))
         }
         callback(messages)
     })

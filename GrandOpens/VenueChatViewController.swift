@@ -122,7 +122,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         
         if let id = venueID {
-            saveMessage(id, message: Message(message: text, senderID: senderId, senderName: senderDisplayName, date: date))
+            saveChatMessage(id, message: ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date))
         }
         
         finishSendingMessage()
