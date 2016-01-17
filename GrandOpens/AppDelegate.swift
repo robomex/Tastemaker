@@ -13,14 +13,12 @@ import Bolts
 import MBProgressHUD
 import CoreLocation
 import ReachabilitySwift
-import Whisper
 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
-    var networkStatus: Reachability.NetworkStatus?
     var feedTableViewController: FeedTableViewController?
     var initialViewController: InitialViewController?
     var listViewController: ListViewController?
@@ -46,7 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
         // Use Reachability to monitor connectivity
-        self.monitorReachability()
+        let reachability = try! Reachability.reachabilityForInternetConnection()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+        try! reachability.startNotifier()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
@@ -91,10 +91,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     
     // MARK: AppDelegate
-    
-    func isParseReachable() -> Bool {
-        return self.networkStatus != .NotReachable
-    }
 
     func presentTabBarController() {
         self.tabBarController = GOTabBarController()
@@ -171,38 +167,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
     }
     
-    func monitorReachability() {
+    func reachabilityChanged(note: NSNotification) {
+        let reachability = note.object as! Reachability
         
-        let reachability: Reachability
-        do {
-            reachability = try Reachability.reachabilityForInternetConnection()
-        } catch {
-            print("Unable to create Reachability")
-            return
-        }
-        
-        reachability.whenReachable = { (reach: Reachability) in
-            self.networkStatus = reach.currentReachabilityStatus
-            if self.isParseReachable() && PFUser.currentUser() != nil && self.feedTableViewController!.objects!.count == 0 {
-                // Refresh home on network restoration. Takes care of freshly installed app that failed to load the home list under bad network conditions.
-                // In this case, they'd see an empty list placeholder (once I add one) and have no way of refreshing the list
-                self.feedTableViewController!.loadObjects()
+        if reachability.isReachable() {
+            if reachability.isReachableViaWiFi() {
+                print("reachable via wifi")
+            } else {
+                print("reachable via cellular")
             }
-        }
-        
-        reachability.whenUnreachable = { (reach: Reachability) in
-            self.networkStatus = reach.currentReachabilityStatus
-            let announcement = Announcement(title: "Internet connect lost!", subtitle: "Shit! You ain't connected!", image: nil, duration: 5.0, action: nil)
-            Shout(announcement, to: self)
-        }
-        
-        do {
-            try reachability.startNotifier()
-        } catch {
-            print("Unable to start notifier")
+        } else {
+            print("not reachable")
         }
     }
-    
+
     
     // MARK: CoreLocation
     
