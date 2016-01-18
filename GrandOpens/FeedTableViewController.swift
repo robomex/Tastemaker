@@ -427,18 +427,20 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     func reachabilityChanged(note: NSNotification) {
         let reachability = note.object as! Reachability
         
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
-                print("reachable via wifi")
+        dispatch_async(dispatch_get_main_queue()) {
+            if reachability.isReachable() {
+                if reachability.isReachableViaWiFi() {
+                    print("reachable via wifi - feedTableVC")
+                } else {
+                    print("reachable via cellular - feedTableVC")
+                }
             } else {
-                print("reachable via cellular")
+                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "Try again in a bit", image: nil, duration: 4.0, action: nil)
+                ColorList.Shout.background = kRed
+                ColorList.Shout.title = UIColor.whiteColor()
+                ColorList.Shout.subtitle = UIColor.whiteColor()
+                Shout(announcement, to: self)
             }
-        } else {
-            let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "Try again in a bit", image: nil, duration: 4.0, action: nil)
-            ColorList.Shout.background = kRed
-            ColorList.Shout.title = UIColor.whiteColor()
-            ColorList.Shout.subtitle = UIColor.whiteColor()
-            Shout(announcement, to: self)
         }
     }
     

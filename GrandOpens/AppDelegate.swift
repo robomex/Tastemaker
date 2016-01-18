@@ -12,7 +12,7 @@ import Parse
 import Bolts
 import MBProgressHUD
 import CoreLocation
-import ReachabilitySwift
+//import ReachabilitySwift
 
 
 @UIApplicationMain
@@ -44,9 +44,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
 
         // Use Reachability to monitor connectivity
-        let reachability = try! Reachability.reachabilityForInternetConnection()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
-        try! reachability.startNotifier()
+//        let reachability = try! Reachability.reachabilityForInternetConnection()
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+//        try! reachability.startNotifier()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
@@ -167,19 +167,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
     }
     
-    func reachabilityChanged(note: NSNotification) {
-        let reachability = note.object as! Reachability
-        
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
-                print("reachable via wifi")
-            } else {
-                print("reachable via cellular")
-            }
-        } else {
-            print("not reachable")
-        }
-    }
+//    func reachabilityChanged(note: NSNotification) {
+//        let reachability = note.object as! Reachability
+//        
+//        if reachability.isReachable() {
+//            if reachability.isReachableViaWiFi() {
+//                print("reachable via wifi - appdelegate")
+//            } else {
+//                print("reachable via cellular - appdelegate")
+//            }
+//        } else {
+//            print("not reachable - appdelegate")
+//        }
+//    }
 
     
     // MARK: CoreLocation
