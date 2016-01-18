@@ -184,9 +184,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         dispatch_async(dispatch_get_main_queue()) {
             if reachability.isReachable() {
                 if reachability.isReachableViaWiFi() {
-                    print("reachable via wifi - feedTableVC")
+                    print("reachable via wifi - venueVC")
                 } else {
-                    print("reachable via cellular - feedTableVC")
+                    print("reachable via cellular - venueVC")
                 }
             } else {
                 let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "Try again in a bit", image: nil, duration: 4.0, action: nil)
