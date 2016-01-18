@@ -8,5 +8,7 @@ pod 'TTTAttributedLabel'
 pod 'Onboard'
 pod 'Instructions', '~> 0.3'
 pod 'DZNEmptyDataSet'
+pod 'ReachabilitySwift'
+pod 'Whisper'
 
 use_frameworks!

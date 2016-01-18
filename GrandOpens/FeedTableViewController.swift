@@ -11,28 +11,21 @@ import Parse
 import ParseUI
 import Synchronized
 import Instructions
+import ReachabilitySwift
+import Whisper
 
-class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource
-//, CLLocationManagerDelegate 
-{
+class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
 
     var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
     var outstandingVenueCellViewQueries: [NSObject: AnyObject]
-//    let locationManager = CLLocationManager()
     let coachMarksController = CoachMarksController()
+    let reachability = try! Reachability.reachabilityForInternetConnection()
     
     // MARK: Initialization
     
-    deinit {
-        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
-        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
-        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
-    }
-    
     override init(style: UITableViewStyle, className: String?) {
         self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
-        
         super.init(style: style, className: kVenueClassKey)
         
         // The className to query on
@@ -59,7 +52,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -77,6 +70,15 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
+        defaultNotificationCenter.addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+        try! reachability.startNotifier()
+    }
+    
+    deinit {
+        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
+        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
+        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
+        defaultNotificationCenter.removeObserver(self, name: ReachabilityChangedNotification, object: reachability)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -162,7 +164,9 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         //
         // If there is no network connection, we will hit the cache first.
         
-        if self.objects!.count == 0 || (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) {
+        if self.objects!.count == 0
+            //|| (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) 
+        {
             query.cachePolicy = PFCachePolicy.CacheThenNetwork
         }
         
@@ -418,6 +422,26 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     func userDidVoteOrUnvoteVenue(note: NSNotification) {
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
+    }
+
+    func reachabilityChanged(note: NSNotification) {
+        let reachability = note.object as! Reachability
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            if reachability.isReachable() {
+                if reachability.isReachableViaWiFi() {
+                    print("reachable via wifi - feedTableVC")
+                } else {
+                    print("reachable via cellular - feedTableVC")
+                }
+            } else {
+                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "Try again in a bit", image: nil, duration: 4.0, action: nil)
+                ColorList.Shout.background = kRed
+                ColorList.Shout.title = UIColor.whiteColor()
+                ColorList.Shout.subtitle = UIColor.whiteColor()
+                Shout(announcement, to: self)
+            }
+        }
     }
     
     func indexForObjectAtIndexPath(indexPath: NSIndexPath) -> Int {
