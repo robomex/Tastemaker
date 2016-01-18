@@ -439,8 +439,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             ColorList.Shout.title = UIColor.whiteColor()
             ColorList.Shout.subtitle = UIColor.whiteColor()
             Shout(announcement, to: self)
-//            let message = Message(title: "Internet connection lost!", textColor: UIColor.whiteColor(), backgroundColor: kRed, images: nil)
-//            Whisper(message, to: self.navigationController!)
         }
     }
     
