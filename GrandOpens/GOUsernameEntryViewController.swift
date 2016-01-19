@@ -19,7 +19,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         
         // Username explanation label
         let usernameExplanationLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 30, 40))
-        usernameExplanationLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 93)
+        usernameExplanationLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 28)
         usernameExplanationLabel.textAlignment = NSTextAlignment.Center
         usernameExplanationLabel.font = UIFont.systemFontOfSize(14)
         usernameExplanationLabel.numberOfLines = 0
@@ -28,7 +28,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(usernameExplanationLabel)
         
         // Username entry field
-        usernameTextField = TextField(frame: CGRectMake(0, 125, UIScreen.mainScreen().bounds.width, 40))
+        usernameTextField = TextField(frame: CGRectMake(0, 60, UIScreen.mainScreen().bounds.width, 40))
         usernameTextField.placeholder = "Joey Joe Joe Jr. S."
         usernameTextField.font = UIFont.systemFontOfSize(18)
         usernameTextField.borderStyle = UITextBorderStyle.None
@@ -43,7 +43,7 @@ class GOUsernameEntryViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(usernameTextField)
         
         // Save button
-        let saveButton = UIButton(frame: CGRect(x: 40, y: 175, width: UIScreen.mainScreen().bounds.width - 80, height: 40))
+        let saveButton = UIButton(frame: CGRect(x: 40, y: 110, width: UIScreen.mainScreen().bounds.width - 80, height: 40))
         saveButton.backgroundColor = UIColor(red: 0x9b/255, green: 0x59/255, blue: 0xb6/255, alpha: 1.0)
         saveButton.setTitle("Save", forState: .Normal)
         saveButton.titleLabel?.font = UIFont.boldSystemFontOfSize(18.0)
