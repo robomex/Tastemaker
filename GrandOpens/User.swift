@@ -13,6 +13,16 @@ struct User {
     let id: String
     let name: String
     private let pfUser: PFUser
+    
+    func getPhoto(callback:(UIImage) -> ()) {
+        let imageFile = pfUser.objectForKey("picture") as! PFFile
+        imageFile.getDataInBackgroundWithBlock({
+            data, error in
+            if let data = data {
+                callback(UIImage(data: data)!)
+            }
+        })
+    }
 }
 
 func pfUserToUser(user: PFUser) -> User {

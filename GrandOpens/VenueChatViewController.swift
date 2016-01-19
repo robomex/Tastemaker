@@ -16,17 +16,18 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var messages: [JSQMessage] = []
     var venueID: String?
     var messageListener: MessageListener?
-    
+    var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
+    var senderImageURL: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         
-        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+//        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
+//        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         
         if let id = venueID {
             fetchMessages(id, callback: {
@@ -164,6 +165,87 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         }
         
         return kJSQMessagesCollectionViewCellLabelHeightDefault
+    }
+    
+    
+    // Avatars
+    
+    func setupAvatarImage(id: String, name: String,
+        //imageURL: String?, 
+        incoming: Bool) {
+        
+//        if let PFObject.
+//        if let stringURL = imageURL {
+//            if let url = NSURL(string: stringURL) {
+//                if let data = NSData(contentsOfURL: url) {
+//                    let image = UIImage(data: data)
+//                    let diameter = incoming ? UInt((collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
+//                    let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
+//                    avatars[name] = avatarImage
+//                    return
+//                }
+//            }
+//        }
+//        if let user = PFQuery.getUserObjectWithId(name) {
+//            if let avatar = user.objectForKey("picture") {
+//                avatar.getDataInBackgroundWithBlock({ (data, error) -> Void in
+//                    if let data = data where error == nil {
+//                        let image = UIImage(data: data)
+//                        let diameter = incoming ? UInt((self.collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((self.collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
+//                        let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
+//                        self.avatars[name] = avatarImage
+//                        return
+//                    }
+//                    
+//                    // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
+//                    self.setupAvatarColor(name, incoming: incoming)
+//                })
+//            }
+//        }
+//        let user = PFQuery.getUserObjectWithId(name)
+//        pfUserToUser(user!).getPhoto({
+//            image in
+//            let image = image
+//            let diameter = incoming ? UInt((self.collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((self.collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
+//            let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
+//            self.avatars[name] = avatarImage
+//            return
+//        })
+            
+        // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
+        self.setupAvatarColor(id, name: name, incoming: incoming)
+    }
+    
+    func setupAvatarColor(id: String, var name: String, incoming: Bool) {
+        let diameter = incoming ? UInt((collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
+        
+        let rgbValue = id.hash
+        let r = CGFloat(Float((rgbValue & 0xFF0000) >> 16)/255.0)
+        let g = CGFloat(Float((rgbValue & 0xFF00) >> 8)/255.0)
+        let b = CGFloat(Float(rgbValue & 0xFF)/255.0)
+        let color = UIColor(red: r, green: g, blue: b, alpha: 0.5)
+        
+        if name == "" {
+            name = "??"
+        }
+        
+        let nameLength = name.characters.count
+        let initials: String? = name.substringToIndex(name.startIndex.advancedBy(1))//min(3, nameLength)))
+        let userImage = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: color, textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(13), diameter: diameter)
+        
+        avatars[id] = userImage
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+        let message = messages[indexPath.item]
+        if let avatar = avatars[message.senderId] {
+            return avatar
+        } else {
+            setupAvatarImage(message.senderId, name: message.senderDisplayName,
+                //imageURL: message.imageURL(), 
+                incoming: true)
+            return avatars[message.senderId]
+        }
     }
     
     
