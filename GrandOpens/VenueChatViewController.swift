@@ -226,11 +226,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let color = UIColor(red: r, green: g, blue: b, alpha: 0.5)
         
         if name == "" {
-            name = "??"
+            name = "?"
         }
         
-        let nameLength = name.characters.count
-        let initials: String? = name.substringToIndex(name.startIndex.advancedBy(1))//min(3, nameLength)))
+        let initials: String? = name.substringToIndex(name.startIndex.advancedBy(1))
         let userImage = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: color, textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(13), diameter: diameter)
         
         avatars[id] = userImage
