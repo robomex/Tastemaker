@@ -16,7 +16,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var messages: [JSQMessage] = []
     var venueID: String?
     var messageListener: MessageListener?
-//    var userIDs = [String]()
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
@@ -26,16 +25,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         // Do any additional setup after loading the view.
         
-//        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-//        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
-        
         if let id = venueID {
             fetchMessages(id, callback: {
                 messages in
                 
                 for m in messages {
                     self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
-//                    self.userIDs.append(m.senderID)
                 }
                 self.finishReceivingMessage()
             })
@@ -61,8 +56,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
                 self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
-//                let user: PFUser = PFQuery.getUserObjectWithId(message.senderID)!
-//                self.userIDs.append(message.senderID)
                 self.finishReceivingMessage()
             })
         }
@@ -133,6 +126,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     // View usernames above bubbles
+    
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = messages[indexPath.item]
         
@@ -189,48 +183,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     // Avatars
     
-    func setupAvatarImage(id: String, name: String,
-        //imageURL: String?, 
-        incoming: Bool) {
+    func setupAvatarImage(id: String, name: String, incoming: Bool) {
         
-//        if let PFObject.
-//        if let stringURL = imageURL {
-//            if let url = NSURL(string: stringURL) {
-//                if let data = NSData(contentsOfURL: url) {
-//                    let image = UIImage(data: data)
-//                    let diameter = incoming ? UInt((collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
-//                    let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
-//                    avatars[name] = avatarImage
-//                    return
-//                }
-//            }
-//        }
-//        if let user = PFQuery.getUserObjectWithId(name) {
-//            if let avatar = user.objectForKey("picture") {
-//                avatar.getDataInBackgroundWithBlock({ (data, error) -> Void in
-//                    if let data = data where error == nil {
-//                        let image = UIImage(data: data)
-//                        let diameter = incoming ? UInt((self.collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((self.collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
-//                        let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
-//                        self.avatars[name] = avatarImage
-//                        return
-//                    }
-//                    
-//                    // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
-//                    self.setupAvatarColor(name, incoming: incoming)
-//                })
-//            }
-//        }
-//        let user = PFQuery.getUserObjectWithId(name)
-//        pfUserToUser(user!).getPhoto({
-//            image in
-//            let image = image
-//            let diameter = incoming ? UInt((self.collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((self.collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
-//            let avatarImage = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: diameter)
-//            self.avatars[name] = avatarImage
-//            return
-//        })
-            
         // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
         self.setupAvatarColor(id, name: name, incoming: incoming)
     }
@@ -280,50 +234,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             return avatars[message.senderId]
         }
     }
-
-//    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-//        let message = self.messages[indexPath.item]
-//        if avatars[message.senderId] == nil {
-//            if let user = PFQuery.getUserObjectWithId(message.senderId) {
-//                if let avatar = user.objectForKey("picture") {
-//                    avatar.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
-//                        if error == nil {
-//                            self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
-//                            self.collectionView?.reloadData()
-//                        }
-//                    })
-//                }
-//            }
-//            self.setupAvatarImage(message.senderId, name: message.senderDisplayName, incoming: true)
-//            return avatars[message.senderId]
-//        } else {
-//            return avatars[message.senderId]
-//        }
-//    }
-    
-//        let message = self.messages[indexPath.item]
-//        let user = self.users[indexPath.item]
-//        if avatars[message.senderId] == nil {
-//            let thumbnailFile = user["picture"] as? PFFile
-//            thumbnailFile?.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
-//                if error == nil {
-//                    self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
-//                    self.collectionView?.reloadData()
-//                } //else {
-////                    self.setupAvatarImage(message.senderId, name: message.senderDisplayName,
-////                        //imageURL: message.imageURL(),
-////                        incoming: true)
-////                }
-//            
-//            })
-//            self.setupAvatarImage(message.senderId, name: message.senderDisplayName,
-//                //imageURL: message.imageURL(),
-//                incoming: true)
-//            return avatars[message.senderId]
-//        } else {
-//            return avatars[message.senderId]
-//        }
-//    }
     
     
     // MARK: DZNEmptyDataSet
