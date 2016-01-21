@@ -53,10 +53,13 @@ let kActivityTypeKey                            = "type"
 let kActivityTypeVote                           = "vote"
 let kActivityTypeSave                           = "save"
 let kActivityTypeVisit                          = "visit"
+let kActivityTypeMute                           = "mute"
 
 // MARK: User Class
 // Field keys
 let kUserDisplayNameKey                         = "name"
+let kGOUserProfilePicKey                        = "profilePicture"
+let kGOUserProfilePicSmallKey                   = "profilePictureSmall"
 
 
 // MARK: Venue Class
@@ -87,3 +90,4 @@ let kVenueAttributesIsVisitedByCurrentUserKey   = "isVisitedByCurrentUser"
 // keys
 let kUserAttributesVenueVoteCountKey            = "userVenueVoteCount"
 let kUserAttributesIsFollowedByCurrentUserKey   = "isFollowedByCurrentUser"
+let kGOUserAttributesIsMutedByCurrentUserKey    = "isMutedByCurrentUser"

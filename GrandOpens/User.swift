@@ -15,7 +15,7 @@ struct User {
     private let pfUser: PFUser
     
     func getPhoto(callback:(UIImage) -> ()) {
-        let imageFile = pfUser.objectForKey("picture") as! PFFile
+        let imageFile = pfUser.objectForKey(kGOUserProfilePicKey) as! PFFile
         imageFile.getDataInBackgroundWithBlock({
             data, error in
             if let data = data {
