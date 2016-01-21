@@ -50,6 +50,7 @@
 		DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2A1B9E698900D0F221 /* Constants.swift */; };
 		DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2C1BA1408600D0F221 /* GOCache.swift */; };
 		DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */; };
+		DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */; };
 		DEEB760A1B3298B600A94305 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76091B3298B600A94305 /* User.swift */; };
 		DEEB760C1B32990700A94305 /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760B1B32990700A94305 /* Venue.swift */; };
 		DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */; };
@@ -118,6 +119,7 @@
 		DEA5EE2A1B9E698900D0F221 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DEA5EE2C1BA1408600D0F221 /* GOCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOCache.swift; sourceTree = "<group>"; };
 		DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUtility.swift; sourceTree = "<group>"; };
+		DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUserProfileViewController.swift; sourceTree = "<group>"; };
 		DEEB76091B3298B600A94305 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DEEB760B1B32990700A94305 /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 				DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */,
 				DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */,
 				DE283D161B61A1A30003466D /* SettingsViewController.swift */,
+				DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */,
 				DE283D141B61670E0003466D /* InitialViewController.swift */,
 				DE283D121B615F040003466D /* LoginViewController.swift */,
 				DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */,
@@ -493,6 +496,7 @@
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
 				DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */,
 				DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */,
+				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
 				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
