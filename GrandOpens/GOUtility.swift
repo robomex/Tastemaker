@@ -228,6 +228,61 @@ class GOUtility {
         
         return activitiesQuery
     }
+    
+    
+    // MARK: Profile Pics
+    
+    class func userHasProfilePicture(user: PFUser) -> Bool {
+        let profilePicture: PFFile? = user.objectForKey(kGOUserProfilePicKey) as? PFFile
+        let profilePictureSmall: PFFile? = user.objectForKey(kGOUserProfilePicSmallKey) as? PFFile
+        
+        return profilePicture != nil && profilePictureSmall != nil
+    }
+    
+    class func defaultProfilePicture() -> UIImage? {
+        return UIImage(named: "AvatarPlaceholder.png")
+    }
+    
+    
+    // MARK: User Muting
+    
+    class func muteUserInBackground(user: PFUser, block completionBlock: ((succeeded: Bool, error: NSError?) -> Void)?) {
+        if user.objectId == PFUser.currentUser()!.objectId {
+            return
+        }
+        
+        let muteActivity = PFObject(className: kActivityClassKey)
+        muteActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
+        muteActivity.setObject(user, forKey: kActivityToObjectKey)
+        muteActivity.setObject(kActivityTypeMute, forKey: kActivityTypeKey)
+        
+        let muteACL = PFACL(user: PFUser.currentUser()!)
+        muteACL.setPublicReadAccess(true)
+        muteActivity.ACL = muteACL
+        
+        muteActivity.saveInBackgroundWithBlock { (succeeded, error) in
+            if completionBlock != nil {
+                completionBlock!(succeeded: succeeded.boolValue, error: error)
+            }
+        }
+        GOCache.sharedCache.setMuteStatus(true, user: user)
+    }
+    
+    class func unmuteUserInBackground(user: PFUser) {
+        let query = PFQuery(className: kActivityClassKey)
+        query.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        query.whereKey(kActivityToObjectKey, equalTo: user)
+        query.whereKey(kActivityTypeKey, equalTo: kActivityTypeMute)
+        query.findObjectsInBackgroundWithBlock { (muteActivities, error) in
+            // While normally there should only be on mute activity returned, we can't guarantee that, yo
+            if error == nil {
+                for muteActivity: PFObject in muteActivities as! [PFObject] {
+                    muteActivity.deleteInBackground()
+                }
+            }
+        }
+        GOCache.sharedCache.setMuteStatus(false, user: user)
+    }
 }
 
 
