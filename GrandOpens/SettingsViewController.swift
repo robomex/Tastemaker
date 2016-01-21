@@ -151,10 +151,4 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
-//    
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        let backItem = UIBarButtonItem()
-//        backItem.title = " "
-//        navigationItem.backBarButtonItem = backItem
-//    }
 }
