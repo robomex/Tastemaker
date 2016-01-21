@@ -140,6 +140,13 @@ final class GOCache {
         return false
     }
     
+    func setMuteStatus(muting: Bool, user: PFUser) {
+        if var attributes = attributesForUser(user) {
+            attributes[kGOUserAttributesIsMutedByCurrentUserKey] = muting
+            setAttributes(attributes, forUser: user)
+        }
+    }
+    
     
     // MARK: ()
     
