@@ -17,12 +17,13 @@ class GOUserProfileViewController: ListViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if self.user == nil {
-            self.user = PFUser.currentUser()
-        }
         
-        self.navigationItem.title = user?.objectForKey("name") as? String
+        if user?.objectForKey(kUserDisplayNameKey) == nil || (user?.objectForKey(kUserDisplayNameKey))! as! String == "" {
+            self.title = "A No-Namer"
+        } else {
+            self.title = user?.objectForKey(kUserDisplayNameKey) as? String
+        }
+
         super.tabBarController!.tabBar.hidden = true
         
         self.headerView = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.bounds.size.width, 222.0))
@@ -50,7 +51,7 @@ class GOUserProfileViewController: ListViewController {
         profilePictureImageView.alpha = 0.0
         
         if GOUtility.userHasProfilePicture(self.user!) {
-            let imageFile: PFFile? = self.user!.objectForKey(kGOUserProfilePicKey) as? PFFile
+            let imageFile: PFFile! = self.user!.objectForKey(kGOUserProfilePicKey) as! PFFile
             profilePictureImageView.file = imageFile
             profilePictureImageView.loadInBackground { (image, error) in
                 if error == nil {
