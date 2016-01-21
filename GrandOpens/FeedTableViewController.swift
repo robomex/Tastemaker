@@ -59,6 +59,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
+        self.title = "Chicago"
         self.coachMarksController.datasource = self
         self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
         self.coachMarksController.allowOverlayTap = true
@@ -84,7 +85,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        navigationController!.navigationBar.topItem!.title = "Chicago"
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
