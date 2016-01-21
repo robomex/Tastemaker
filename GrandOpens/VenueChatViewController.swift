@@ -17,6 +17,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var venueID: String?
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
+    var userIdList = [String]()
     var users = Dictionary<String, PFUser>()
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
@@ -32,15 +33,17 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 
                 for m in messages {
                     self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                    self.userIdList.append(m.senderID)
                 }
                 self.finishReceivingMessage()
+                self.userIdList = Array(Set(self.userIdList))
             })
         }
         
         self.senderId = currentUser()!.id
             
         if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
-            self.senderDisplayName = "A No-Name Person"
+            self.senderDisplayName = "A No-Namer"
         } else {
             self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
         }
@@ -213,20 +216,22 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let message = self.messages[indexPath.item]
         if avatars[message.senderId] == nil {
             let query = PFUser.query()
-            query?.whereKey("objectId", equalTo: message.senderId)
+            query?.whereKey("objectId", containedIn: userIdList)
 //            query?.selectKeys(["picture"])
             query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
                 if error == nil {
                     for object in objects! {
                         if let thumbnail = object[kGOUserProfilePicSmallKey] as? PFFile {
                             thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
-                                if (error == nil) {
+                                if (error == nil) && message.senderId == object.objectId {
                                     self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
                                     self.collectionView?.reloadData()
                                 }
                             })
                         }
-                        self.users[message.senderId] = object as? PFUser
+                        if message.senderId == object.objectId {
+                            self.users[message.senderId] = object as? PFUser
+                        }
                     }
                 }
             }
@@ -243,7 +248,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let user = users[message.senderId]
         let vc = GOUserProfileViewController()
         vc.user = user
-        vc.title = message.senderDisplayName
         navigationController?.pushViewController(vc, animated: true)
     }
     
