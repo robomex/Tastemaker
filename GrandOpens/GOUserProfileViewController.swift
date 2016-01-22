@@ -157,6 +157,24 @@ class GOUserProfileViewController: ListViewController {
     }
     
     
+    // MARK:- TableViewController
+    
+    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel?.text = user!.objectForKey(kUserDisplayNameKey) as? String ?? "A No-Namer"
+        if header.textLabel?.text == "" {
+            header.textLabel?.text = "A No-Namer"
+        }
+        header.textLabel?.font = UIFont.systemFontOfSize(16)
+        header.textLabel?.textColor = UIColor.darkGrayColor()
+        header.textLabel?.text = header.textLabel!.text! + "'s Saved Venues"
+    }
+    
+   override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30.0
+    }
+    
+    
     // MARK:- ()
     
     func muteButtonAction(sender: AnyObject) {
