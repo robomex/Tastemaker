@@ -82,6 +82,10 @@ class GOUserProfileViewController: ListViewController {
             let backgroundImageView = UIImageView(image: GOUtility.defaultProfilePicture()!)
             backgroundImageView.frame = self.tableView.backgroundView!.bounds
             backgroundImageView.alpha = 0.0
+            backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
+            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
+            visualEffectView.frame = backgroundImageView.bounds
+            backgroundImageView.addSubview(visualEffectView)
             self.tableView.backgroundView!.addSubview(backgroundImageView)
             
             UIView.animateWithDuration(0.2, animations: {
