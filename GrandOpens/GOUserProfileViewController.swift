@@ -145,6 +145,17 @@ class GOUserProfileViewController: ListViewController {
         self.tableView.tableHeaderView = headerView!
     }
     
+    override func queryForTable() -> PFQuery {
+        let userSavedVenues = PFQuery(className: kActivityClassKey)
+        userSavedVenues.cachePolicy = PFCachePolicy.NetworkOnly
+        userSavedVenues.whereKey(kActivityByUserKey, equalTo: user!)
+        userSavedVenues.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        userSavedVenues.orderByAscending("createdAt")
+        userSavedVenues.includeKey(kActivityToObjectKey)
+        
+        return userSavedVenues
+    }
+    
     
     // MARK:- ()
     
