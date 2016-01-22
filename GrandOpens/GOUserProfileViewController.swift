@@ -23,15 +23,13 @@ class GOUserProfileViewController: ListViewController {
         } else {
             self.title = user?.objectForKey(kUserDisplayNameKey) as? String
         }
-
-        super.tabBarController!.tabBar.hidden = true
         
         self.headerView = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.bounds.size.width, 222.0))
         // Should be clear, this will be the container for our avatar, counts, and whatevz later
         self.headerView!.backgroundColor = UIColor.clearColor()
         
         let texturedBackgroundView: UIView = UIView(frame: self.view.bounds)
-        texturedBackgroundView.backgroundColor = UIColor.redColor()
+        texturedBackgroundView.backgroundColor = UIColor.whiteColor()
         self.tableView.backgroundView = texturedBackgroundView
         
         let profilePictureBackgroundView = UIView(frame: CGRectMake(94.0, 38.0, 132.0, 132.0))
@@ -128,6 +126,15 @@ class GOUserProfileViewController: ListViewController {
         super.viewWillAppear(animated)
         
         self.tabBarController!.tabBar.hidden = true
+    }
+    
+    
+    // MARK:- PFQueryTableViewController
+    
+    override func objectsDidLoad(error: NSError?) {
+        super.objectsDidLoad(error)
+        
+        self.tableView.tableHeaderView = headerView!
     }
     
     
