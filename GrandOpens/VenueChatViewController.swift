@@ -26,14 +26,15 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
         if let id = venueID {
             fetchMessages(id, callback: {
                 messages in
                 
                 for m in messages {
-                    self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
-                    self.userIdList.append(m.senderID)
+                    if !GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                        self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                        self.userIdList.append(m.senderID)
+                    }
                 }
                 self.finishReceivingMessage()
                 self.userIdList = Array(Set(self.userIdList))
@@ -59,7 +60,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
-                self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                if !GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
+                    self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                }
                 self.finishReceivingMessage()
             })
         }
