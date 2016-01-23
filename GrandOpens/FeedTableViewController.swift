@@ -73,6 +73,23 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
         defaultNotificationCenter.addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
         try! reachability.startNotifier()
+        
+        // Cache muted users
+        if PFUser.currentUser() != nil {
+            let mutedUsers = PFQuery(className: kUserActivityClassKey)
+            mutedUsers.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
+            mutedUsers.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
+            mutedUsers.includeKey(kUserActivityToUserKey)
+            mutedUsers.cachePolicy = PFCachePolicy.NetworkOnly
+            mutedUsers.findObjectsInBackgroundWithBlock { (activities, error) in
+                if error == nil {
+                    for activity in activities as! [PFObject] {
+                        let user: PFUser? = activity.objectForKey(kUserActivityToUserKey) as? PFUser
+                        GOCache.sharedCache.setAttributesForUser(user!.objectId!, mutedByCurrentUser: true)
+                    }
+                }
+            }
+        }
     }
     
     deinit {
