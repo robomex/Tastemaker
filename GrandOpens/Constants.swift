@@ -71,8 +71,8 @@ let kVenueActivityTypeVisit                     = "visit"
 // MARK: User Class
 // Field keys
 let kUserDisplayNameKey                         = "name"
-let kGOUserProfilePicKey                        = "profilePicture"
-let kGOUserProfilePicSmallKey                   = "profilePictureSmall"
+let kUserProfilePicKey                          = "profilePicture"
+let kUserProfilePicSmallKey                     = "profilePictureSmall"
 
 
 // MARK: Venue Class
@@ -103,4 +103,4 @@ let kVenueAttributesIsVisitedByCurrentUserKey   = "isVisitedByCurrentUser"
 // keys
 let kUserAttributesVenueVoteCountKey            = "userVenueVoteCount"
 let kUserAttributesIsFollowedByCurrentUserKey   = "isFollowedByCurrentUser"
-let kGOUserAttributesIsMutedByCurrentUserKey    = "isMutedByCurrentUser"
+let kUserAttributesIsMutedByCurrentUserKey      = "isMutedByCurrentUser"

@@ -49,7 +49,7 @@ class GOUserProfileViewController: ListViewController {
         profilePictureImageView.alpha = 0.0
         
         if GOUtility.userHasProfilePicture(self.user!) {
-            let imageFile: PFFile! = self.user!.objectForKey(kGOUserProfilePicKey) as! PFFile
+            let imageFile: PFFile! = self.user!.objectForKey(kUserProfilePicKey) as! PFFile
             profilePictureImageView.file = imageFile
             profilePictureImageView.loadInBackground { (image, error) in
                 if error == nil {

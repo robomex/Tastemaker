@@ -98,7 +98,7 @@ final class GOCache {
         let attributes = [
             kUserAttributesVenueVoteCountKey: count,
             kUserAttributesIsFollowedByCurrentUserKey: following,
-            kGOUserAttributesIsMutedByCurrentUserKey: muted
+            kUserAttributesIsMutedByCurrentUserKey: muted
         ]
         
         setAttributes(attributes as! [String: AnyObject], forUser: user)
@@ -143,7 +143,7 @@ final class GOCache {
     
     func setMuteStatus(muting: Bool, user: PFUser) {
         if var attributes = attributesForUser(user) {
-            attributes[kGOUserAttributesIsMutedByCurrentUserKey] = muting
+            attributes[kUserAttributesIsMutedByCurrentUserKey] = muting
             setAttributes(attributes, forUser: user)
         }
     }

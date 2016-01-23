@@ -233,8 +233,8 @@ class GOUtility {
     // MARK: Profile Pics
     
     class func userHasProfilePicture(user: PFUser) -> Bool {
-        let profilePicture: PFFile? = user.objectForKey(kGOUserProfilePicKey) as? PFFile
-        let profilePictureSmall: PFFile? = user.objectForKey(kGOUserProfilePicSmallKey) as? PFFile
+        let profilePicture: PFFile? = user.objectForKey(kUserProfilePicKey) as? PFFile
+        let profilePictureSmall: PFFile? = user.objectForKey(kUserProfilePicSmallKey) as? PFFile
         
         return profilePicture != nil && profilePictureSmall != nil
     }

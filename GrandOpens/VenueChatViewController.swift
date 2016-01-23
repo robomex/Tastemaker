@@ -221,7 +221,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
                 if error == nil {
                     for object in objects! {
-                        if let thumbnail = object[kGOUserProfilePicSmallKey] as? PFFile {
+                        if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {
                             thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
                                 if (error == nil) && message.senderId == object.objectId {
                                     self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
