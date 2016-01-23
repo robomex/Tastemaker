@@ -28,6 +28,8 @@ final class GOCache {
         cache.removeAllObjects()
     }
     
+    // Venue caching
+    
     func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool, savedByCurrentUser: Bool, visitedByCurrentUser: Bool) {
         let attributes = [
             kVenueAttributesIsVotedByCurrentUserKey: votedByCurrentUser,
@@ -94,21 +96,6 @@ final class GOCache {
         setAttributes(attributes!, forVenue: venue)
     }
     
-    func setAttributesForUser(user: PFUser, venueVoteCount count: Int, followedByCurrentUser following: Bool, mutedByCurrentUser muted: Bool) {
-        let attributes = [
-            kUserAttributesVenueVoteCountKey: count,
-            kUserAttributesIsFollowedByCurrentUserKey: following,
-            kUserAttributesIsMutedByCurrentUserKey: muted
-        ]
-        
-        setAttributes(attributes as! [String: AnyObject], forUser: user)
-    }
-    
-    func attributesForUser(user: PFUser) -> [String: AnyObject]? {
-        let key = keyForUser(user)
-        return cache.objectForKey(key) as? [String: AnyObject]
-    }
-    
     func saveStatusForVenue(venue: PFObject) -> Bool {
         if let attributes = attributesForVenue(venue) {
             if let saveStatus = attributes[kVenueAttributesIsSavedByCurrentUserKey] as? Bool {
@@ -139,6 +126,24 @@ final class GOCache {
         }
         
         return false
+    }
+    
+    
+    // User caching
+    
+    func setAttributesForUser(user: PFUser, venueVoteCount count: Int, followedByCurrentUser following: Bool, mutedByCurrentUser muted: Bool) {
+        let attributes = [
+            kUserAttributesVenueVoteCountKey: count,
+            kUserAttributesIsFollowedByCurrentUserKey: following,
+            kUserAttributesIsMutedByCurrentUserKey: muted
+        ]
+        
+        setAttributes(attributes as! [String: AnyObject], forUser: user)
+    }
+    
+    func attributesForUser(user: PFUser) -> [String: AnyObject]? {
+        let key = keyForUser(user)
+        return cache.objectForKey(key) as? [String: AnyObject]
     }
     
     func setMuteStatus(muting: Bool, user: PFUser) {
