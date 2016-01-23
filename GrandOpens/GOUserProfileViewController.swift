@@ -99,10 +99,10 @@ class GOUserProfileViewController: ListViewController {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
             
             // check if the currentUser is muting this user
-            let queryIsMuting = PFQuery(className: kActivityClassKey)
-            queryIsMuting.whereKey(kActivityTypeKey, equalTo: kActivityTypeMute)
-            queryIsMuting.whereKey(kActivityToObjectKey, equalTo: self.user!)
-            queryIsMuting.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+            let queryIsMuting = PFQuery(className: kUserActivityClassKey)
+            queryIsMuting.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
+            queryIsMuting.whereKey(kUserActivityToUserKey, equalTo: self.user!)
+            queryIsMuting.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
             queryIsMuting.cachePolicy = PFCachePolicy.CacheThenNetwork
             queryIsMuting.countObjectsInBackgroundWithBlock { (number, error) in
                 if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
@@ -146,12 +146,12 @@ class GOUserProfileViewController: ListViewController {
     }
     
     override func queryForTable() -> PFQuery {
-        let userSavedVenues = PFQuery(className: kActivityClassKey)
+        let userSavedVenues = PFQuery(className: kVenueActivityClassKey)
         userSavedVenues.cachePolicy = PFCachePolicy.NetworkOnly
-        userSavedVenues.whereKey(kActivityByUserKey, equalTo: user!)
-        userSavedVenues.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        userSavedVenues.whereKey(kVenueActivityByUserKey, equalTo: user!)
+        userSavedVenues.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
         userSavedVenues.orderByAscending("createdAt")
-        userSavedVenues.includeKey(kActivityToObjectKey)
+        userSavedVenues.includeKey(kVenueActivityToVenueKey)
         
         return userSavedVenues
     }

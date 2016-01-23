@@ -40,20 +40,33 @@ let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"
 let kGOInstallationKey                          = "user"
 
 
-// MARK: Activity Class
+// MARK: User Activity Class
 // Class key
-let kActivityClassKey                           = "Activity"
+let kUserActivityClassKey                       = "UserActivity"
 
 // Field keys
-let kActivityByUserKey                          = "byUser"
-let kActivityToObjectKey                        = "toObject"
-let kActivityTypeKey                            = "type"
+let kUserActivityByUserKey                      = "byUser"
+let kUserActivityToUserKey                      = "toUser"
+let kUserActivityTypeKey                        = "type"
 
 // Type values
-let kActivityTypeVote                           = "vote"
-let kActivityTypeSave                           = "save"
-let kActivityTypeVisit                          = "visit"
-let kActivityTypeMute                           = "mute"
+let kUserActivityTypeMute                       = "mute"
+
+
+// MARK: Activity Class
+// Class key
+let kVenueActivityClassKey                      = "VenueActivity"
+
+// Field keys
+let kVenueActivityByUserKey                     = "byUser"
+let kVenueActivityToVenueKey                    = "toVenue"
+let kVenueActivityTypeKey                       = "type"
+
+// Type values
+let kVenueActivityTypeVote                      = "vote"
+let kVenueActivityTypeSave                      = "save"
+let kVenueActivityTypeVisit                     = "visit"
+
 
 // MARK: User Class
 // Field keys

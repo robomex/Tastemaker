@@ -76,12 +76,12 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
             return query
         }
         
-        let activityQuery = PFQuery(className: kActivityClassKey)
+        let activityQuery = PFQuery(className: kVenueActivityClassKey)
         activityQuery.cachePolicy = PFCachePolicy.NetworkOnly
-        activityQuery.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
-        activityQuery.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
+        activityQuery.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
+        activityQuery.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
         activityQuery.orderByAscending("createdAt")
-        activityQuery.includeKey(kActivityToObjectKey)
+        activityQuery.includeKey(kVenueActivityToVenueKey)
         
         return activityQuery
     }
@@ -105,7 +105,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         }
         
         let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as? PFObject
+        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
         venueCell!.venue = object
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
@@ -146,16 +146,16 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                             var isVisitedByCurrentUser = false
                             
                             for activity in objects as! [PFObject] {
-                                if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
-                                    voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
+                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
+                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                                 }
                                 
-                                if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-                                    if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
+                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
+                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
                                         isVotedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
                                         isSavedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
                                         isVisitedByCurrentUser = true
                                     }
                                 }
@@ -194,7 +194,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
 
         
         let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kActivityToObjectKey) as? PFObject
+        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
         vc.venue = object
         vc.venueID = object?.objectId
         

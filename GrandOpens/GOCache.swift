@@ -94,10 +94,11 @@ final class GOCache {
         setAttributes(attributes!, forVenue: venue)
     }
     
-    func setAttributesForUser(user: PFUser, venueVoteCount count: Int, followedByCurrentUser following: Bool) {
+    func setAttributesForUser(user: PFUser, venueVoteCount count: Int, followedByCurrentUser following: Bool, mutedByCurrentUser muted: Bool) {
         let attributes = [
             kUserAttributesVenueVoteCountKey: count,
-            kUserAttributesIsFollowedByCurrentUserKey: following
+            kUserAttributesIsFollowedByCurrentUserKey: following,
+            kGOUserAttributesIsMutedByCurrentUserKey: muted
         ]
         
         setAttributes(attributes as! [String: AnyObject], forUser: user)

@@ -236,16 +236,16 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                             var isVisitedByCurrentUser = false
                             
                             for activity in objects as! [PFObject] {
-                                if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
-                                    voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
+                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
+                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                                 }
                                 
-                                if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-                                    if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
+                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
+                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
                                         isVotedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
                                         isSavedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
                                         isVisitedByCurrentUser = true
                                     }
                                 }

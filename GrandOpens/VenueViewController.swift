@@ -50,10 +50,10 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        let queryIsSaved = PFQuery(className: kActivityClassKey)
-        queryIsSaved.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
-        queryIsSaved.whereKey(kActivityToObjectKey, equalTo: self.venue!)
-        queryIsSaved.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        let queryIsSaved = PFQuery(className: kVenueActivityClassKey)
+        queryIsSaved.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
+        queryIsSaved.whereKey(kVenueActivityToVenueKey, equalTo: self.venue!)
+        queryIsSaved.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
         queryIsSaved.cachePolicy = PFCachePolicy.CacheThenNetwork
         queryIsSaved.countObjectsInBackgroundWithBlock { (number, error) in
             if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
