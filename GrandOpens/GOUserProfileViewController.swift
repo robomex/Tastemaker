@@ -203,11 +203,11 @@ class GOUserProfileViewController: ListViewController {
     
     func configureMuteButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: "muteButtonAction:")
-        GOCache.sharedCache.setMuteStatus(false, user: self.user!)
+        GOCache.sharedCache.setMuteStatus(false, userId: self.user!.objectId!)
     }
     
     func configureUnmuteButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: "unmuteButtonAction:")
-        GOCache.sharedCache.setMuteStatus(true, user: self.user!)
+        GOCache.sharedCache.setMuteStatus(true, userId: self.user!.objectId!)
     }
 }

@@ -265,7 +265,7 @@ class GOUtility {
                 completionBlock!(succeeded: succeeded.boolValue, error: error)
             }
         }
-        GOCache.sharedCache.setMuteStatus(true, user: user)
+        GOCache.sharedCache.setMuteStatus(true, userId: user.objectId!)
     }
     
     class func unmuteUserInBackground(user: PFUser) {
@@ -281,7 +281,7 @@ class GOUtility {
                 }
             }
         }
-        GOCache.sharedCache.setMuteStatus(false, user: user)
+        GOCache.sharedCache.setMuteStatus(false, userId: user.objectId!)
     }
 }
 
