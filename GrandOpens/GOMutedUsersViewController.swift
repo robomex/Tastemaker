@@ -33,7 +33,7 @@ class GOMutedUsersViewController: PFQueryTableViewController {
             let backButton = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
             self.navigationController!.navigationBar.topItem?.backBarButtonItem = backButton
         }
-        
+        // Next line prevents empty cells from displaying
         self.tableView.tableFooterView = UIView()
     }
 
