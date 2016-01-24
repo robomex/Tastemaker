@@ -21,7 +21,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     var settingsTableView: UITableView!
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
-    var myAccountRows = ["Username", "Phone Number"]
+    var myAccountRows = ["Username", "Phone Number", "Muted Users"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
     override func viewDidLoad() {
@@ -66,10 +66,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     // TableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 2 {
-            return 1
-        } else {
+        switch section {
+        case 0:
+            return 3
+        case 1:
             return 2
+        case 2:
+            return 1
+        default:
+            return 0
         }
     }
     
@@ -91,6 +96,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 cell.detailTextLabel?.text = "(" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + ") " + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
             default:
                 cell.detailTextLabel?.text = ""
+                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             }
         case 1:
             cell.textLabel?.text = additionalInformationRows[indexPath.row]
@@ -113,12 +119,17 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        if indexPath.section == 0 && indexPath.row == 0 {
-            let vc = GOUsernameEntryViewController()
-            vc.user = user
-            vc.title = "Username"
-            navigationController!.view.backgroundColor = UIColor.whiteColor()
-            navigationController?.pushViewController(vc, animated: true)
+        if indexPath.section == 0 {
+            if indexPath.row == 0 {
+                let vc = GOUsernameEntryViewController()
+                vc.user = user
+                vc.title = "Username"
+                navigationController!.view.backgroundColor = UIColor.whiteColor()
+                navigationController?.pushViewController(vc, animated: true)
+            } else if indexPath.row == 2 {
+                let vc = GOMutedUsersViewController()
+                navigationController?.pushViewController(vc, animated: true)
+            }
         } else if indexPath.section == 1 {
             switch (indexPath.row) {
             case 0:

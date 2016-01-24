@@ -19,6 +19,7 @@
 		DE283D131B615F040003466D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D121B615F040003466D /* LoginViewController.swift */; };
 		DE283D151B61670E0003466D /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D141B61670E0003466D /* InitialViewController.swift */; };
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
+		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
 		DE6126221B2505950009FB34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126211B2505950009FB34 /* ViewController.swift */; };
@@ -85,6 +86,7 @@
 		DE283D121B615F040003466D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DE283D161B61A1A30003466D /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			children = (
 				DE6126211B2505950009FB34 /* ViewController.swift */,
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
+				DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */,
 				DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */,
 				DEA50CF01B7B094A00396BDD /* VenueViewController.swift */,
 				DE86FA151BB7154700C313E2 /* GOTabBarController.swift */,
@@ -502,6 +505,7 @@
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
+				DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */,
 				DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */,
 				DE283D131B615F040003466D /* LoginViewController.swift in Sources */,
 				DE1F08641B61BD440094ACA0 /* Message.swift in Sources */,

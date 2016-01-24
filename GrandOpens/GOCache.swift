@@ -153,7 +153,6 @@ final class GOCache {
             attributes[kUserAttributesIsMutedByCurrentUserKey] = muting
             setAttributes(attributes, forUser: userId)
         }
-        print(attributesForUser(userId))
     }
     
     func isUserMutedByCurrentUser(userId: String) -> Bool {
