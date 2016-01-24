@@ -9,8 +9,9 @@
 import UIKit
 import ParseUI
 import Parse
+import DZNEmptyDataSet
 
-class GOMutedUsersViewController: PFQueryTableViewController {
+class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
     // MARK: Initialization
     
@@ -28,6 +29,8 @@ class GOMutedUsersViewController: PFQueryTableViewController {
         super.viewDidLoad()
 
         self.title = "Muted Users"
+        self.tableView.emptyDataSetDelegate = self
+        self.tableView.emptyDataSetSource = self
         
         if navigationController != nil {
             let backButton = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
@@ -42,6 +45,7 @@ class GOMutedUsersViewController: PFQueryTableViewController {
         
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.tabBarController?.tabBar.hidden = true
+        self.loadObjects()
     }
     
     override func didReceiveMemoryWarning() {
@@ -119,6 +123,21 @@ class GOMutedUsersViewController: PFQueryTableViewController {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 50
+    }
+    
+    
+    // MARK: DZNEmptyDataSet
+    
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let title = ":-)"
+        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50)]
+        return NSAttributedString(string: title, attributes: attributes)
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let description = "You haven't muted anyone. \nThat's a good thing!"
+        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+        return NSAttributedString(string: description, attributes: attributes)
     }
     
     
