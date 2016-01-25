@@ -28,6 +28,8 @@ final class GOCache {
         cache.removeAllObjects()
     }
     
+    // Venue caching
+    
     func setAttributesForVenue(venue: PFObject, voters: [PFUser], votedByCurrentUser: Bool, savedByCurrentUser: Bool, visitedByCurrentUser: Bool) {
         let attributes = [
             kVenueAttributesIsVotedByCurrentUserKey: votedByCurrentUser,
@@ -94,20 +96,6 @@ final class GOCache {
         setAttributes(attributes!, forVenue: venue)
     }
     
-    func setAttributesForUser(user: PFUser, venueVoteCount count: Int, followedByCurrentUser following: Bool) {
-        let attributes = [
-            kUserAttributesVenueVoteCountKey: count,
-            kUserAttributesIsFollowedByCurrentUserKey: following
-        ]
-        
-        setAttributes(attributes as! [String: AnyObject], forUser: user)
-    }
-    
-    func attributesForUser(user: PFUser) -> [String: AnyObject]? {
-        let key = keyForUser(user)
-        return cache.objectForKey(key) as? [String: AnyObject]
-    }
-    
     func saveStatusForVenue(venue: PFObject) -> Bool {
         if let attributes = attributesForVenue(venue) {
             if let saveStatus = attributes[kVenueAttributesIsSavedByCurrentUserKey] as? Bool {
@@ -141,6 +129,42 @@ final class GOCache {
     }
     
     
+    // User caching
+    
+    func setAttributesForUser(userId: String,
+        //venueVoteCount count: Int, followedByCurrentUser following: Bool, 
+        mutedByCurrentUser muted: Bool) {
+        let attributes = [
+            //kUserAttributesVenueVoteCountKey: count,
+            //kUserAttributesIsFollowedByCurrentUserKey: following,
+            kUserAttributesIsMutedByCurrentUserKey: muted
+        ]
+        
+        setAttributes(attributes as [String: AnyObject], forUser: userId)
+    }
+    
+    func attributesForUser(userId: String) -> [String: AnyObject]? {
+        let key = keyForUser(userId)
+        return cache.objectForKey(key) as? [String: AnyObject]
+    }
+    
+    func setMuteStatus(muting: Bool, userId: String) {
+        if var attributes = attributesForUser(userId) {
+            attributes[kUserAttributesIsMutedByCurrentUserKey] = muting
+            setAttributes(attributes, forUser: userId)
+        }
+    }
+    
+    func isUserMutedByCurrentUser(userId: String) -> Bool {
+        let attributes = attributesForUser(userId)
+        if attributes != nil {
+            return attributes![kUserAttributesIsMutedByCurrentUserKey] as! Bool
+        }
+        
+        return false
+    }
+    
+    
     // MARK: ()
     
     func setAttributes(attributes: [String: AnyObject], forVenue venue: PFObject) {
@@ -148,8 +172,8 @@ final class GOCache {
         cache.setObject(attributes, forKey: key)
     }
     
-    func setAttributes(attributes: [String: AnyObject], forUser user: PFUser) {
-        let key: String = self.keyForUser(user)
+    func setAttributes(attributes: [String: AnyObject], forUser userId: String) {
+        let key: String = self.keyForUser(userId)
         cache.setObject(attributes, forKey: key)
     }
     
@@ -157,7 +181,7 @@ final class GOCache {
         return "venue_\(venue.objectId)"
     }
     
-    func keyForUser(user: PFUser) -> String {
-        return "user_\(user.objectId)"
+    func keyForUser(userId: String) -> String {
+        return "user_\(userId)"
     }
 }

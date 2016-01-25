@@ -49,7 +49,7 @@ class GOVenueCellView: PFTableViewCell {
         buttons = otherButtons
         
         self.clipsToBounds = false
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.whiteColor()
         
         // Translucent portion
         self.containerView = UIView(frame: CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height))

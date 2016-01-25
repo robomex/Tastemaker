@@ -50,10 +50,10 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        let queryIsSaved = PFQuery(className: kActivityClassKey)
-        queryIsSaved.whereKey(kActivityTypeKey, equalTo: kActivityTypeSave)
-        queryIsSaved.whereKey(kActivityToObjectKey, equalTo: self.venue!)
-        queryIsSaved.whereKey(kActivityByUserKey, equalTo: PFUser.currentUser()!)
+        let queryIsSaved = PFQuery(className: kVenueActivityClassKey)
+        queryIsSaved.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
+        queryIsSaved.whereKey(kVenueActivityToVenueKey, equalTo: self.venue!)
+        queryIsSaved.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
         queryIsSaved.cachePolicy = PFCachePolicy.CacheThenNetwork
         queryIsSaved.countObjectsInBackgroundWithBlock { (number, error) in
             if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
@@ -77,7 +77,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
         
         // Hide the chat inputToolbar unless they've visited the venue
-        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) && venue!.objectForKey("name") as! String != "Chicago Chat" {
+        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) && venue!.objectForKey(kVenueName) as! String != "Chicago Chat" {
+            chatVC.inputToolbar?.hidden = true
+        }
+
+        // Hide the chat inputToolbar if banned
+        if PFUser.currentUser()?.objectForKey("banned") as? Bool == true {
             chatVC.inputToolbar?.hidden = true
         }
         

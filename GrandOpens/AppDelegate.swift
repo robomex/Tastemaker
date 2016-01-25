@@ -254,10 +254,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let venue = PFQuery(className: kVenueClassKey)
         venue.getObjectInBackgroundWithId(region.identifier) { (venue: PFObject?, error: NSError?) -> Void in
             if error == nil && venue != nil {
-                let visitActivity = PFObject(className: kActivityClassKey)
-                visitActivity.setObject(kActivityTypeVisit, forKey: kActivityTypeKey)
-                visitActivity.setObject(PFUser.currentUser()!, forKey: kActivityByUserKey)
-                visitActivity.setObject(venue!, forKey: kActivityToObjectKey)
+                let visitActivity = PFObject(className: kVenueActivityClassKey)
+                visitActivity.setObject(kVenueActivityTypeVisit, forKey: kVenueActivityTypeKey)
+                visitActivity.setObject(PFUser.currentUser()!, forKey: kVenueActivityByUserKey)
+                visitActivity.setObject(venue!, forKey: kVenueActivityToVenueKey)
                 visitActivity.saveInBackground()
             }
         }

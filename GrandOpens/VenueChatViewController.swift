@@ -16,7 +16,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var messages: [JSQMessage] = []
     var venueID: String?
     var messageListener: MessageListener?
-    
+    var avatars = Dictionary<String, JSQMessagesAvatarImage>()
+    var userIdList = [String]()
+    var users = Dictionary<String, PFUser>()
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     
@@ -24,25 +26,25 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
-        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
-        
         if let id = venueID {
             fetchMessages(id, callback: {
                 messages in
                 
                 for m in messages {
-                    self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                    if !GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                        self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                        self.userIdList.append(m.senderID)
+                    }
                 }
                 self.finishReceivingMessage()
+                self.userIdList = Array(Set(self.userIdList))
             })
         }
         
         self.senderId = currentUser()!.id
             
         if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
-            self.senderDisplayName = "A No-Name Person"
+            self.senderDisplayName = "A No-Namer"
         } else {
             self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
         }
@@ -58,7 +60,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
-                self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                if !GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
+                    self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                }
                 self.finishReceivingMessage()
             })
         }
@@ -129,6 +133,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     // View usernames above bubbles
+    
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = messages[indexPath.item]
         
@@ -164,6 +169,89 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         }
         
         return kJSQMessagesCollectionViewCellLabelHeightDefault
+    }
+
+    // Timestamps
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+        if indexPath.item % 3 == 0 {
+            let message = self.messages[indexPath.item]
+            return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
+        }
+        return nil
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        if indexPath.item % 3 == 0 {
+            return kJSQMessagesCollectionViewCellLabelHeightDefault
+        }
+        return 0
+    }
+    
+    // Avatars
+    
+    func setupAvatarImage(id: String, name: String, incoming: Bool) {
+        
+        // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
+        self.setupAvatarColor(id, name: name, incoming: incoming)
+    }
+    
+    func setupAvatarColor(id: String, var name: String, incoming: Bool) {
+        let diameter = incoming ? UInt((collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
+        
+        let rgbValue = id.hash
+        let r = CGFloat(Float((rgbValue & 0xFF0000) >> 16)/255.0)
+        let g = CGFloat(Float((rgbValue & 0xFF00) >> 8)/255.0)
+        let b = CGFloat(Float(rgbValue & 0xFF)/255.0)
+        let color = UIColor(red: r, green: g, blue: b, alpha: 0.5)
+        
+        if name == "" {
+            name = "?"
+        }
+        
+        let initials: String? = name.substringToIndex(name.startIndex.advancedBy(1))
+        let userImage = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: color, textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(13), diameter: diameter)
+        
+        avatars[id] = userImage
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+        let message = self.messages[indexPath.item]
+        if avatars[message.senderId] == nil {
+            let query = PFUser.query()
+            query?.whereKey("objectId", containedIn: userIdList)
+//            query?.selectKeys(["picture"])
+            query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
+                if error == nil {
+                    for object in objects! {
+                        if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {
+                            thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
+                                if (error == nil) && message.senderId == object.objectId {
+                                    self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
+                                    self.collectionView?.reloadData()
+                                }
+                            })
+                        }
+                        if message.senderId == object.objectId {
+                            self.users[message.senderId] = object as? PFUser
+                        }
+                    }
+                }
+            }
+            self.setupAvatarImage(message.senderId, name: message.senderDisplayName, incoming: true)
+            return avatars[message.senderId]
+        } else {
+            return avatars[message.senderId]
+        }
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
+        print("what up")
+        let message = self.messages[indexPath.item]
+        let user = users[message.senderId]
+        let vc = GOUserProfileViewController()
+        vc.user = user
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     

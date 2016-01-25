@@ -59,6 +59,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
+        self.title = "Chicago"
         self.coachMarksController.datasource = self
         self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
         self.coachMarksController.allowOverlayTap = true
@@ -72,6 +73,25 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
         defaultNotificationCenter.addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
         try! reachability.startNotifier()
+        
+        // Cache muted users
+        if PFUser.currentUser() != nil {
+            let mutedUsers = PFQuery(className: kUserActivityClassKey)
+            mutedUsers.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
+            mutedUsers.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
+            mutedUsers.includeKey(kUserActivityToUserKey)
+            mutedUsers.cachePolicy = PFCachePolicy.NetworkOnly
+            mutedUsers.findObjectsInBackgroundWithBlock { (activities, error) in
+                if error == nil {
+                    for activity in activities as! [PFObject] {
+                        let user: PFUser? = activity.objectForKey(kUserActivityToUserKey) as? PFUser
+                        GOCache.sharedCache.setAttributesForUser(user!.objectId!, mutedByCurrentUser: true)
+                    }
+                }
+            }
+        }
+        
+        PFUser.currentUser()?.fetchInBackground()
     }
     
     deinit {
@@ -84,7 +104,6 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        navigationController!.navigationBar.topItem!.title = "Chicago"
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
@@ -236,16 +255,16 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                             var isVisitedByCurrentUser = false
                             
                             for activity in objects as! [PFObject] {
-                                if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote && activity.objectForKey(kActivityByUserKey) != nil {
-                                    voters.append(activity.objectForKey(kActivityByUserKey) as! PFUser)
+                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
+                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                                 }
                                 
-                                if (activity.objectForKey(kActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-                                    if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVote {
+                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
+                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
                                         isVotedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeSave {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
                                         isSavedByCurrentUser = true
-                                    } else if (activity.objectForKey(kActivityTypeKey) as! String) == kActivityTypeVisit {
+                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
                                         isVisitedByCurrentUser = true
                                     }
                                 }

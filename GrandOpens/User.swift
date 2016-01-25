@@ -13,10 +13,20 @@ struct User {
     let id: String
     let name: String
     private let pfUser: PFUser
+    
+    func getProfilePhoto(callback:(UIImage) -> ()) {
+        let imageFile = pfUser.objectForKey(kUserProfilePicKey) as! PFFile
+        imageFile.getDataInBackgroundWithBlock({
+            data, error in
+            if let data = data {
+                callback(UIImage(data: data)!)
+            }
+        })
+    }
 }
 
 func pfUserToUser(user: PFUser) -> User {
-    return User(id: user.objectId!, name: user.objectForKey("name") as! String, pfUser: user)
+    return User(id: user.objectId!, name: user.objectForKey(kUserDisplayNameKey) as! String, pfUser: user)
 }
 
 func currentUser() -> User? {
