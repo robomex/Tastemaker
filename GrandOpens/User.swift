@@ -26,7 +26,7 @@ struct User {
 }
 
 func pfUserToUser(user: PFUser) -> User {
-    return User(id: user.objectId!, name: user.objectForKey("name") as! String, pfUser: user)
+    return User(id: user.objectId!, name: user.objectForKey(kUserDisplayNameKey) as! String, pfUser: user)
 }
 
 func currentUser() -> User? {

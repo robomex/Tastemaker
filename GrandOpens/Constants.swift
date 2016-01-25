@@ -69,6 +69,9 @@ let kVenueActivityTypeVisit                     = "visit"
 
 
 // MARK: User Class
+// Class key
+let kUserClassKey                               = "User"
+
 // Field keys
 let kUserDisplayNameKey                         = "name"
 let kUserProfilePicKey                          = "profilePicture"
@@ -78,7 +81,6 @@ let kUserProfilePicSmallKey                     = "profilePictureSmall"
 // MARK: Venue Class
 // Class key
 let kVenueClassKey                              = "Venue"
-let kUserClassKey                               = "User"
 
 // Field keys
 let kVenueName                                  = "name"
