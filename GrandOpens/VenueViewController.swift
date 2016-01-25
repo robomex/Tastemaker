@@ -82,12 +82,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
 
         // Hide the chat inputToolbar if banned
-        let user = PFUser.currentUser()
-        user?.fetchInBackgroundWithBlock { (object, error) -> Void in
-            let banned = object!.objectForKey("banned") as! Bool
-            if banned == true {
-                self.chatVC.inputToolbar?.hidden = true
-            }
+        if PFUser.currentUser()?.objectForKey("banned") as? Bool == true {
+            chatVC.inputToolbar?.hidden = true
         }
         
         // Reachability checks
