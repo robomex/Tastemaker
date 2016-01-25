@@ -90,6 +90,8 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                 }
             }
         }
+        
+        PFUser.currentUser()?.fetchInBackground()
     }
     
     deinit {
