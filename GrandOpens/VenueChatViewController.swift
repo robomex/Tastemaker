@@ -256,6 +256,40 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         navigationController?.pushViewController(vc, animated: true)
     }
     
+//    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return CGSize(width: 200, height: 80)
+//    }
+    
+    private let dateFormat = "yyyyMMddHHmmss"
+    
+    private func dateFormatter() -> NSDateFormatter {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        return dateFormatter
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
+        
+        let firstMessageTime = dateFormatter().stringFromDate(messages[0].date)
+        let oldBottomOffset = (self.collectionView?.contentSize.height)! - (self.collectionView?.contentOffset.y)!
+        
+        fetchEarlierMessages(venueID!, firstMessageTime: firstMessageTime, callback: {
+            messages in
+            
+            for m in messages {
+                if !GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                    self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
+                    self.userIdList.append(m.senderID)
+                }
+            }
+            self.finishReceivingMessage()
+            self.userIdList = Array(Set(self.userIdList))
+            self.finishReceivingMessageAnimated(false)
+            self.collectionView?.layoutIfNeeded()
+            self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
+        })
+    }
+    
     
     // MARK: DZNEmptyDataSet
     

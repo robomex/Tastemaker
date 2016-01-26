@@ -69,3 +69,18 @@ func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
         callback(messages)
     })
 }
+
+func fetchEarlierMessages(venueID: String, firstMessageTime: String, callback: ([ChatMessage]) -> ()) {
+    ref.childByAppendingPath(venueID).queryOrderedByKey().queryEndingAtValue(firstMessageTime).queryLimitedToLast(13).observeSingleEventOfType(FEventType.Value, withBlock: {
+        snapshot in
+        
+        var messages = Array<ChatMessage>()
+        let enumerator = snapshot.children
+        
+        while let data = enumerator.nextObject() as? FDataSnapshot {
+            messages.insert(snapshotToChatMessage(data), atIndex: 0)
+        }
+        messages.removeAtIndex(0)
+        callback(messages)
+    })
+}
