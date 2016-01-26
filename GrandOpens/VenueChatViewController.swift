@@ -56,6 +56,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
+        self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
@@ -78,6 +79,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         
+        self.showLoadEarlierMessagesHeader = true
     }
     
     override func viewWillDisappear(animated: Bool) {
