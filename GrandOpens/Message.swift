@@ -57,7 +57,7 @@ private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
 }
 
 func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
-    ref.childByAppendingPath(venueID).queryLimitedToFirst(25).observeSingleEventOfType(FEventType.Value, withBlock: {
+    ref.childByAppendingPath(venueID).queryLimitedToLast(15).observeSingleEventOfType(FEventType.Value, withBlock: {
         snapshot in
         
         var messages = Array<ChatMessage>()
