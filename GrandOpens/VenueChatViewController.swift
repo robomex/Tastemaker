@@ -67,8 +67,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 message in
                 if !GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
                     self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                    self.userIdList.append(message.senderID)
                 }
                 self.finishReceivingMessage()
+                self.userIdList = Array(Set(self.userIdList))
             })
         }
     }
@@ -225,7 +227,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if avatars[message.senderId] == nil {
             let query = PFUser.query()
             query?.whereKey("objectId", containedIn: userIdList)
-//            query?.selectKeys(["picture"])
             query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
                 if error == nil {
                     for object in objects! {
