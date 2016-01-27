@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		D96BFE61FC4253326A55D19E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA22CA936F84D53233B4521D /* Pods.framework */; };
-		DE0B9F371B3F89A3000EA55D /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0B9F361B3F89A3000EA55D /* Muli-Regular.ttf */; };
-		DE0E0FC41B3F6DB80079B5E5 /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE0E0FC31B3F6DB80079B5E5 /* Quicksand-Light.ttf */; };
 		DE1973EB1B6D29570056148B /* GrandOpens_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */; };
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
@@ -20,6 +18,7 @@
 		DE283D151B61670E0003466D /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D141B61670E0003466D /* InitialViewController.swift */; };
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
 		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
+		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
 		DE6126221B2505950009FB34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126211B2505950009FB34 /* ViewController.swift */; };
@@ -73,8 +72,6 @@
 /* Begin PBXFileReference section */
 		474F907ED68B85B1DDA5E53D /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A1CBDC77E94829340050B45B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		DE0B9F361B3F89A3000EA55D /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
-		DE0E0FC31B3F6DB80079B5E5 /* Quicksand-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Quicksand-Light.ttf"; sourceTree = "<group>"; };
 		DE1973E61B6D29570056148B /* GrandOpens Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GrandOpens Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE1973E91B6D29570056148B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrandOpens_Tests.swift; sourceTree = "<group>"; };
@@ -87,6 +84,8 @@
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DE283D161B61A1A30003466D /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
+		DE5068311C5978EC006FFD51 /* OSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCache.h; sourceTree = "<group>"; };
+		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -241,8 +240,8 @@
 				DE61261B1B2505950009FB34 /* Info.plist */,
 				DE6126931B26A3CB0009FB34 /* ApiKeys.plist */,
 				DE6126951B26A4E40009FB34 /* ApiKeys.swift */,
-				DE0B9F361B3F89A3000EA55D /* Muli-Regular.ttf */,
-				DE0E0FC31B3F6DB80079B5E5 /* Quicksand-Light.ttf */,
+				DE5068311C5978EC006FFD51 /* OSCache.h */,
+				DE5068321C5978EC006FFD51 /* OSCache.m */,
 				DE8300631B5F01E2000B71D7 /* Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -416,9 +415,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
-				DE0B9F371B3F89A3000EA55D /* Muli-Regular.ttf in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
-				DE0E0FC41B3F6DB80079B5E5 /* Quicksand-Light.ttf in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
 				DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */,
 			);
@@ -503,6 +500,7 @@
 				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
+				DE5068331C5978EC006FFD51 /* OSCache.m in Sources */,
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
 				DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */,

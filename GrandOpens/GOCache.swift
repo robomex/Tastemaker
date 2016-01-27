@@ -8,9 +8,10 @@
 
 import Foundation
 import Parse
+//import OSCache
 
 final class GOCache {
-    private var cache: NSCache
+    private var cache: OSCache
     
     
     // MARK: Initialization
@@ -18,7 +19,7 @@ final class GOCache {
     static let sharedCache = GOCache()
     
     private init() {
-        self.cache = NSCache()
+        self.cache = OSCache()
     }
     
     
