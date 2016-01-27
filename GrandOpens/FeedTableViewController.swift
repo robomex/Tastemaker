@@ -166,7 +166,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
         
         var today = NSDate()
         let calendar = NSCalendar.autoupdatingCurrentCalendar()
-        calendar.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+        calendar.timeZone = NSTimeZone.localTimeZone()
         today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
         let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
         
