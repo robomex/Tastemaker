@@ -290,6 +290,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             self.finishReceivingMessageAnimated(false)
             self.collectionView?.layoutIfNeeded()
             self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
+            
+            if self.dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
+                self.showLoadEarlierMessagesHeader = false
+            }
         })
     }
     
