@@ -14,6 +14,7 @@ class GOUserProfileViewController: ListViewController {
 
     var user: PFUser?
     private var headerView: UIView?
+    let profilePicWidth: CGFloat = 132
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,7 @@ class GOUserProfileViewController: ListViewController {
         texturedBackgroundView.backgroundColor = UIColor.whiteColor()
         self.tableView.backgroundView = texturedBackgroundView
         
-        let profilePictureBackgroundView = UIView(frame: CGRectMake(94.0, 38.0, 132.0, 132.0))
+        let profilePictureBackgroundView = UIView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
         profilePictureBackgroundView.backgroundColor = UIColor.lightGrayColor()
         profilePictureBackgroundView.alpha = 0.0
         var layer: CALayer = profilePictureBackgroundView.layer
@@ -40,7 +41,7 @@ class GOUserProfileViewController: ListViewController {
         layer.masksToBounds = true
         self.headerView!.addSubview(profilePictureBackgroundView)
         
-        let profilePictureImageView: PFImageView = PFImageView(frame: CGRectMake(94.0, 38.0, 132.0, 132.0))
+        let profilePictureImageView: PFImageView = PFImageView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
         self.headerView!.addSubview(profilePictureImageView)
         profilePictureImageView.contentMode = UIViewContentMode.ScaleAspectFill
         layer = profilePictureImageView.layer
