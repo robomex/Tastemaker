@@ -38,6 +38,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 }
                 self.finishReceivingMessage()
                 self.userIdList = Array(Set(self.userIdList))
+                
+                if self.messages.count > 0 {
+                    self.showLoadEarlierMessagesHeader = true
+                }
             })
         }
         
@@ -79,7 +83,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(true)
         
-        self.showLoadEarlierMessagesHeader = true
     }
     
     override func viewWillDisappear(animated: Bool) {
