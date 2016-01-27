@@ -237,8 +237,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let location = locations.last as CLLocation?
         let locationAsPFGeoPoint = PFGeoPoint(location: location)
         
+        var today = NSDate()
+        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+        calendar.timeZone = NSTimeZone.localTimeZone()
+        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
+        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
+        
         let queryNearbyVenues = PFQuery(className: kVenueClassKey)
         queryNearbyVenues.whereKey(kVenueLocation, nearGeoPoint: locationAsPFGeoPoint, withinMiles: 50.0)
+        queryNearbyVenues.whereKey(kVenueOpeningDate, greaterThanOrEqualTo: standardOpeningDateCoverage)
+        queryNearbyVenues.whereKey(kVenueOpeningDate, lessThan: today)
         queryNearbyVenues.limit = 20
         queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
             if error == nil {
