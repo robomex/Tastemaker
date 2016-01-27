@@ -27,6 +27,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Settings"
         settingsTableView = UITableView(frame: CGRectZero, style: UITableViewStyle.Grouped)
         settingsTableView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
         settingsTableView.dataSource = self
@@ -39,7 +40,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     override func viewWillAppear(animated: Bool) {
-        self.navigationController!.navigationBar.topItem!.title = "Settings"
+
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
