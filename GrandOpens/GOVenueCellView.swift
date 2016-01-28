@@ -127,7 +127,12 @@ class GOVenueCellView: PFTableViewCell {
             let dateFormatter = NSDateFormatter()
             dateFormatter.dateFormat = "MMM d"
             let venueOpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
-            self.venueOpeningDateLabel!.text = venueOpeningDateString
+            
+            if venueName != "Chicago Chat" {
+                self.venueOpeningDateLabel!.text = venueOpeningDateString
+            } else {
+                self.venueOpeningDateLabel!.text = ""
+            }
             
             self.setNeedsDisplay()
         }
