@@ -26,8 +26,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     var gradient: CAGradientLayer?
     var toColors: AnyObject?
     var fromColors: AnyObject?
-//    var initialVC: InitialViewController?
-//    let storyboard = UIStoryboard(name: "main", bundle: nil)
+    var animationLoop: Bool = false
     
     var phoneNumber: String = ""
     
@@ -144,9 +143,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         return self.step1()
                     }
                     self.navigationController?.popToRootViewControllerAnimated(true)
-
-//                    self.initialVC = super.storyboard!.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
-//                    return self.presentViewController(self.initialVC!, animated: true, completion: nil)//(UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController() //self.dismissViewControllerAnimated(true, completion: nil)
                 }
             } else {
                 self.editing = true
@@ -224,7 +220,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // Onboarding code for testing
     func animateBackgroundGradient() {
         self.fromColors = self.gradient?.colors
-        self.gradient!.colors = self.toColors! as! [AnyObject]
+        self.gradient!.colors = self.toColors! as? [AnyObject]
         
         let animation: CABasicAnimation = CABasicAnimation(keyPath: "colors")
         animation.fromValue = fromColors
@@ -239,9 +235,12 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-        self.toColors = self.fromColors
-        self.fromColors = self.gradient?.colors
-        animateBackgroundGradient()
+        if !animationLoop {
+            self.toColors = self.fromColors
+            self.fromColors = self.gradient?.colors
+            animateBackgroundGradient()
+            animationLoop = true
+        }
     }
 }
 
