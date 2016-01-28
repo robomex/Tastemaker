@@ -45,7 +45,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "MMMM d"
-        // Need to add a day in seconds since iOS is reading a 00:00 time as the previous day
+
         let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left

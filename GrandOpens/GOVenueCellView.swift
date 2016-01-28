@@ -37,6 +37,7 @@ class GOVenueCellView: PFTableViewCell {
     var containerView: UIView?
     var venueNameLabel: UILabel?
     var venueNeighborhoodLabel: UILabel?
+    var venueOpeningDateLabel: UILabel?
     
     
     // MARK: Initialization
@@ -91,6 +92,13 @@ class GOVenueCellView: PFTableViewCell {
         self.venueNeighborhoodLabel!.textColor = UIColor.blackColor()
         self.venueNeighborhoodLabel!.font = UIFont.systemFontOfSize(14.0)
         self.venueNeighborhoodLabel!.backgroundColor = UIColor.clearColor()
+        
+        // Venue opening date label
+        self.venueOpeningDateLabel = UILabel(frame: CGRectMake(containerView!.bounds.size.width - 70, 42, 50, 18))
+        containerView!.addSubview(self.venueOpeningDateLabel!)
+        self.venueOpeningDateLabel!.textColor = UIColor.blackColor()
+        self.venueOpeningDateLabel!.font = UIFont.systemFontOfSize(14)
+        self.venueOpeningDateLabel!.backgroundColor = UIColor.clearColor()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -114,6 +122,12 @@ class GOVenueCellView: PFTableViewCell {
             
             let venueNeighborhood: String = venue!.objectForKey(kVenueNeighborhood) as! String
             self.venueNeighborhoodLabel!.text = venueNeighborhood
+            
+            let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "MMM d"
+            let venueOpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
+            self.venueOpeningDateLabel!.text = venueOpeningDateString
             
             self.setNeedsDisplay()
         }
