@@ -36,16 +36,18 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                         self.userIdList.append(m.senderID)
                     }
                 }
-                self.finishReceivingMessage()
+                self.finishReceivingMessageAnimated(false)
                 self.userIdList = Array(Set(self.userIdList))
                 
                 if self.messages.count > 0 {
-                    self.showLoadEarlierMessagesHeader = true
+                    self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
                 }
             })
         }
         
         self.senderId = currentUser()!.id
+        self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+        self.showLoadEarlierMessagesHeader = true
             
         if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
             self.senderDisplayName = "A No-Namer"
@@ -60,7 +62,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
-        self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
         
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
@@ -73,18 +74,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.userIdList = Array(Set(self.userIdList))
             })
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(true)
-        
-        self.automaticallyScrollsToMostRecentMessage = true
-        self.scrollToBottomAnimated(true)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(true)
-        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -258,11 +247,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         vc.user = user
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-//    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        return CGSize(width: 200, height: 80)
-//    }
-    
+
+    // Date formatting for earlier messages checks
     private let dateFormat = "yyyyMMddHHmmss"
     
     private func dateFormatter() -> NSDateFormatter {
@@ -272,6 +258,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
+        
+        if self.messages.count == 0 {
+            return
+        }
         
         let firstMessageTime = dateFormatter().stringFromDate(messages[0].date)
         let oldBottomOffset = (self.collectionView?.contentSize.height)! - (self.collectionView?.contentOffset.y)!
@@ -285,15 +275,18 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     self.userIdList.append(m.senderID)
                 }
             }
-            self.finishReceivingMessage()
             self.userIdList = Array(Set(self.userIdList))
             self.finishReceivingMessageAnimated(false)
             self.collectionView?.layoutIfNeeded()
-            self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
             
             if self.dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
-                self.showLoadEarlierMessagesHeader = false
+                self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+            } else if messages.count < 12 {
+                self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
+                return
             }
+            
+            self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
         })
     }
     
