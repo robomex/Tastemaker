@@ -216,6 +216,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if avatars[message.senderId] == nil {
             let query = PFUser.query()
             query?.whereKey("objectId", containedIn: userIdList)
+            query?.selectKeys([kUserDisplayNameKey, kUserProfilePicKey, kUserProfilePicSmallKey])
             query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
                 if error == nil {
                     for object in objects! {

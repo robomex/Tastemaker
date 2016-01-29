@@ -257,7 +257,6 @@ class GOUtility {
         muteActivity.setObject(kUserActivityTypeMute, forKey: kUserActivityTypeKey)
         
         let muteACL = PFACL(user: PFUser.currentUser()!)
-        muteACL.setPublicReadAccess(true)
         muteActivity.ACL = muteACL
         
         muteActivity.saveInBackgroundWithBlock { (succeeded, error) in

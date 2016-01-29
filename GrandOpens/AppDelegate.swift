@@ -267,7 +267,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                 visitActivity.setObject(PFUser.currentUser()!, forKey: kVenueActivityByUserKey)
                 visitActivity.setObject(venue!, forKey: kVenueActivityToVenueKey)
                 let visitACL = PFACL(user: PFUser.currentUser()!)
-                visitACL.setPublicReadAccess(true)
                 visitActivity.ACL = visitACL
                 visitActivity.saveInBackground()
             }
