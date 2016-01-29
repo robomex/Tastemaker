@@ -8,6 +8,7 @@
 
 import Foundation
 import Parse
+import Firebase
 
 struct ChatMessage {
     let message: String

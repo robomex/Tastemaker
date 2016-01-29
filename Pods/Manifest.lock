@@ -1,6 +1,6 @@
 PODS:
   - DZNEmptyDataSet (1.7.3)
-  - Firebase (2.2.2)
+  - Firebase (2.5.0)
   - Instructions (0.3.0)
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
@@ -14,7 +14,7 @@ PODS:
 
 DEPENDENCIES:
   - DZNEmptyDataSet
-  - Firebase (~> 2.2.0)
+  - Firebase (~> 2.5.0)
   - Instructions (~> 0.3)
   - JSQMessagesViewController (~> 7.2)
   - MBProgressHUD (~> 0.9.1)
@@ -26,7 +26,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
-  Firebase: e35cdd2561bf4fea9c1e384e9400a9c173d19e47
+  Firebase: 744617c0733b45198f9486ebd5cac64ec2d10d79
   Instructions: 9434fd16d3c53c85b92d3faa33f36983add62369
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d

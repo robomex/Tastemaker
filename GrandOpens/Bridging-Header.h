@@ -7,7 +7,6 @@
 //
 
 #import "JSQMessagesViewController/JSQMessages.h"
-#import <Firebase/Firebase.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
