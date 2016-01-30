@@ -145,7 +145,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                             var isSavedByCurrentUser = false
                             var isVisitedByCurrentUser = false
                             
-                            for activity in objects as! [PFObject] {
+                            for activity in objects! {
                                 if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
                                     voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                                 }

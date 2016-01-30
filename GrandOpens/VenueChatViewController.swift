@@ -217,7 +217,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             let query = PFUser.query()
             query?.whereKey("objectId", containedIn: userIdList)
             query?.selectKeys([kUserDisplayNameKey, kUserProfilePicKey, kUserProfilePicSmallKey])
-            query?.findObjectsInBackgroundWithBlock { (objects: [AnyObject]?, error: NSError?) -> Void in
+            query?.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
                 if error == nil {
                     for object in objects! {
                         if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {

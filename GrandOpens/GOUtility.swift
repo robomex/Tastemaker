@@ -26,7 +26,7 @@ class GOUtility {
         queryExistingVotes.cachePolicy = PFCachePolicy.NetworkOnly
         queryExistingVotes.findObjectsInBackgroundWithBlock{ (activities, error) in
             if error == nil {
-                for activity in activities as! [PFObject] {
+                for activity in activities! {
                     activity.deleteInBackground()
                 }
             }
@@ -38,7 +38,6 @@ class GOUtility {
             voteActivity.setObject(venue, forKey: kVenueActivityToVenueKey)
             
             let voteACL = PFACL(user: PFUser.currentUser()!)
-            voteACL.setPublicReadAccess(true)
             voteActivity.ACL = voteACL
             
             voteActivity.saveInBackgroundWithBlock{ (succeeded, error) in
@@ -56,7 +55,7 @@ class GOUtility {
                         var isSavedByCurrentUser = false
                         var isVisitedByCurrentUser = false
                         
-                        for activity in objects as! [PFObject] {
+                        for activity in objects! {
                             if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
                                 voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                             }
@@ -89,7 +88,7 @@ class GOUtility {
         queryExistingVotes.cachePolicy = PFCachePolicy.NetworkOnly
         queryExistingVotes.findObjectsInBackgroundWithBlock { (activities, error) in
             if error == nil {
-                for activity in activities as! [PFObject] {
+                for activity in activities! {
                     activity.deleteInBackground()
                 }
                 
@@ -108,7 +107,7 @@ class GOUtility {
                         var isSavedByCurrentUser = false
                         var isVisitedByCurrentUser = false
                         
-                        for activity in objects as! [PFObject] {
+                        for activity in objects! {
                             if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
                                 voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                             }
@@ -149,7 +148,7 @@ class GOUtility {
         queryExistingSaves.cachePolicy = PFCachePolicy.NetworkOnly
         queryExistingSaves.findObjectsInBackgroundWithBlock{ (activities, error) in
             if error == nil {
-                for activity in activities as! [PFObject] {
+                for activity in activities! {
                     activity.deleteInBackground()
                 }
             }
@@ -161,7 +160,6 @@ class GOUtility {
             saveActivity.setObject(kVenueActivityTypeSave, forKey: kVenueActivityTypeKey)
             
             let saveACL = PFACL(user: PFUser.currentUser()!)
-            saveACL.setPublicReadAccess(true)
             saveActivity.ACL = saveACL
             
             saveActivity.saveInBackgroundWithBlock { (succeeded, error) in
@@ -184,7 +182,6 @@ class GOUtility {
         saveActivity.setObject(kVenueActivityTypeSave, forKey: kVenueActivityTypeKey)
         
         let saveACL = PFACL(user: PFUser.currentUser()!)
-        saveACL.setPublicReadAccess(true)
         saveActivity.ACL = saveACL
         
         saveActivity.saveEventually(completionBlock)
@@ -199,7 +196,7 @@ class GOUtility {
         query.findObjectsInBackgroundWithBlock { (saveActivities, error) in
             // While normally there should only be one save activity returned, we can't guarantee that, yo.
             if error == nil {
-                for saveActivity: PFObject in saveActivities as! [PFObject] {
+                for saveActivity: PFObject in saveActivities! {
                     saveActivity.deleteInBackground()
                 }
             }
@@ -275,7 +272,7 @@ class GOUtility {
         query.findObjectsInBackgroundWithBlock { (muteActivities, error) in
             // While normally there should only be on mute activity returned, we can't guarantee that, yo
             if error == nil {
-                for muteActivity: PFObject in muteActivities as! [PFObject] {
+                for muteActivity: PFObject in muteActivities! {
                     muteActivity.deleteInBackground()
                 }
             }

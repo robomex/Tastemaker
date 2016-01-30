@@ -250,7 +250,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         queryNearbyVenues.limit = 20
         queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
             if error == nil {
-                for venue in venues as! [PFObject] {
+                for venue in venues! {
                     self.startMonitoringVenueVisits(venue)
                 }
             }

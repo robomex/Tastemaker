@@ -83,7 +83,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
             mutedUsers.cachePolicy = PFCachePolicy.NetworkOnly
             mutedUsers.findObjectsInBackgroundWithBlock { (activities, error) in
                 if error == nil {
-                    for activity in activities as! [PFObject] {
+                    for activity in activities! {
                         let user: PFUser? = activity.objectForKey(kUserActivityToUserKey) as? PFUser
                         GOCache.sharedCache.setAttributesForUser(user!.objectId!, mutedByCurrentUser: true)
                     }
@@ -254,7 +254,7 @@ class FeedTableViewController: PFQueryTableViewController, GOVenueCellViewDelega
                             var isSavedByCurrentUser = false
                             var isVisitedByCurrentUser = false
                             
-                            for activity in objects as! [PFObject] {
+                            for activity in objects! {
                                 if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
                                     voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
                                 }

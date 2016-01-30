@@ -1,7 +1,10 @@
-platform :ios, '9.0'
+platform :ios, '8.0'
 
 pod 'JSQMessagesViewController', '~> 7.2'
 pod 'Firebase', '~> 2.5.0'
+pod 'FirebaseUI/Core', '~> 0.3'
+pod 'Parse'
+pod 'ParseUI'
 pod 'Synchronized'
 pod 'MBProgressHUD', '~> 0.9.1'
 pod 'TTTAttributedLabel'
