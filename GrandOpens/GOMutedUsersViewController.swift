@@ -115,10 +115,10 @@ class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSou
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let vc = GOUserProfileViewController()
+//        let vc = GOUserProfileViewController()
         let user = objectAtIndexPath(indexPath)?.objectForKey(kUserActivityToUserKey) as! PFUser
-        vc.user = user
-        navigationController?.pushViewController(vc, animated: true)
+//        vc.user = user
+//        navigationController?.pushViewController(vc, animated: true)
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

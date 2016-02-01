@@ -244,9 +244,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
         let message = self.messages[indexPath.item]
         let user = users[message.senderId]
-        let vc = GOUserProfileViewController()
-        vc.user = user
-        navigationController?.pushViewController(vc, animated: true)
+//        let vc = GOUserProfileViewController()
+//        vc.user = user
+//        navigationController?.pushViewController(vc, animated: true)
     }
 
     // Date formatting for earlier messages checks

@@ -21,32 +21,32 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         defaultNotificationCenter.removeObserver(self, name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
     }
     
-    override init(style: UITableViewStyle, className: String?) {
-//        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
-        
-        super.init(style: style, className: kVenueClassKey)
-        
-        // The className to query on
-        self.parseClassName = kVenueClassKey
-        
-        // Whether the built-in pull-to-refresh is enabled
-        self.pullToRefreshEnabled = true
-        
-        // Whether the built-in pagination is enabled
-        self.paginationEnabled = false
-        
-        // The number of objects to show per page
-        // self.objectsPerPage = 10
-        
-        // Improve scrolling performance by reusing views
-        self.reusableViews = Set<GOVenueCellView>(minimumCapacity: 3)
-        
-        self.shouldReloadOnAppear = false
-    }
+//    override init(style: UITableViewStyle, className: String?) {
+////        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
+//        
+//        super.init(style: style, className: kVenueClassKey)
+//        
+//        // The className to query on
+//        self.parseClassName = kVenueClassKey
+//        
+//        // Whether the built-in pull-to-refresh is enabled
+//        self.pullToRefreshEnabled = true
+//        
+//        // Whether the built-in pagination is enabled
+//        self.paginationEnabled = false
+//        
+//        // The number of objects to show per page
+//        // self.objectsPerPage = 10
+//        
+//        // Improve scrolling performance by reusing views
+//        self.reusableViews = Set<GOVenueCellView>(minimumCapacity: 3)
+//        
+//        self.shouldReloadOnAppear = false
+//    }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,32 +66,32 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
-        self.loadObjects()
+//        self.loadObjects()
     }
     
-    override func queryForTable() -> PFQuery {
-        if PFUser.currentUser() == nil {
-            let query = PFQuery(className: self.parseClassName!)
-            query.limit = 0
-            return query
-        }
-        
-        let activityQuery = PFQuery(className: kVenueActivityClassKey)
-        activityQuery.cachePolicy = PFCachePolicy.NetworkOnly
-        activityQuery.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
-        activityQuery.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
-        activityQuery.orderByAscending("createdAt")
-        activityQuery.includeKey(kVenueActivityToVenueKey)
-        
-        return activityQuery
-    }
+//    override func queryForTable() -> PFQuery {
+//        if PFUser.currentUser() == nil {
+//            let query = PFQuery(className: self.parseClassName!)
+//            query.limit = 0
+//            return query
+//        }
+//        
+//        let activityQuery = PFQuery(className: kVenueActivityClassKey)
+//        activityQuery.cachePolicy = PFCachePolicy.NetworkOnly
+//        activityQuery.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
+//        activityQuery.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
+//        activityQuery.orderByAscending("createdAt")
+//        activityQuery.includeKey(kVenueActivityToVenueKey)
+//        
+//        return activityQuery
+//    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let CellIdentifier = "VenueCell"
         
@@ -104,86 +104,86 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-        let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
-        venueCell!.venue = object
+//        let activity: PFObject? = objectAtIndexPath(indexPath)
+//        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
+//        venueCell!.venue = object
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
         
-        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
-        
-        if attributesForVenue != nil {
-            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
-            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-            
-            if venueCell!.voteButton!.alpha < 1.0 {
-                UIView.animateWithDuration(0.200, animations: {
-                    venueCell!.voteButton!.alpha = 1.0
-                })
-            }
-        } else {
-            venueCell!.voteButton!.alpha = 0.0
-            
-            synchronized(self) {
-                // Check if we can update the cache
-                let outstandingVenueCellViewQueryStatus: Int? = self.outstandingVenueCellViewQueries[index] as? Int
-                
-                if outstandingVenueCellViewQueryStatus == nil {
-                    let query: PFQuery = GOUtility.queryForActivitiesOnVenue(object!, cachePolicy: PFCachePolicy.NetworkOnly)
-                    query.findObjectsInBackgroundWithBlock{ (objects, error) in
-                        synchronized(self) {
-                            self.outstandingVenueCellViewQueries.removeValueForKey(index)
-                            
-                            if error != nil {
-                                return
-                            }
-                            
-                            var voters = [PFUser]()
-                            
-                            var isVotedByCurrentUser = false
-                            var isSavedByCurrentUser = false
-                            var isVisitedByCurrentUser = false
-                            
-                            for activity in objects! {
-                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
-                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
-                                }
-                                
-                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
-                                        isVotedByCurrentUser = true
-                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
-                                        isSavedByCurrentUser = true
-                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
-                                        isVisitedByCurrentUser = true
-                                    }
-                                }
-                            }
-                            
-                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
-                            
-                            if venueCell!.tag != index {
-                                return
-                            }
-                            
-                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
-                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-                            
-                            if venueCell!.voteButton!.alpha < 1.0 {
-                                UIView.animateWithDuration(0.200, animations: {
-                                    venueCell!.voteButton!.alpha = 1.0
-                                })
-                            }
-                            
-                        }
-                        
-                    }
-                }
-                
-            }
-        }
+//        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
+//        
+//        if attributesForVenue != nil {
+//            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
+//            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
+//            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
+//            
+//            if venueCell!.voteButton!.alpha < 1.0 {
+//                UIView.animateWithDuration(0.200, animations: {
+//                    venueCell!.voteButton!.alpha = 1.0
+//                })
+//            }
+//        } else {
+//            venueCell!.voteButton!.alpha = 0.0
+//            
+//            synchronized(self) {
+//                // Check if we can update the cache
+//                let outstandingVenueCellViewQueryStatus: Int? = self.outstandingVenueCellViewQueries[index] as? Int
+//                
+//                if outstandingVenueCellViewQueryStatus == nil {
+//                    let query: PFQuery = GOUtility.queryForActivitiesOnVenue(object!, cachePolicy: PFCachePolicy.NetworkOnly)
+//                    query.findObjectsInBackgroundWithBlock{ (objects, error) in
+//                        synchronized(self) {
+//                            self.outstandingVenueCellViewQueries.removeValueForKey(index)
+//                            
+//                            if error != nil {
+//                                return
+//                            }
+//                            
+//                            var voters = [PFUser]()
+//                            
+//                            var isVotedByCurrentUser = false
+//                            var isSavedByCurrentUser = false
+//                            var isVisitedByCurrentUser = false
+//                            
+//                            for activity in objects! {
+//                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
+//                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
+//                                }
+//                                
+//                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
+//                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
+//                                        isVotedByCurrentUser = true
+//                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
+//                                        isSavedByCurrentUser = true
+//                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
+//                                        isVisitedByCurrentUser = true
+//                                    }
+//                                }
+//                            }
+//                            
+//                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
+//                            
+//                            if venueCell!.tag != index {
+//                                return
+//                            }
+//                            
+//                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
+//                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
+//                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
+//                            
+//                            if venueCell!.voteButton!.alpha < 1.0 {
+//                                UIView.animateWithDuration(0.200, animations: {
+//                                    venueCell!.voteButton!.alpha = 1.0
+//                                })
+//                            }
+//                            
+//                        }
+//                        
+//                    }
+//                }
+//                
+//            }
+//        }
         
         return venueCell!
     }
@@ -193,13 +193,13 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
 
         
-        let activity: PFObject? = objectAtIndexPath(indexPath)
-        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
-        vc.venue = object
-        vc.venueID = object?.objectId
-        
-        let venueName: String = object!.objectForKey(kVenueName) as! String
-        vc.title = venueName
+//        let activity: PFObject? = objectAtIndexPath(indexPath)
+//        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
+//        vc.venue = object
+//        vc.venueID = object?.objectId
+//        
+//        let venueName: String = object!.objectForKey(kVenueName) as! String
+//        vc.title = venueName
         vc.hidesBottomBarWhenPushed = true
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationController?.pushViewController(vc, animated: true)
@@ -211,7 +211,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     // MARK: ()
     
     @objc func userDidSaveOrUnsaveVenue(note: NSNotification) {
-        self.loadObjects()
+//        self.loadObjects()
     }
     
     

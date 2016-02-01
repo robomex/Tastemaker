@@ -9,12 +9,13 @@
 import Foundation
 
 struct Venue {
-    let id: String
     let name: String
     let openingDate: NSDate
-    let votes: Int
     let address: String
     let neighborhood: String
-    let description: String
+    let phoneNumber: String
     let foodType: String
+    let description: String
+    let lat: String
+    let long: String
 }

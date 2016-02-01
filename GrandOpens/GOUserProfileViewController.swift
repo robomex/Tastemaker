@@ -140,22 +140,22 @@ class GOUserProfileViewController: ListViewController {
     
     // MARK:- PFQueryTableViewController
     
-    override func objectsDidLoad(error: NSError?) {
-        super.objectsDidLoad(error)
-        
-        self.tableView.tableHeaderView = headerView!
-    }
+//    override func objectsDidLoad(error: NSError?) {
+//        super.objectsDidLoad(error)
+//        
+//        self.tableView.tableHeaderView = headerView!
+//    }
     
-    override func queryForTable() -> PFQuery {
-        let userSavedVenues = PFQuery(className: kVenueActivityClassKey)
-        userSavedVenues.cachePolicy = PFCachePolicy.NetworkOnly
-        userSavedVenues.whereKey(kVenueActivityByUserKey, equalTo: user!)
-        userSavedVenues.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
-        userSavedVenues.orderByAscending("createdAt")
-        userSavedVenues.includeKey(kVenueActivityToVenueKey)
-        
-        return userSavedVenues
-    }
+//    override func queryForTable() -> PFQuery {
+//        let userSavedVenues = PFQuery(className: kVenueActivityClassKey)
+//        userSavedVenues.cachePolicy = PFCachePolicy.NetworkOnly
+//        userSavedVenues.whereKey(kVenueActivityByUserKey, equalTo: user!)
+//        userSavedVenues.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
+//        userSavedVenues.orderByAscending("createdAt")
+//        userSavedVenues.includeKey(kVenueActivityToVenueKey)
+//        
+//        return userSavedVenues
+//    }
     
     
     // MARK:- TableViewController
