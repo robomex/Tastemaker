@@ -78,8 +78,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
-        messageListener?.stop()
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        messageListener?.stop()
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {

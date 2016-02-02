@@ -117,18 +117,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidDisappear(animated)
         
-        let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
-        if !hasSeenInstructions {
-            self.coachMarksController.startOn(self)
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
-        }
-        
-//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+        //        let calendar = NSCalendar.autoupdatingCurrentCalendar()
         let today = NSDate()
         venueListener = VenueListener(endDate: today, callback: {
             venues in
@@ -136,11 +126,26 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             var newList = [Venue]()
             for venue in venues {
                 newList.insert(venue, atIndex: 0)
-//                self.venueIDs.insert(venue.objectId!, atIndex: 0)
+                //                self.venueIDs.insert(venue.objectId!, atIndex: 0)
             }
             self.venues = newList
             self.tableView.reloadData()
         })
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
+        if !hasSeenInstructions {
+            self.coachMarksController.startOn(self)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
+        }
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(true)
+        venueListener?.stop()
     }
 
     override func didReceiveMemoryWarning() {
@@ -243,7 +248,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
         
-        ref.childByAppendingPath("venueActivities/\(venue.objectId)/votes").observeSingleEventOfType(FEventType.Value, withBlock: {
+        ref.childByAppendingPath("venueActivities/\(venue.objectId)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
         })
