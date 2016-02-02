@@ -64,6 +64,24 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         self.tableView.emptyDataSetSource = self
         self.tableView.emptyDataSetDelegate = self
         self.tableView.tableFooterView = UIView()
+        
+        // This is supposed to be in viewWillAppear, however the empty state always flashes when placed there, troubleshoot later
+        venues = []
+        saveListHandle = ref.childByAppendingPath("userActivities/\(user!)/saves").observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            print(snapshot)
+            let enumerator = snapshot.children
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                self.ref.childByAppendingPath("venues/\(data.key)").observeEventType(FEventType.Value, withBlock: {
+                    snapshot in
+                    //                    let enumerator = snapshot.children
+                    //                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                    self.venues.insert(snapshotToVenue(snapshot), atIndex: 0)
+                    //                    }
+                    self.tableView.reloadData()
+                })
+            }
+        })
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -73,22 +91,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
 
 //        self.loadObjects()
-        venues = []
-        saveListHandle = ref.childByAppendingPath("userActivities/\(user!)/saves").observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            print(snapshot)
-            let enumerator = snapshot.children
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.ref.childByAppendingPath("venues/\(data.key)").observeEventType(FEventType.Value, withBlock: {
-                    snapshot in
-//                    let enumerator = snapshot.children
-//                    while let data = enumerator.nextObject() as? FDataSnapshot {
-                    self.venues.insert(snapshotToVenue(snapshot), atIndex: 0)
-//                    }
-                    self.tableView.reloadData()
-                })
-            }
-        })
     }
     
     override func viewDidDisappear(animated: Bool) {
