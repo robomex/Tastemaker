@@ -179,8 +179,8 @@ class GOVenueCellView: UITableViewCell {
     }
     
     func didTapVoteButtonAction(button: UIButton) {
-        if delegate != nil && delegate!.respondsToSelector(Selector("venueCellView:didTapVoteButton:venue:")) {
-            delegate!.venueCellView!(self, didTapVoteButton: button, venue: self.venue! as! AnyObject)
+        if delegate != nil && delegate!.respondsToSelector(Selector("venueCellView:didTapVoteButton:venueId:")) {
+            delegate!.venueCellView!(self, didTapVoteButton: button, venueId: (venue?.objectId)!)
         }
     }
 }
@@ -195,5 +195,5 @@ class GOVenueCellView: UITableViewCell {
         Sent to the delegate when the vote button is tapped
         @param venue the PFObject for the venue that is being voted or unvoted
     */
-    optional func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: AnyObject)
+    optional func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venueId: String)
 }

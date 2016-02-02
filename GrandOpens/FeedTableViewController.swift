@@ -24,7 +24,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     let reachability = try! Reachability.reachabilityForInternetConnection()
     private var venues = [Venue]()
 //    var venueIDs = [String]()
-    private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
+    private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
     
     
@@ -253,6 +253,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
         })
         
+//        venueCell!.setVoteStatus(true)
+        
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        
 //        if attributesForVenue != nil {
@@ -370,7 +372,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     // MARK: GOVenueCellViewDelegate
     
-    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: AnyObject) {
+    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venueId: String) {
         venueCellView.shouldEnableVoteButton(true)
         
         let voted: Bool = !button.selected
@@ -381,11 +383,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount++
+            ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venueId)").setValue(true)
+            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(PFUser.currentUser()!.objectId!)").setValue(true)
 //            GOCache.sharedCache.incrementVoteCountForVenue(venue)
         } else {
             if voteCount > 0 {
                 voteCount--
             }
+            ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venueId)").removeValue()
+            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(PFUser.currentUser()!.objectId!)").removeValue()
 //            GOCache.sharedCache.decrementVoteCountForVenue(venue)
         }
         
@@ -395,8 +401,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         if voted {
 //            GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
-//                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-//                actualVenueCellView?.shouldEnableVoteButton(false)
+                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+                actualVenueCellView?.shouldEnableVoteButton(false)
 //                actualVenueCellView?.setVoteStatus(succeeded)
 //                
 //                if !succeeded {
@@ -405,10 +411,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 //            })
         } else {
 //            GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
-//                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-//                actualVenueCellView?.shouldEnableVoteButton(true)
+                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+                actualVenueCellView?.shouldEnableVoteButton(true)
 //                actualVenueCellView?.setVoteStatus(!succeeded)
-//                
+//
 //                if !succeeded{
 //                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
 //                }
