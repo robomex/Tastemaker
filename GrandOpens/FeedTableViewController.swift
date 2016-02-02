@@ -98,6 +98,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         }
         
         PFUser.currentUser()?.fetchInBackground()
+        
+        // Prevents additional cells from being drawn for short lists
+        self.tableView.tableFooterView = UIView()
     }
     
     deinit {
