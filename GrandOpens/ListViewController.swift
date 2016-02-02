@@ -230,13 +230,12 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
 
         
-//        let activity: PFObject? = objectAtIndexPath(indexPath)
-//        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
-//        vc.venue = object
-//        vc.venueID = object?.objectId
-//        
-//        let venueName: String = object!.objectForKey(kVenueName) as! String
-//        vc.title = venueName
+        let venue = venues[indexPath.row]
+        vc.venue = venue
+        vc.venueID = venue.objectId
+        
+        let venueName: String = venue.name!
+        vc.title = venueName
         vc.hidesBottomBarWhenPushed = true
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationController?.pushViewController(vc, animated: true)
