@@ -11,10 +11,16 @@ import ParseUI
 import Parse
 import Synchronized
 import DZNEmptyDataSet
+import Firebase
 
 class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     // MARK: Initialization
+    
+    private let ref = Firebase(url: "https://grandopens.firebaseio.com")
+    private var saveListHandle: UInt?
+    private var user = PFUser.currentUser()?.objectId
+    private var venues = [Venue]()
     
     deinit {
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
@@ -65,8 +71,29 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
-        
+
 //        self.loadObjects()
+        venues = []
+        saveListHandle = ref.childByAppendingPath("userActivities/\(user!)/saves").observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            print(snapshot)
+            let enumerator = snapshot.children
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                self.ref.childByAppendingPath("venues/\(data.key)").observeEventType(FEventType.Value, withBlock: {
+                    snapshot in
+//                    let enumerator = snapshot.children
+//                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                    self.venues.insert(snapshotToVenue(snapshot), atIndex: 0)
+//                    }
+                    self.tableView.reloadData()
+                })
+            }
+        })
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        ref.removeObserverWithHandle(saveListHandle!)
     }
     
 //    override func queryForTable() -> PFQuery {
@@ -85,6 +112,10 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
 //        
 //        return activityQuery
 //    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.venues.count
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -93,22 +124,26 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let CellIdentifier = "VenueCell"
+        let cellIdentifier = "VenueCell"
         
         let index: Int = self.indexForObjectAtIndexPath(indexPath)
         
-        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? GOVenueCellView
+        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
         if venueCell == nil {
             venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
             venueCell!.delegate = self
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-//        let activity: PFObject? = objectAtIndexPath(indexPath)
-//        let object: PFObject? = activity?.objectForKey(kVenueActivityToVenueKey) as? PFObject
-//        venueCell!.venue = object
+        let venue = venues[indexPath.row]
+        venueCell!.venue = venue
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
+        
+        ref.childByAppendingPath("venueActivities/\(venue.objectId)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
+        })
         
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        

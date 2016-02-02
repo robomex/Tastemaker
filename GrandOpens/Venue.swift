@@ -30,7 +30,8 @@ class VenueListener {
     
     init (//startDate: NSDate,
         endDate: NSDate, callback: ([Venue]) -> ()) {
-            let handle = ref.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).queryStartingAtValue(dateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: { snapshot in
+            let handle = ref.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).queryStartingAtValue(dateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
+                snapshot in
                 var venues = Array<Venue>()
                 let enumerator = snapshot.children
                 
@@ -87,7 +88,7 @@ private func dateFormatter() -> NSDateFormatter {
     return dateFormatter
 }
 
-private func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
+func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     let objectId = snapshot.key
     let name = snapshot.value.objectForKey(kVenueName) as? String
     let openingDate = snapshot.value.objectForKey(kVenueOpeningDate) as? String

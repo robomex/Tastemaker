@@ -10,12 +10,17 @@ import UIKit
 import Parse
 import ReachabilitySwift
 import Whisper
+import Firebase
 
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
-    var venueID: String?
+    var venueID: String!
     var venue: Venue?
     var segmentedControl: UISegmentedControl!
+    private var ref = Firebase(url: "https://grandopens.firebaseio.com")
+    private var user = PFUser.currentUser()!.objectId
+    private var saveHandle = UInt?()
+    private var saveRef: Firebase?
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
@@ -82,7 +87,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
 //        }
 
         // Hide the chat inputToolbar if banned
-        if PFUser.currentUser()?.objectForKey("banned") as? Bool == true {
+        if PFUser.currentUser()!.objectForKey("banned") as? Bool == true {
             chatVC.inputToolbar?.hidden = true
         }
         
@@ -93,6 +98,27 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: ReachabilityChangedNotification, object: reachability)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        saveRef = ref.childByAppendingPath("userActivities/\(user!)/saves/\(venueID)")
+        saveHandle = saveRef!.observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                self.configureUnsaveButton()
+            } else {
+                self.configureSaveButton()
+            }
+        })
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        ref.removeObserverWithHandle(saveHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -156,6 +182,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureUnsaveButton()
         
+        saveRef?.setValue(true)
 //        GOUtility.saveVenueEventually(self.venue!, block: { (succeeded, error) in
 //            if error != nil {
 //                self.configureSaveButton()
@@ -170,6 +197,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureSaveButton()
         
+        saveRef?.removeValue()
 //        GOUtility.unsaveVenueEventually(self.venue!)
     }
     
