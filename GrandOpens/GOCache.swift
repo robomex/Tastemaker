@@ -120,7 +120,7 @@ final class GOCache {
         setAttributes(attributes!, forVenue: venue)
     }
     
-    func isVenueVistedByCurrentUser(venue: PFObject) -> Bool {
+    func isVenueVisitedByCurrentUser(venue: PFObject) -> Bool {
         let attributes = attributesForVenue(venue)
         if attributes != nil {
             return attributes![kVenueAttributesIsVisitedByCurrentUserKey] as! Bool

@@ -150,7 +150,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        
 //        if attributesForVenue != nil {
-//            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
+//            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
 //            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
 //            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
 //            
@@ -204,7 +204,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
 //                                return
 //                            }
 //                            
-//                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVistedByCurrentUser(object!))
+//                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
 //                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
 //                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
 //                            
