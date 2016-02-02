@@ -9,9 +9,11 @@
 import Foundation
 import Parse
 import MapKit
+//import Firebase
 
 class GOUtility {
     
+//    let ref = Firebase(url: "https://grandopens.firebaseio.com/")
     
     // MARK: GOUtility
     

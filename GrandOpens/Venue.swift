@@ -10,6 +10,7 @@ import Foundation
 import Firebase
 
 struct Venue {
+    let objectId: String?
     let name: String?
     let openingDate: String?
     let address: String?
@@ -36,7 +37,6 @@ class VenueListener {
                 while let data = enumerator.nextObject() as? FDataSnapshot {
                     venues.append(snapshotToVenue(data))
                 }
-                print(venues)
                 callback(venues)
             })
             self.currentHandle = handle
@@ -88,6 +88,7 @@ private func dateFormatter() -> NSDateFormatter {
 }
 
 private func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
+    let objectId = snapshot.key
     let name = snapshot.value.objectForKey(kVenueName) as? String
     let openingDate = snapshot.value.objectForKey(kVenueOpeningDate) as? String
     //let openingDate = dateFormatter().dateFromString(snapshot.value.objectForKey(kVenueOpeningDate))//unformattedDate!)
@@ -97,12 +98,16 @@ private func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     let phoneNumber = snapshot.value.objectForKey(kVenuePhoneNumber) as? String
     let foodType = snapshot.value.objectForKey(kVenueFoodType) as? String
     let description = snapshot.value.objectForKey(kVenueDescription) as? String
-    return Venue(name: name, openingDate: openingDate, address: address, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
+    return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
 }
 
-
-
-
+//func getVoteSnapshot(venueKey: String) -> FDataSnapshot {
+//    ref.childByAppendingPath("venueActivities/\(venueKey)/votes").observeSingleEventOfType(FEventType.Value, withBlock: {
+//        snapshot in
+////        let count: UInt = snapshot.childrenCount
+//        return snapshot
+//    })
+//}
 
 
 

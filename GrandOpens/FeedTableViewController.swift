@@ -23,6 +23,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     let coachMarksController = CoachMarksController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
     var venues = [Venue]()
+//    var venueIDs = [String]()
     private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
     var venueListener: VenueListener?
     
@@ -132,7 +133,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             var newList = [Venue]()
             for venue in venues {
                 newList.insert(venue, atIndex: 0)
-//                self.venues.append(venue)
+//                self.venueIDs.insert(venue.objectId!, atIndex: 0)
             }
             self.venues = newList
             self.tableView.reloadData()
@@ -234,14 +235,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-        if !venues.isEmpty {
-//            let object = objectAtIndexPath(indexPath)
-            print(venues[indexPath.row])
-            let venue = venues[indexPath.row]
-            venueCell!.venue = venue
-            venueCell!.tag = index
-            venueCell!.voteButton!.tag = index
-        }
+        let venue = venues[indexPath.row]
+        venueCell!.venue = venue
+        venueCell!.tag = index
+        venueCell!.voteButton!.tag = index
+        
+        ref.childByAppendingPath("venueActivities/\(venue.objectId)/votes").observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
+        })
         
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        
