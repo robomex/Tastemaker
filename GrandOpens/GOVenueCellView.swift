@@ -21,7 +21,7 @@ struct GOVenueCellButtons: OptionSetType {
     static let Default: GOVenueCellButtons = [Vote]
 }
 
-class GOVenueCellView: PFTableViewCell {
+class GOVenueCellView: UITableViewCell {
     
     // The bitmark which specifies the enabled interaction elements in the view
     var buttons: GOVenueCellButtons = .None
@@ -108,7 +108,7 @@ class GOVenueCellView: PFTableViewCell {
     
     // MARK: GOVenueCellView
     
-    var venue: PFObject? {
+    var venue: Venue? {
         didSet{
             var constrainWidth: CGFloat = containerView!.bounds.size.width
             
@@ -117,16 +117,18 @@ class GOVenueCellView: PFTableViewCell {
                 self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
-            let venueName: String = venue!.objectForKey(kVenueName) as! String
+            let venueName: String? = venue?.name
             self.venueNameLabel!.text = venueName
             
-            let venueNeighborhood: String = venue!.objectForKey(kVenueNeighborhood) as! String
+            let venueNeighborhood: String? = venue?.neighborhood
             self.venueNeighborhoodLabel!.text = venueNeighborhood
             
-            let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
+            let venueOpeningDate: String? = venue?.openingDate
             let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = dateFormatter.dateFromString(venueOpeningDate!)
             dateFormatter.dateFormat = "MMM d"
-            let venueOpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
+            let venueOpeningDateString = dateFormatter.stringFromDate(date!)
             
             if venueName != "Chicago Chat" {
                 self.venueOpeningDateLabel!.text = venueOpeningDateString
@@ -178,7 +180,7 @@ class GOVenueCellView: PFTableViewCell {
     
     func didTapVoteButtonAction(button: UIButton) {
         if delegate != nil && delegate!.respondsToSelector(Selector("venueCellView:didTapVoteButton:venue:")) {
-            delegate!.venueCellView!(self, didTapVoteButton: button, venue: self.venue!)
+            delegate!.venueCellView!(self, didTapVoteButton: button, venue: self.venue! as! AnyObject)
         }
     }
 }
@@ -193,5 +195,5 @@ class GOVenueCellView: PFTableViewCell {
         Sent to the delegate when the vote button is tapped
         @param venue the PFObject for the venue that is being voted or unvoted
     */
-    optional func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: PFObject)
+    optional func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: AnyObject)
 }

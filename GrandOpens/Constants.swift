@@ -87,10 +87,13 @@ let kVenueName                                  = "name"
 let kVenueOpeningDate                           = "openingDate"
 let kVenueAddress                               = "address"
 let kVenueNeighborhood                          = "neighborhood"
-let kVenueDescription                           = "description"
-let kVenueFoodType                              = "foodType"
-let kVenueLocation                              = "location"
+//let kVenueLat                                   = "lat"
+//let kVenueLong                                  = "long"
 let kVenuePhoneNumber                           = "phoneNumber"
+let kVenueFoodType                              = "foodType"
+let kVenueDescription                           = "description"
+// Remove the below after sorting out Geo in Firebase
+let kVenueLocation                              = "location"
 
 
 // MARK: Cached Venue Attributes

@@ -17,12 +17,14 @@ import Firebase
 
 class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
 
-    var shouldReloadOnAppear: Bool = false
+//    var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
 //    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
     let coachMarksController = CoachMarksController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
+    var venues = [Venue]()
     private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
+    var venueListener: VenueListener?
     
     
     // MARK: Initialization
@@ -114,12 +116,27 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     }
     
     override func viewDidAppear(animated: Bool) {
+        super.viewDidDisappear(animated)
         
         let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
         if !hasSeenInstructions {
             self.coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
         }
+        
+//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+        let today = NSDate()
+        venueListener = VenueListener(endDate: today, callback: {
+            venues in
+            
+            var newList = [Venue]()
+            for venue in venues {
+                newList.insert(venue, atIndex: 0)
+//                self.venues.append(venue)
+            }
+            self.venues = newList
+            self.tableView.reloadData()
+        })
     }
 
     override func didReceiveMemoryWarning() {
@@ -154,8 +171,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return self.objects!.count
-        return 2
+        return venues.count
     }
 
     
@@ -196,32 +212,36 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 //        return query
 //    }
     
-//    override func objectAtIndexPath(indexPath: NSIndexPath?) -> PFObject? {
-//        let index = self.indexForObjectAtIndexPath(indexPath!)
-//        if (index < self.objects!.count) {
-//            return self.objects![index] as? PFObject
-//        }
-//        
-//        return nil
-//    }
+    func objectAtIndexPath(indexPath: NSIndexPath?) -> AnyObject? {
+        let index = self.indexForObjectAtIndexPath(indexPath!)
+        if (index < self.venues.count) {
+            return self.venues[index] as? AnyObject
+        }
+        
+        return nil
+    }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
-        let CellIdentifier = "VenueCell"
+        let cellIdentifier = "VenueCell"
         
         let index: Int = self.indexForObjectAtIndexPath(indexPath)
         
-        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? GOVenueCellView
+        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
         if venueCell == nil {
             venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
             venueCell!.delegate = self
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-//        let object = objectAtIndexPath(indexPath)
-//        venueCell!.venue = object
-        venueCell!.tag = index
-        venueCell!.voteButton!.tag = index
+        if !venues.isEmpty {
+//            let object = objectAtIndexPath(indexPath)
+            print(venues[indexPath.row])
+            let venue = venues[indexPath.row]
+            venueCell!.venue = venue
+            venueCell!.tag = index
+            venueCell!.voteButton!.tag = index
+        }
         
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        
@@ -340,7 +360,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     // MARK: GOVenueCellViewDelegate
     
-    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: PFObject) {
+    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venue: AnyObject) {
         venueCellView.shouldEnableVoteButton(true)
         
         let voted: Bool = !button.selected
@@ -351,38 +371,38 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount++
-            GOCache.sharedCache.incrementVoteCountForVenue(venue)
+//            GOCache.sharedCache.incrementVoteCountForVenue(venue)
         } else {
             if voteCount > 0 {
                 voteCount--
             }
-            GOCache.sharedCache.decrementVoteCountForVenue(venue)
+//            GOCache.sharedCache.decrementVoteCountForVenue(venue)
         }
         
-        GOCache.sharedCache.setVenueIsVotedByCurrentUser(venue, voted: voted)
+//        GOCache.sharedCache.setVenueIsVotedByCurrentUser(venue, voted: voted)
         
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
         
         if voted {
-            GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
-                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(false)
-                actualVenueCellView?.setVoteStatus(succeeded)
-                
-                if !succeeded {
-                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
-                }
-            })
+//            GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
+//                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+//                actualVenueCellView?.shouldEnableVoteButton(false)
+//                actualVenueCellView?.setVoteStatus(succeeded)
+//                
+//                if !succeeded {
+//                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
+//                }
+//            })
         } else {
-            GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
-                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(true)
-                actualVenueCellView?.setVoteStatus(!succeeded)
-                
-                if !succeeded{
-                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
-                }
-            })
+//            GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
+//                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+//                actualVenueCellView?.shouldEnableVoteButton(true)
+//                actualVenueCellView?.setVoteStatus(!succeeded)
+//                
+//                if !succeeded{
+//                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
+//                }
+//            })
         }
     }
     
