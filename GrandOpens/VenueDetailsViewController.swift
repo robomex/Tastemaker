@@ -13,7 +13,7 @@ import Contacts
 
 class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate {
 
-    var venue: PFObject?
+    var venue: Venue?
     let regionRadius: CLLocationDistance = 500
     var mapView: MKMapView!
     var mapItem: MKMapItem? = nil
@@ -26,7 +26,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 80))
         venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 85)
         
-        let venueDescription: String = venue!.objectForKey(kVenueDescription) as! String
+        let venueDescription: String = (venue?.description)!
         venueDescriptionLabel.text = venueDescription
         venueDescriptionLabel.textAlignment = NSTextAlignment.Left
         venueDescriptionLabel.font = UIFont.systemFontOfSize(17)
@@ -41,12 +41,14 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
         venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 110)
         
-        let venueFoodType: String = venue!.objectForKey(kVenueFoodType) as! String
-        let venueOpeningDate: NSDate = venue!.objectForKey(kVenueOpeningDate) as! NSDate
+        let venueFoodType: String = (venue?.foodType)!
+        let venueOpeningDate: String = (venue?.openingDate)!
         let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = dateFormatter.dateFromString(venueOpeningDate)
         dateFormatter.dateFormat = "MMMM d"
-
-        let OpeningDateString = dateFormatter.stringFromDate(venueOpeningDate)
+        let OpeningDateString = dateFormatter.stringFromDate(date!)
+        
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
         venueFoodTypeAndOpeningDateLabel.font = UIFont.italicSystemFontOfSize(13.0)
@@ -64,7 +66,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
         mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
         
-        let venueAddress = venue!.objectForKey(kVenueAddress) as! String
+        let venueAddress = (venue?.address)!
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(venueAddress, completionHandler: {(placemarks, error) -> Void in
             if ((error) != nil) {
@@ -74,7 +76,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 let venueLocation: CLLocation = placemark.location!
                 
                 // Next three lines for Maps directions
-                let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.objectForKey(kVenueName) as! String]
+                let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.name as String!]
                 let mapPlacemark = MKPlacemark(coordinate: venueLocation.coordinate, addressDictionary: addressDictionary)
                 self.mapItem = MKMapItem(placemark: mapPlacemark)
                 
@@ -116,13 +118,13 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         switch (indexPath.row) {
         case 0:
             let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
-            cell.textLabel?.text = venue!.objectForKey(kVenueAddress) as? String
-            cell.detailTextLabel?.text = venue!.objectForKey(kVenueNeighborhood) as? String
+            cell.textLabel?.text = venue?.address
+            cell.detailTextLabel?.text = venue?.neighborhood
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             return cell
         case 1:
             let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
-            cell.textLabel?.text = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Phone Number Not Found"
+            cell.textLabel?.text = venue?.phoneNumber ?? "Phone Number Not Found"
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             return cell
         default:
@@ -144,7 +146,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         case 1:
-            let formattedPhoneNumber = venue!.objectForKey(kVenuePhoneNumber) as? String ?? "Phone Number Not Found"
+            let formattedPhoneNumber = venue?.phoneNumber ?? "Phone Number Not Found"
             let stringArray = formattedPhoneNumber.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
             let phoneNumber = stringArray.joinWithSeparator("")
             if let url = NSURL(string: "tel://\(phoneNumber)") {

@@ -25,13 +25,13 @@ struct User {
     }
 }
 
-func pfUserToUser(user: PFUser) -> User {
-    return User(id: user.objectId!, name: user.objectForKey(kUserDisplayNameKey) as! String, pfUser: user)
-}
-
-func currentUser() -> User? {
-    if let user = PFUser.currentUser() {
-        return pfUserToUser(user)
-    }
-    return nil
-}
+//func pfUserToUser(user: PFUser) -> User {
+//    return User(id: user.objectId!, name: user.objectForKey(kUserDisplayNameKey) as! String, pfUser: user)
+//}
+//
+//func currentUser() -> User? {
+//    if let user = PFUser.currentUser() {
+//        return pfUserToUser(user)
+//    }
+//    return nil
+//}

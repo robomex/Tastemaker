@@ -45,15 +45,15 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             })
         }
         
-        self.senderId = currentUser()!.id
+        self.senderId = "testForNow"//currentUser()!.id
         self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
         self.showLoadEarlierMessagesHeader = true
             
-        if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
+//        if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
             self.senderDisplayName = "A No-Namer"
-        } else {
-            self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
-        }
+//        } else {
+//            self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
+//        }
 
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
         self.edgesForExtendedLayout = UIRectEdge.None

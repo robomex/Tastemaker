@@ -14,7 +14,7 @@ import Whisper
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     var venueID: String?
-    var venue: PFObject?
+    var venue: Venue?
     var segmentedControl: UISegmentedControl!
     
     let chatVC = VenueChatViewController()
@@ -50,25 +50,25 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        let queryIsSaved = PFQuery(className: kVenueActivityClassKey)
-        queryIsSaved.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
-        queryIsSaved.whereKey(kVenueActivityToVenueKey, equalTo: self.venue!)
-        queryIsSaved.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
-        queryIsSaved.cachePolicy = PFCachePolicy.CacheThenNetwork
-        queryIsSaved.countObjectsInBackgroundWithBlock { (number, error) in
-            if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
-                print("Couldn't determine save relationship: \(error)")
-                self.navigationItem.rightBarButtonItem = nil
-            } else {
-                if number == 0 {
-                    self.configureSaveButton()
-                } else {
-                    self.configureUnsaveButton()
-                }
-                
-            }
-            
-        }
+//        let queryIsSaved = PFQuery(className: kVenueActivityClassKey)
+//        queryIsSaved.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
+//        queryIsSaved.whereKey(kVenueActivityToVenueKey, equalTo: self.venue!)
+//        queryIsSaved.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
+//        queryIsSaved.cachePolicy = PFCachePolicy.CacheThenNetwork
+//        queryIsSaved.countObjectsInBackgroundWithBlock { (number, error) in
+//            if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
+//                print("Couldn't determine save relationship: \(error)")
+//                self.navigationItem.rightBarButtonItem = nil
+//            } else {
+//                if number == 0 {
+//                    self.configureSaveButton()
+//                } else {
+//                    self.configureUnsaveButton()
+//                }
+//                
+//            }
+//            
+//        }
         
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
@@ -77,9 +77,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         }
         
         // Hide the chat inputToolbar unless they've visited the venue
-        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) && venue!.objectForKey(kVenueName) as! String != "Chicago Chat" {
-            chatVC.inputToolbar?.hidden = true
-        }
+//        if !GOCache.sharedCache.isVenueVistedByCurrentUser(self.venue!) && venue!.objectForKey(kVenueName) as! String != "Chicago Chat" {
+//            chatVC.inputToolbar?.hidden = true
+//        }
 
         // Hide the chat inputToolbar if banned
         if PFUser.currentUser()?.objectForKey("banned") as? Bool == true {
@@ -156,11 +156,11 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureUnsaveButton()
         
-        GOUtility.saveVenueEventually(self.venue!, block: { (succeeded, error) in
-            if error != nil {
-                self.configureSaveButton()
-            }
-        })
+//        GOUtility.saveVenueEventually(self.venue!, block: { (succeeded, error) in
+//            if error != nil {
+//                self.configureSaveButton()
+//            }
+//        })
     }
     
     func unsaveButtonAction(sender: AnyObject) {
@@ -170,17 +170,17 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureSaveButton()
         
-        GOUtility.unsaveVenueEventually(self.venue!)
+//        GOUtility.unsaveVenueEventually(self.venue!)
     }
     
     func configureSaveButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
-        GOCache.sharedCache.setVenueIsSavedByCurrentUser(false, venue: self.venue!)
+//        GOCache.sharedCache.setVenueIsSavedByCurrentUser(false, venue: self.venue!)
     }
     
     func configureUnsaveButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
-        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: self.venue!)
+//        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: self.venue!)
     }
     
     func reachabilityChanged(note: NSNotification) {
