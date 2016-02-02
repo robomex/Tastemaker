@@ -19,8 +19,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     var segmentedControl: UISegmentedControl!
     private var ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var user = PFUser.currentUser()!.objectId
-    private var saveHandle = UInt?()
-    private var saveRef: Firebase?
+    private var userActivitiesSaveHandle = UInt?()
+    private var userActivitiesSaveRef: Firebase?
+    private var venueActivitiesSaverRef: Firebase?
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
@@ -103,8 +104,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        saveRef = ref.childByAppendingPath("userActivities/\(user!)/saves/\(venueID)")
-        saveHandle = saveRef!.observeEventType(FEventType.Value, withBlock: {
+        userActivitiesSaveRef = ref.childByAppendingPath("userActivities/\(user!)/saves/\(venueID)")
+        venueActivitiesSaverRef = ref.childByAppendingPath("venueActivities/\(venueID)/savers/\(user!)")
+        userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
@@ -118,7 +120,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        ref.removeObserverWithHandle(saveHandle!)
+        ref.removeObserverWithHandle(userActivitiesSaveHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -182,7 +184,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureUnsaveButton()
         
-        saveRef?.setValue(true)
+        userActivitiesSaveRef?.setValue(true)
+        venueActivitiesSaverRef?.setValue(true)
 //        GOUtility.saveVenueEventually(self.venue!, block: { (succeeded, error) in
 //            if error != nil {
 //                self.configureSaveButton()
@@ -197,7 +200,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureSaveButton()
         
-        saveRef?.removeValue()
+        userActivitiesSaveRef?.removeValue()
+        venueActivitiesSaverRef?.removeValue()
 //        GOUtility.unsaveVenueEventually(self.venue!)
     }
     
