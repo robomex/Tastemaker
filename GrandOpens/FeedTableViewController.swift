@@ -250,17 +250,17 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 
         ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
-            print(snapshot.value)
+
             venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
-            self.ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                snapshot in
-                
-                if snapshot.exists() {
-                    venueCell!.setVoteStatus(true)
-                } else {
-                    venueCell!.setVoteStatus(false)
-                }
-            })
+        })
+        ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                venueCell!.setVoteStatus(true)
+            } else {
+                venueCell!.setVoteStatus(false)
+            }
         })
         
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)

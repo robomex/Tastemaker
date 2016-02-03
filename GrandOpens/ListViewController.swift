@@ -129,7 +129,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         //        let index: Int = self.indexForObjectAtIndexPath(indexPath)
         super.venues = self.listVenues
-        var venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) //self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) //self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
         //        if venueCell == nil {
         //            venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
         //            venueCell!.delegate = self
