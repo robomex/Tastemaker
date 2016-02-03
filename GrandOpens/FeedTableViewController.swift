@@ -22,7 +22,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 //    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
     let coachMarksController = CoachMarksController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
-    private var venues = [Venue]()
+    var venues = [Venue]()
 //    var venueIDs = [String]()
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
