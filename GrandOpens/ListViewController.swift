@@ -69,7 +69,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         venues = []
         saveListHandle = ref.childByAppendingPath("userActivities/\(user!)/saves").observeEventType(FEventType.Value, withBlock: {
             snapshot in
-            print(snapshot)
             let enumerator = snapshot.children
             while let data = enumerator.nextObject() as? FDataSnapshot {
                 self.ref.childByAppendingPath("venues/\(data.key)").observeEventType(FEventType.Value, withBlock: {
