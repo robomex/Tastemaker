@@ -45,7 +45,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             })
         }
         
-        self.senderId = "testForNow"//currentUser()!.id
+        self.senderId = PFUser.currentUser()?.objectId!
         self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
         self.showLoadEarlierMessagesHeader = true
             
