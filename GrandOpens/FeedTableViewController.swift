@@ -9,7 +9,6 @@
 import UIKit
 import Parse
 import ParseUI
-import Synchronized
 import Instructions
 import ReachabilitySwift
 import Whisper
