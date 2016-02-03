@@ -263,8 +263,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             })
         })
         
-//        venueCell!.setVoteStatus(true)
-        
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
 //        
 //        if attributesForVenue != nil {

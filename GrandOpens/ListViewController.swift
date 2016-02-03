@@ -141,9 +141,18 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
         
-        ref.childByAppendingPath("venueActivities/\(venue.objectId)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
+        ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
+            self.ref.childByAppendingPath("userActivities/\(self.user!)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    venueCell!.setVoteStatus(true)
+                } else {
+                    venueCell!.setVoteStatus(false)
+                }
+            })
         })
         
 //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
