@@ -76,7 +76,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                     snapshot in
              
                     self.listVenues.insert(snapshotToVenue(snapshot), atIndex: 0)
-                    
                     self.tableView.reloadData()
                 })
             }

@@ -10,6 +10,7 @@ import Foundation
 import Parse
 import JSQMessagesViewController
 import DZNEmptyDataSet
+import Firebase
 
 class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
@@ -17,33 +18,49 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var venueID: String?
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
+    let ref = Firebase(url: "https://grandopens.firebaseio.com")
+    var mutedUsers = [String]()
+    
+    // used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
+    
+    // indexed with messages and used for pushing GOUserProfile
     var users = Dictionary<String, PFUser>()
+    
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
-        if let id = venueID {
-            fetchMessages(id, callback: {
-                messages in
-                
-                for m in messages {
-                    if !GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
-                        self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
-                        self.userIdList.append(m.senderID)
+        ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            let enumerator = snapshot.children
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                self.mutedUsers.append(data.key)
+            }
+            print (self.mutedUsers)
+            
+            if let id = self.venueID {
+                fetchMessages(id, callback: {
+                    messages in
+                    
+                    for m in messages {
+                        if !self.mutedUsers.contains(m.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                            self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                            self.userIdList.append(m.senderID)
+                        }
                     }
-                }
-                self.finishReceivingMessageAnimated(false)
-                self.userIdList = Array(Set(self.userIdList))
-                
-                if self.messages.count > 0 {
-                    self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
-                }
-            })
-        }
+                    self.finishReceivingMessageAnimated(false)
+                    self.userIdList = Array(Set(self.userIdList))
+                    
+                    if self.messages.count > 0 {
+                        self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
+                    }
+                })
+            }
+        })
         
         self.senderId = PFUser.currentUser()?.objectId!
         self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
@@ -63,10 +80,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
         
+        // putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
-                if !GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
+                if !self.mutedUsers.contains(message.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
                     self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
                     self.userIdList.append(message.senderID)
                 }
@@ -275,7 +293,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             messages in
             
             for m in messages {
-                if !GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                if !self.mutedUsers.contains(m.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
                     self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
                     self.userIdList.append(m.senderID)
                 }
