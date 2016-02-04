@@ -13,5 +13,6 @@ pod 'DZNEmptyDataSet'
 pod 'ReachabilitySwift'
 pod 'Whisper'
 pod 'SCLAlertView'
+pod 'SCLAlertView-Objective-C'
 
 use_frameworks!

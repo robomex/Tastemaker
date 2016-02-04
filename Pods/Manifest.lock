@@ -15,6 +15,7 @@ PODS:
     - Parse (~> 1.9)
   - ReachabilitySwift (2.3.3)
   - SCLAlertView (0.5)
+  - SCLAlertView-Objective-C (0.8.2)
   - TTTAttributedLabel (1.13.4)
   - Whisper (2.0.2)
 
@@ -29,6 +30,7 @@ DEPENDENCIES:
   - ParseUI
   - ReachabilitySwift
   - SCLAlertView
+  - SCLAlertView-Objective-C
   - TTTAttributedLabel
   - Whisper
 
@@ -45,6 +47,7 @@ SPEC CHECKSUMS:
   ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SCLAlertView: 51a328f3985e13e6bfe8dc77123543480fa615f9
+  SCLAlertView-Objective-C: de137408b04f3587551fa98b876b3cbc612cee79
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   Whisper: 49abcba82d23dd20f0a9a025797cacd09c8aa3bb
 

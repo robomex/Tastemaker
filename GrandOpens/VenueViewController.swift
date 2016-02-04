@@ -11,15 +11,17 @@ import Parse
 import ReachabilitySwift
 import Whisper
 import Firebase
+//import SCLAlertView
+import SCLAlertView_Objective_C
 
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     var venueID: String!
     var venue: Venue?
     var segmentedControl: UISegmentedControl!
-    private var ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var user = PFUser.currentUser()!.objectId
     private var userActivitiesSaveHandle = UInt?()
+    private var authRefHandle = UInt?()
     private var userActivitiesSaveRef: Firebase?
     private var venueActivitiesSaverRef: Firebase?
     
@@ -104,8 +106,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        userActivitiesSaveRef = ref.childByAppendingPath("userActivities/\(user!)/saves/\(venueID)")
-        venueActivitiesSaverRef = ref.childByAppendingPath("venueActivities/\(venueID)/savers/\(user!)")
+        userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(user!)/saves/\(venueID)")
+        venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(user!)")
         userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
@@ -115,12 +117,22 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 self.configureSaveButton()
             }
         })
+        
+        authRefHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
+            authData in
+            
+            if authData == nil {
+                self.presentLogin()
+            }
+        })
+        
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        ref.removeObserverWithHandle(userActivitiesSaveHandle!)
+        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authRefHandle!)
+        userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -175,7 +187,24 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     
-    // MARK: ()
+    // MARK: Account and login
+    
+    func presentLogin() {
+        let alert = SCLAlertView()
+        let emailTextField = alert.addTextField("Email")
+        let passwordTextField = alert.addTextField("Password")
+        let usernameTextField = alert.addTextField("Choose a username (you can change this later)")
+        alert.addButton("Create Account") {
+            print("create account button pressed")
+        }
+        alert.showAnimationType = SCLAlertViewShowAnimation.FadeIn
+        alert.hideAnimationType = SCLAlertViewHideAnimation.FadeOut
+        alert.backgroundType = SCLAlertViewBackground.Shadow
+        alert.showEdit(self.view.window?.rootViewController, title: "Let's get you signed up!", subTitle: "blabklabk", closeButtonTitle: "Fuck", duration: 5.0)
+    }
+    
+    
+    // MARK: Save actions
     
     func saveButtonAction(sender: AnyObject) {
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
@@ -214,6 +243,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
 //        GOCache.sharedCache.setVenueIsSavedByCurrentUser(true, venue: self.venue!)
     }
+    
+    
+    // MARK: Reachability
     
     func reachabilityChanged(note: NSNotification) {
         let reachability = note.object as! Reachability

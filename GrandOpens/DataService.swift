@@ -15,6 +15,8 @@ class DataService {
     private var _BASE_REF = Firebase(url: "\(BASE_URL)")
     private var _USERS_REF = Firebase(url: "\(BASE_URL)/users")
     private var _VENUES_REF = Firebase(url: "\(BASE_URL)/venues")
+    private var _USER_ACTIVITIES_REF = Firebase(url: "\(BASE_URL)/userActivities")
+    private var _VENUE_ACTIVITIES_REF = Firebase(url: "\(BASE_URL)/venueActivities")
     
     var BASE_REF: Firebase {
         return _BASE_REF
@@ -33,6 +35,14 @@ class DataService {
     
     var VENUES_REF: Firebase {
         return _VENUES_REF
+    }
+    
+    var USER_ACTIVITIES_REF: Firebase {
+        return _USER_ACTIVITIES_REF
+    }
+    
+    var VENUE_ACTIVITIES_REF: Firebase {
+        return _VENUE_ACTIVITIES_REF
     }
     
     func createNewAccount(uid: String, user: Dictionary<String, String>) {
