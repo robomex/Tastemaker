@@ -27,6 +27,7 @@
 		DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6126931B26A3CB0009FB34 /* ApiKeys.plist */; };
 		DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126951B26A4E40009FB34 /* ApiKeys.swift */; };
 		DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78E0971C62BEE500CD22F3 /* DataService.swift */; };
+		DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */; };
 		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
 		DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */; };
@@ -94,6 +95,7 @@
 		DE6126931B26A3CB0009FB34 /* ApiKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ApiKeys.plist; sourceTree = "<group>"; };
 		DE6126951B26A4E40009FB34 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		DE78E0971C62BEE500CD22F3 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -199,7 +201,6 @@
 				DE6126261B2505950009FB34 /* Images.xcassets */,
 				DE6126281B2505950009FB34 /* LaunchScreen.xib */,
 				DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */,
-				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
 				DE61261A1B2505950009FB34 /* Supporting Files */,
 			);
 			path = GrandOpens;
@@ -211,6 +212,7 @@
 				DE61261B1B2505950009FB34 /* Info.plist */,
 				DE6126931B26A3CB0009FB34 /* ApiKeys.plist */,
 				DE6126951B26A4E40009FB34 /* ApiKeys.swift */,
+				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
 				DE5068311C5978EC006FFD51 /* OSCache.h */,
 				DE5068321C5978EC006FFD51 /* OSCache.m */,
 				DE8300631B5F01E2000B71D7 /* Bridging-Header.h */,
@@ -269,6 +271,7 @@
 				DEA5EE2A1B9E698900D0F221 /* Constants.swift */,
 				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
 				DEA5EE2C1BA1408600D0F221 /* GOCache.swift */,
+				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */,
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
