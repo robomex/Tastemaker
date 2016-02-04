@@ -13,17 +13,23 @@ import Whisper
 import Firebase
 //import SCLAlertView
 import SCLAlertView_Objective_C
+import TTTAttributedLabel
+import SafariServices
 
-class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate {
 
     var venueID: String!
     var venue: Venue?
     var segmentedControl: UISegmentedControl!
+    
     private var user = PFUser.currentUser()!.objectId
+    
     private var userActivitiesSaveHandle = UInt?()
     private var authRefHandle = UInt?()
     private var userActivitiesSaveRef: Firebase?
     private var venueActivitiesSaverRef: Firebase?
+    
+    private var signupLabel: TTTAttributedLabel!
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
@@ -193,14 +199,87 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         let alert = SCLAlertView()
         let emailTextField = alert.addTextField("Email")
         let passwordTextField = alert.addTextField("Password")
-        let usernameTextField = alert.addTextField("Choose a username (you can change this later)")
-        alert.addButton("Create Account") {
-            print("create account button pressed")
-        }
+        let usernameTextField = alert.addTextField("Choose a username")
+        
+        emailTextField.autocorrectionType = .No
+        emailTextField.keyboardType = .EmailAddress
+        passwordTextField.autocorrectionType = .No
+        passwordTextField.secureTextEntry = true
+        passwordTextField.keyboardType = .Default
+        usernameTextField.autocorrectionType = .No
+        usernameTextField.keyboardType = .Default
+        
+        alert.addButton("Create Account", validationBlock: {
+            let email = emailTextField.text
+            let password = passwordTextField.text
+            let username = usernameTextField.text
+            
+            if email == "" {
+                showSimpleAlertWithTitle("Whoops!", message: "You forgot to enter your email", actionTitle: "OK", viewController: self)
+                emailTextField.becomeFirstResponder()
+                return false
+            } else if !self.isValidEmail(email!) {
+                showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
+                emailTextField.becomeFirstResponder()
+                return false
+            }
+
+            let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
+            if password?.characters.count < 6 {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a password at least 6 characters long", actionTitle: "OK", viewController: self)
+                // The below line is causing the error 'Snapshotting a view that has not been rendered results in an empty snapshot'
+                passwordTextField.becomeFirstResponder()
+                return false
+            } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a password without special characters", actionTitle: "OK", viewController: self)
+                passwordTextField.becomeFirstResponder()
+                return false
+            }
+            
+            if username == "" {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a username first", actionTitle: "OK", viewController: self)
+                usernameTextField.becomeFirstResponder()
+                return false
+            } else if username?.characters.count > 20 {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter username", actionTitle: "OK", viewController: self)
+                usernameTextField.becomeFirstResponder()
+                return false
+            }
+            
+                return false
+            }, actionBlock: {
+                print("you registered")
+        })
         alert.showAnimationType = SCLAlertViewShowAnimation.FadeIn
         alert.hideAnimationType = SCLAlertViewHideAnimation.FadeOut
         alert.backgroundType = SCLAlertViewBackground.Shadow
-        alert.showEdit(self.view.window?.rootViewController, title: "Let's get you signed up!", subTitle: "blabklabk", closeButtonTitle: "Fuck", duration: 5.0)
+        alert.customViewColor = kPurple
+        
+//        let signupText: NSString = "By tapping Create Account you agree to our Terms of Service and confirm you have read our Privacy Policy"
+//        signupLabel.delegate = self
+//        signupLabel.text = signupText as String
+//        let signupLabelLinkAttributes: [NSObject: AnyObject] = [
+//            kCTForegroundColorAttributeName: kBlue,
+//            NSUnderlineColorAttributeName: NSNumber(bool: false)
+//        ]
+//        signupLabel.linkAttributes = signupLabelLinkAttributes
+//        signupLabel.inactiveLinkAttributes = nil
+//        let termsOfServiceRange: NSRange = signupText.rangeOfString("Terms of Service")
+//        signupLabel.addLinkToURL(NSURL(string: kTermsOfServiceURL)!, withRange: termsOfServiceRange)
+//        let privacyPolicyRange: NSRange = signupText.rangeOfString("Privacy Policy")
+//        signupLabel.addLinkToURL(NSURL(string: kPrivacyPolicyURL), withRange: privacyPolicyRange)
+//        //
+//        alert.attributedFormatBlock (String) {
+//            var subtitle: NSMutableAttributedString = NSMutableAttributedString(string: value)
+//            return subtitle
+//        }
+        alert.showEdit(self.view.window?.rootViewController, title: "Sign up to join the chat!", subTitle: "No pressure, you can change your username at any time", closeButtonTitle: "Cancel", duration: 0)
+    }
+    
+    func isValidEmail(emailAddress: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+        let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(emailAddress)
     }
     
     
