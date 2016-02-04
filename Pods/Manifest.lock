@@ -14,6 +14,7 @@ PODS:
     - Bolts/Tasks (~> 1.3)
     - Parse (~> 1.9)
   - ReachabilitySwift (2.3.3)
+  - SCLAlertView (0.5)
   - TTTAttributedLabel (1.13.4)
   - Whisper (2.0.2)
 
@@ -27,6 +28,7 @@ DEPENDENCIES:
   - Parse
   - ParseUI
   - ReachabilitySwift
+  - SCLAlertView
   - TTTAttributedLabel
   - Whisper
 
@@ -42,6 +44,7 @@ SPEC CHECKSUMS:
   Parse: de2c52a9a1421b91ae7594ab8ce191afd184f19b
   ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
+  SCLAlertView: 51a328f3985e13e6bfe8dc77123543480fa615f9
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   Whisper: 49abcba82d23dd20f0a9a025797cacd09c8aa3bb
 

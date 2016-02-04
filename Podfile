@@ -12,5 +12,6 @@ pod 'Instructions', '~> 0.3'
 pod 'DZNEmptyDataSet'
 pod 'ReachabilitySwift'
 pod 'Whisper'
+pod 'SCLAlertView'
 
 use_frameworks!

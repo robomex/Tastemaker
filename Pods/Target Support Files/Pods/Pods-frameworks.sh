@@ -95,6 +95,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/ReachabilitySwift.framework"
+  install_framework "Pods/SCLAlertView.framework"
   install_framework "Pods/TTTAttributedLabel.framework"
   install_framework "Pods/Whisper.framework"
 fi
@@ -110,6 +111,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Parse.framework"
   install_framework "Pods/ParseUI.framework"
   install_framework "Pods/ReachabilitySwift.framework"
+  install_framework "Pods/SCLAlertView.framework"
   install_framework "Pods/TTTAttributedLabel.framework"
   install_framework "Pods/Whisper.framework"
 fi
