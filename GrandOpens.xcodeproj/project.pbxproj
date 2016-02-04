@@ -20,13 +20,13 @@
 		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
-		DE6126221B2505950009FB34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126211B2505950009FB34 /* ViewController.swift */; };
 		DE6126251B2505950009FB34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6126231B2505950009FB34 /* Main.storyboard */; };
 		DE6126271B2505950009FB34 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE6126261B2505950009FB34 /* Images.xcassets */; };
 		DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE6126281B2505950009FB34 /* LaunchScreen.xib */; };
 		DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE61267D1B26978E0009FB34 /* MobileCoreServices.framework */; };
 		DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6126931B26A3CB0009FB34 /* ApiKeys.plist */; };
 		DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126951B26A4E40009FB34 /* ApiKeys.swift */; };
+		DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78E0971C62BEE500CD22F3 /* DataService.swift */; };
 		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
 		DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */; };
@@ -77,7 +77,6 @@
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE61261F1B2505950009FB34 /* GrandOpens.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GrandOpens.xcdatamodel; sourceTree = "<group>"; };
-		DE6126211B2505950009FB34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DE6126241B2505950009FB34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DE6126261B2505950009FB34 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		DE6126291B2505950009FB34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -94,6 +93,7 @@
 		DE6126891B2697C80009FB34 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DE6126931B26A3CB0009FB34 /* ApiKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ApiKeys.plist; sourceTree = "<group>"; };
 		DE6126951B26A4E40009FB34 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
+		DE78E0971C62BEE500CD22F3 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -190,9 +190,8 @@
 			isa = PBXGroup;
 			children = (
 				DE61261C1B2505950009FB34 /* AppDelegate.swift */,
-				DEA5EE2A1B9E698900D0F221 /* Constants.swift */,
-				DEA5EE2C1BA1408600D0F221 /* GOCache.swift */,
-				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
+				DE78E0951C62BE6300CD22F3 /* Utilities */,
+				DE78E0961C62BEBA00CD22F3 /* Services */,
 				DEEB76081B32951000A94305 /* Data */,
 				DEEB760F1B35E79A00A94305 /* Views */,
 				DE61263F1B2506100009FB34 /* ViewControllers */,
@@ -222,7 +221,6 @@
 		DE61263F1B2506100009FB34 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				DE6126211B2505950009FB34 /* ViewController.swift */,
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
 				DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */,
 				DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */,
@@ -263,6 +261,24 @@
 			);
 			name = Frameworks;
 			path = GrandOpens;
+			sourceTree = "<group>";
+		};
+		DE78E0951C62BE6300CD22F3 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				DEA5EE2A1B9E698900D0F221 /* Constants.swift */,
+				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
+				DEA5EE2C1BA1408600D0F221 /* GOCache.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		DE78E0961C62BEBA00CD22F3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				DE78E0971C62BEE500CD22F3 /* DataService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		DEEB76081B32951000A94305 /* Data */ = {
@@ -454,7 +470,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE6126221B2505950009FB34 /* ViewController.swift in Sources */,
+				DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */,
 				DEEB760C1B32990700A94305 /* Venue.swift in Sources */,
 				DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */,
 				DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */,
