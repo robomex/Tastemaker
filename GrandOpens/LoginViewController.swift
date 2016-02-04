@@ -51,11 +51,17 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         // move view with keyboard
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+        // look for taps
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
     }
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    // Track keyboard for moving the view up and down
     
     func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue() {
@@ -71,6 +77,12 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             self.view.frame.origin.y += keyboardSize.height/2
         }
         keyboardShown = false
+    }
+    
+    // Watch for taps to dismiss the keyboard
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     func step1() {
