@@ -14,14 +14,17 @@ import SafariServices
 
 class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate {
     
-    @IBOutlet weak var continueButton: UIButton!
+    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var signupButton: UIButton!
+    @IBOutlet weak var toggleSignupButton: UIButton!
     
     @IBOutlet weak var headlineLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var disclaimerLabel: TTTAttributedLabel!
 
     @IBOutlet weak var emailTextField: TextField!
-    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var passwordTextField: TextField!
+    @IBOutlet weak var usernameTextField: TextField!
     
     // Onboarding code for testing
     var gradient: CAGradientLayer?
@@ -31,6 +34,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     // for tracking keyboard
     private var keyboardShown: Bool?
+    private var signupShown: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,13 +44,14 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         self.gradient = CAGradientLayer()
         self.gradient?.frame = self.view.bounds
-        self.gradient?.colors = [kBlue.CGColor, kBlue.CGColor, UIColor.whiteColor().CGColor]
+        self.gradient?.colors = [kBlue.CGColor, kBlue.CGColor, kPurple.CGColor]
         self.view.layer.insertSublayer(self.gradient!, atIndex: 0)
         self.toColors = [UIColor.whiteColor().CGColor, kRed.CGColor, kRed.CGColor]
         animateBackgroundGradient()
         
         // UITextField's nextField setup
         self.emailTextField.nextField = self.passwordTextField
+        self.passwordTextField.nextField = self.usernameTextField
         
         // move view with keyboard
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
@@ -86,35 +91,73 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     }
     
     func step1() {
-        emailTextField.layer.cornerRadius = 5
+        let textFieldCornerRadius:CGFloat = 5
+        
+        emailTextField.layer.cornerRadius = textFieldCornerRadius
         emailTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         emailTextField.textColor = UIColor.whiteColor()
         emailTextField.tintColor = UIColor.whiteColor()
-        emailTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: UIControlEvents.EditingChanged)
+        emailTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
         emailTextField.delegate = self
         
-        passwordTextField.layer.cornerRadius = 5
+        passwordTextField.layer.cornerRadius = textFieldCornerRadius
         passwordTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         passwordTextField.textColor = UIColor.whiteColor()
         passwordTextField.tintColor = UIColor.whiteColor()
-        passwordTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: UIControlEvents.EditingChanged)
+        passwordTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        passwordTextField.returnKeyType = .Done
         passwordTextField.delegate = self
         
+        usernameTextField.layer.cornerRadius = textFieldCornerRadius
+        usernameTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
+        usernameTextField.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
+        usernameTextField.textColor = UIColor.whiteColor()
+        usernameTextField.tintColor = UIColor.whiteColor()
+        usernameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        usernameTextField.delegate = self
+        usernameTextField.hidden = true
+        
         headlineLabel.text = "discover and chat about the newest places"
+        headlineLabel.font = UIFont.systemFontOfSize(14.0)
+        
+        subtitleLabel.textColor = UIColor.whiteColor()
         subtitleLabel.text = "No pressure! You can change your username at any time"
         
-        let continueButtonBorderAlpha: CGFloat = 0.4
-        let continueButtonCornerRadius: CGFloat = 5.0
-        continueButton.enabled = false
-        continueButton.setTitle("Continue", forState: UIControlState.Normal)
-        continueButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        continueButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.2), forState: .Disabled)
-        continueButton.backgroundColor = UIColor.clearColor()
-        continueButton.layer.borderWidth = 2.0
-        continueButton.layer.borderColor = UIColor(white: 1.0, alpha: continueButtonBorderAlpha).CGColor
-        continueButton.layer.cornerRadius = continueButtonCornerRadius
+        let loginButtonBorderAlpha: CGFloat = 0.4
+        loginButton.enabled = false
+        loginButton.setTitle("Log In", forState: .Normal)
+        loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        loginButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.2), forState: .Disabled)
+        loginButton.backgroundColor = UIColor.clearColor()
+        loginButton.layer.borderWidth = 2.0
+        loginButton.layer.borderColor = UIColor(white: 1.0, alpha: loginButtonBorderAlpha).CGColor
+        loginButton.layer.cornerRadius = textFieldCornerRadius
+        loginButton.titleLabel?.font = UIFont.systemFontOfSize(19.0)
+        
+        let signupButtonBorderAlpha: CGFloat = 0.4
+        signupButton.enabled = false
+        signupButton.setTitle("Sign Up", forState: .Normal)
+        signupButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        signupButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.2), forState: .Disabled)
+        signupButton.backgroundColor = UIColor.clearColor()
+        signupButton.layer.borderWidth = 2.0
+        signupButton.layer.borderColor = UIColor(white: 1.0, alpha: signupButtonBorderAlpha).CGColor
+        signupButton.layer.cornerRadius = textFieldCornerRadius
+        signupButton.titleLabel?.font = UIFont.systemFontOfSize(19.0)
+        signupButton.hidden = true
+        
+        let toggleSignupButtonBorderAlpha: CGFloat = 0.4
+//        let toggleSignupButtonCornerRadius: CGFloat = 10.0
+        toggleSignupButton.enabled = true
+        toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
+        toggleSignupButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        toggleSignupButton.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
+        toggleSignupButton.layer.borderWidth = 2.0
+        toggleSignupButton.layer.borderColor = UIColor(white: 1.0, alpha: toggleSignupButtonBorderAlpha).CGColor
+        toggleSignupButton.layer.cornerRadius = 0//toggleSignupButtonCornerRadius
+        toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(14.0)
         
         let disclaimerText: NSString = "By signing up you agree to our Terms & Privacy Policy."
         disclaimerLabel.delegate = self
@@ -132,31 +175,26 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     }
     
     func textFieldDidChange(sender: UITextField) {
-        if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 {
-            continueButton.enabled = false
+        if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!usernameTextField.hidden && usernameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
+            loginButton.enabled = false
+            signupButton.enabled = false
         } else {
-            continueButton.enabled = true
+            loginButton.enabled = true
+            signupButton.enabled = true
         }
-//        sender.text = sender.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
-//        guard
-//            let email = emailTextField.text where !email.isEmpty,
-//            let password = passwordTextField.text where !password.isEmpty
-//            else {return}
-//        continueButton.enabled = true
-//
-//        if emailTextField.text?.characters.count > 0 && passwordTextField.text?.characters.count > 0 {
-//            continueButton.enabled = true
-//        } else {
-//            continueButton.enabled = false
-//        }
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == emailTextField {
             textField.nextField?.becomeFirstResponder()
-        } else if textField == passwordTextField {
+        } else if textField == passwordTextField && usernameTextField.hidden {
             textField.resignFirstResponder()
-            self.didTapContinueButton()
+            self.didTapLoginButton(textField)
+        } else if textField == passwordTextField && !usernameTextField.hidden {
+            textField.nextField?.becomeFirstResponder()
+        } else if textField == usernameTextField {
+            textField.resignFirstResponder()
+            self.didTapSignupButton(textField)
         }
         return true
     }
@@ -165,7 +203,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         headlineLabel.text = "Enter your 4-digit confirmation code."
         subtitleLabel.text = "It was sent in an SMS message to +1 "
         disclaimerLabel.text = ""
-        continueButton.setTitle("Log In", forState: UIControlState.Normal)
+        loginButton.setTitle("Log In", forState: UIControlState.Normal)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -174,78 +212,37 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
 
     }
     
-    @IBAction func didTapContinueButton() {
+    @IBAction func didTapLoginButton(sender: AnyObject) {
 
         print("here we gooooo")
-//        
-//        if phoneNumber == "" {
-//            
-//            // Deformat the phone number by removing parentheses and dashes for saving and processing
-//            let stringArray = textFieldText.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
-//            let unformattedPhoneNumber = stringArray.joinWithSeparator("")
-//            if (preferredLanguage == "en" && unformattedPhoneNumber.characters.count != 10)
-//                || (preferredLanguage == "ja" && unformattedPhoneNumber.characters.count != 11) {
-//                    showSimpleAlertWithTitle("Invalid Phone Number", message: "You must enter a 10-digit US phone number including area code.", actionTitle: "OK", viewController: self)
-//                    return step1()
-//            }
-//            
-//            self.editing = false
-//            let params = ["phoneNumber" : unformattedPhoneNumber, "language" : preferredLanguage]
-//            PFCloud.callFunctionInBackground("sendCode", withParameters: params) { response, error in
-//                self.editing = true
-//                if let error = error {
-//                    var description = error.description
-//                    if description.characters.count == 0 {
-//                        description = "Something went wrong. Please try again." // "There was a problem with the service.\nTry again later."
-//                    } else if let message = error.userInfo["error"] as? String {
-//                        description = message
-//                    }
-//                    showSimpleAlertWithTitle("Login Error", message: description, actionTitle: "OK", viewController: self)
-//                    return self.step1()
-//                }
-//                return self.step2()
-//            }
-//        } else {
-//            if textFieldText.characters.count == 4, let code = Int(textFieldText) {
-//                return doLogin(phoneNumber, code: code)
-//            }
-//            showSimpleAlertWithTitle("Invalid Code Length", message: "You must enter the 4 digit code texted to your phone number.", actionTitle: "OK", viewController: self)
-//        }
     }
     
-//    func doLogin(phoneNumber: String, code: Int) {
-//        self.editing = false
-//        let params = ["phoneNumber": phoneNumber, "codeEntry": code] as [NSObject:AnyObject]
-//        PFCloud.callFunctionInBackground("logIn", withParameters: params) { response, error in
-//            if let description = error?.description {
-//                self.editing = true
-//                showSimpleAlertWithTitle("Login Error", message: description, actionTitle: "OK", viewController: self)
-//                return self.step1()
-//            }
-//            if let token = response as? String {
-//                PFUser.becomeInBackground(token) { user, error in
-//                    if let _ = error {
-//                        showSimpleAlertWithTitle("Login Error", message: "Something happened while trying to log in. Please try again.", actionTitle: "OK", viewController: self)
-//                        self.editing = true
-//                        return self.step1()
-//                    }
-//                    self.navigationController?.popToRootViewControllerAnimated(true)
-//                }
-//            } else {
-//                self.editing = true
-//                showSimpleAlertWithTitle("Login Error", message: "Something went wrong, please try again.", actionTitle: "OK", viewController: self)
-//                return self.step1()
-//            }
-//        }
-//    }
-    
-//    override func setEditing(editing: Bool, animated: Bool) {
-//        continueButton.enabled = editing
-//        textField.enabled = editing
-//        if editing {
-//            textField.becomeFirstResponder()
-//        }
-//    }
+    @IBAction func didTapSignupButton(sender: AnyObject) {
+        print("signup yo")
+    }
+
+    @IBAction func didTapToggleSignupButton(sender: UIButton) {
+        if signupShown ?? true {
+            loginButton.hidden = true
+            subtitleLabel.hidden = true
+            passwordTextField.returnKeyType = .Next
+            usernameTextField.hidden = false
+            signupButton.hidden = false
+            signupShown = false
+            toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
+            // not an issue to just pass in UITextField like this?
+            textFieldDidChange(usernameTextField)
+        } else {
+            loginButton.hidden = false
+            subtitleLabel.hidden = false
+            passwordTextField.returnKeyType = .Done
+            usernameTextField.hidden = true
+            signupButton.hidden = true
+            signupShown = true
+            toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
+            textFieldDidChange(passwordTextField)
+        }
+    }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .Default
@@ -262,47 +259,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
-    
-    // Phone number formatting
-//    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-//        if textField == textField && phoneNumber == "" {
-//            let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
-//            let components = newString.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet)
-//            
-//            let decimalString = components.joinWithSeparator("") as NSString
-//            let length = decimalString.length
-//            let hasLeadingOne = length > 0 && decimalString.characterAtIndex(0) == (1 as unichar)
-//            
-//            if length == 0 || (length > 10 && !hasLeadingOne) || length > 11 {
-//                let newLength = (textField.text! as NSString).length + (string as NSString).length - range.length as Int
-//                return (newLength > 10) ? false : true
-//            }
-//            var index = 0 as Int
-//            let formattedString = NSMutableString()
-//            
-//            if hasLeadingOne {
-//                formattedString.appendString("1")
-//                index += 1
-//            }
-//            if (length - index) > 3 {
-//                let areaCode = decimalString.substringWithRange(NSMakeRange(index, 3))
-//                formattedString.appendFormat("(%@) ", areaCode)
-//                index += 3
-//            }
-//            if (length - index) > 3 {
-//                let prefix = decimalString.substringWithRange(NSMakeRange(index, 3))
-//                formattedString.appendFormat("%@-", prefix)
-//                index += 3
-//            }
-//            
-//            let remainder = decimalString.substringFromIndex(index)
-//            formattedString.appendString(remainder)
-//            textField.text = formattedString as String
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
     
     // Onboarding code for testing
     func animateBackgroundGradient() {
