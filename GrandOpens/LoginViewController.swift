@@ -180,15 +180,22 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         disclaimerLabel.delegate = self
         disclaimerLabel.text = disclaimerText as String
         let disclaimerLabelLinkAttributes: [NSObject: AnyObject] = [
-            kCTForegroundColorAttributeName: kBlue,
+            NSFontAttributeName: UIFont.boldSystemFontOfSize(12.0),
             NSUnderlineStyleAttributeName: NSNumber(bool: false)
         ]
+        let disclaimerLabelActiveLinkAttributes: [NSObject: AnyObject] = [
+            NSFontAttributeName: UIFont.boldSystemFontOfSize(12.0),
+            NSUnderlineStyleAttributeName: NSNumber(bool: false),
+            kCTForegroundColorAttributeName: kRed
+        ]
         disclaimerLabel.linkAttributes = disclaimerLabelLinkAttributes
+        disclaimerLabel.activeLinkAttributes = disclaimerLabelActiveLinkAttributes
         disclaimerLabel.inactiveLinkAttributes = nil
         let termsOfServiceRange: NSRange = disclaimerText.rangeOfString("Terms")
         disclaimerLabel.addLinkToURL(NSURL(string: kTermsOfServiceURL)!, withRange: termsOfServiceRange)
         let privacyPolicyRange: NSRange = disclaimerText.rangeOfString("Privacy Policy")
         disclaimerLabel.addLinkToURL(NSURL(string: kPrivacyPolicyURL)!, withRange: privacyPolicyRange)
+        disclaimerLabel.hidden = true
     }
     
     func textFieldDidChange(sender: UITextField) {
@@ -250,6 +257,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
             // not an issue to just pass in UITextField like this?
             textFieldDidChange(usernameTextField)
+            disclaimerLabel.hidden = false
         } else {
             loginButton.hidden = false
             subtitleLabel.hidden = false
@@ -260,6 +268,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             signupShown = true
             toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
             textFieldDidChange(passwordTextField)
+            disclaimerLabel.hidden = true
         }
     }
     

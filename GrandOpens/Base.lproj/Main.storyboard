@@ -112,16 +112,16 @@
                                     <action selector="didTapSignupButton:" destination="mV3-92-BiT" eventType="touchUpInside" id="HgD-31-Wcq"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="no pressure, you can change your username at any time" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mfs-06-kBh" customClass="TTTAttributedLabel">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="no pressure, you can change your username at any time" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mfs-06-kBh" customClass="TTTAttributedLabel">
                                 <rect key="frame" x="165" y="380" width="271" height="12"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="by signing up you agree to our Terms &amp; Privacy Policy" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-QV-YXK" customClass="TTTAttributedLabel">
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="by signing up you agree to our Terms &amp; Privacy Policy" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-QV-YXK" customClass="TTTAttributedLabel">
                                 <rect key="frame" x="170" y="488" width="261" height="12"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="0.80000000000000004" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="email" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dXP-cv-ppb" customClass="TextField" customModule="GrandOpens" customModuleProvider="target">
@@ -166,6 +166,7 @@
                             <constraint firstItem="NyN-75-oTW" firstAttribute="width" secondItem="yr7-OJ-N1K" secondAttribute="width" id="5AC-fO-zek"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="7sd-JM-RGL"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="9bb-Ea-R3Z"/>
+                            <constraint firstItem="gFC-QV-YXK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="20" id="AVy-KC-qA5"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="top" secondItem="0D8-yd-EPY" secondAttribute="bottom" constant="10" id="BRV-nF-6ca"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="width" secondItem="5MZ-q9-gxs" secondAttribute="width" id="F2Z-Gd-wcV"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="centerX" secondItem="dXP-cv-ppb" secondAttribute="centerX" id="H5l-XU-a49"/>
@@ -173,9 +174,9 @@
                             <constraint firstItem="dXP-cv-ppb" firstAttribute="leading" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="30" id="LRP-dW-HDS"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="centerX" secondItem="yr7-OJ-N1K" secondAttribute="centerX" id="M5H-bN-xT8"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="NyZ-LM-bBO"/>
-                            <constraint firstItem="yIK-zF-QY8" firstAttribute="top" secondItem="gFC-QV-YXK" secondAttribute="bottom" constant="100" id="RKV-bz-UmW"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="top" secondItem="yr7-OJ-N1K" secondAttribute="bottom" constant="10" id="TFR-c0-zXc"/>
                             <constraint firstItem="mfs-06-kBh" firstAttribute="centerX" secondItem="NyN-75-oTW" secondAttribute="centerX" id="Wbc-pr-hA1"/>
+                            <constraint firstItem="l6G-Tr-yuV" firstAttribute="top" secondItem="gFC-QV-YXK" secondAttribute="bottom" constant="15" id="aAb-xF-OTm"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="top" secondItem="yr7-OJ-N1K" secondAttribute="bottom" constant="10" id="acH-o9-Jxk"/>
                             <constraint firstItem="mfs-06-kBh" firstAttribute="top" secondItem="NyN-75-oTW" secondAttribute="bottom" constant="15" id="cpo-Tw-6GC"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="height" secondItem="dXP-cv-ppb" secondAttribute="height" id="dBC-Sj-CaM"/>
@@ -192,6 +193,7 @@
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="width" secondItem="dXP-cv-ppb" secondAttribute="width" id="rFG-j8-VNv"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="DcV-is-TjW" secondAttribute="trailing" constant="30" id="rpx-Vm-miT"/>
                             <constraint firstItem="DcV-is-TjW" firstAttribute="top" secondItem="D27-w6-7Uc" secondAttribute="bottom" constant="2" id="s8v-60-EJP"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="gFC-QV-YXK" secondAttribute="trailing" constant="20" id="uAc-hL-brA"/>
                             <constraint firstItem="D27-w6-7Uc" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="wYu-lV-wte"/>
                             <constraint firstItem="DcV-is-TjW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="xYY-qi-oxh"/>
                         </constraints>
