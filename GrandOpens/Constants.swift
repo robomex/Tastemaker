@@ -16,9 +16,10 @@ let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopen
 
 
 // MARK: URLs
-let kPrivacyPolicyURL = "https://grandopens.com/privacy"
-let kTermsOfServiceURL = "https://grandopens.com/terms"
-let BASE_URL = "https://grandopens.firebaseio.com"
+let kPrivacyPolicyURL =     "https://grandopens.com/privacy"
+let kTermsOfServiceURL =    "https://grandopens.com/terms"
+let kResetEmailURL =        "https://google.com"
+let BASE_URL =              "https://grandopens.firebaseio.com"
 
 
 // MARK: Colors

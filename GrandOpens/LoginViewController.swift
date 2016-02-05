@@ -19,7 +19,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     @IBOutlet weak var toggleSignupButton: UIButton!
     
     @IBOutlet weak var headlineLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: TTTAttributedLabel!
     @IBOutlet weak var disclaimerLabel: TTTAttributedLabel!
 
     @IBOutlet weak var emailTextField: TextField!
@@ -118,13 +118,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         usernameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
         usernameTextField.delegate = self
         usernameTextField.hidden = true
-        
-        headlineLabel.text = "discover and chat about the newest places"
-        headlineLabel.font = UIFont.systemFontOfSize(14.0)
-        
-        subtitleLabel.textColor = UIColor.whiteColor()
-        subtitleLabel.text = "No pressure! You can change your username at any time"
-        
+
         let loginButtonBorderAlpha: CGFloat = 0.4
         loginButton.enabled = false
         loginButton.setTitle("Log In", forState: .Normal)
@@ -134,7 +128,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         loginButton.layer.borderWidth = 2.0
         loginButton.layer.borderColor = UIColor(white: 1.0, alpha: loginButtonBorderAlpha).CGColor
         loginButton.layer.cornerRadius = textFieldCornerRadius
-        loginButton.titleLabel?.font = UIFont.systemFontOfSize(19.0)
+        loginButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
         
         let signupButtonBorderAlpha: CGFloat = 0.4
         signupButton.enabled = false
@@ -145,19 +139,33 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         signupButton.layer.borderWidth = 2.0
         signupButton.layer.borderColor = UIColor(white: 1.0, alpha: signupButtonBorderAlpha).CGColor
         signupButton.layer.cornerRadius = textFieldCornerRadius
-        signupButton.titleLabel?.font = UIFont.systemFontOfSize(19.0)
+        signupButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
         signupButton.hidden = true
         
         let toggleSignupButtonBorderAlpha: CGFloat = 0.4
-//        let toggleSignupButtonCornerRadius: CGFloat = 10.0
         toggleSignupButton.enabled = true
         toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
         toggleSignupButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        toggleSignupButton.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
+        toggleSignupButton.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
         toggleSignupButton.layer.borderWidth = 2.0
         toggleSignupButton.layer.borderColor = UIColor(white: 1.0, alpha: toggleSignupButtonBorderAlpha).CGColor
-        toggleSignupButton.layer.cornerRadius = 0//toggleSignupButtonCornerRadius
-        toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(14.0)
+        toggleSignupButton.layer.cornerRadius = 0
+        toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(17.0)
+        
+        headlineLabel.text = "discover and chat about the newest places"
+        headlineLabel.font = UIFont.systemFontOfSize(17.0)
+        
+        let emailResetText: NSString = "Forgot your password?"
+        subtitleLabel.delegate = self
+        subtitleLabel.text = emailResetText as String
+        let emailResetLabelLinkAttributes: [NSObject: AnyObject] = [
+            kCTForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.4),
+            NSUnderlineStyleAttributeName: NSNumber(bool: false)
+        ]
+        subtitleLabel.linkAttributes = emailResetLabelLinkAttributes
+        subtitleLabel.inactiveLinkAttributes = nil
+        let emailResetRange: NSRange = emailResetText.rangeOfString("Forgot your password?")
+        subtitleLabel.addLinkToURL(NSURL(string: kResetEmailURL)!, withRange: emailResetRange)
         
         let disclaimerText: NSString = "By signing up you agree to our Terms & Privacy Policy."
         disclaimerLabel.delegate = self
@@ -226,6 +234,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             loginButton.hidden = true
             subtitleLabel.hidden = true
             passwordTextField.returnKeyType = .Next
+            passwordTextField.attributedPlaceholder = NSAttributedString(string: "password (6+ characters)", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             usernameTextField.hidden = false
             signupButton.hidden = false
             signupShown = false
@@ -236,6 +245,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             loginButton.hidden = false
             subtitleLabel.hidden = false
             passwordTextField.returnKeyType = .Done
+            passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             usernameTextField.hidden = true
             signupButton.hidden = true
             signupShown = true
