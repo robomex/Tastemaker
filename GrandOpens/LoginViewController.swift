@@ -12,7 +12,7 @@ import Bolts
 import TTTAttributedLabel
 import SafariServices
 
-class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate {
+class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupButton: UIButton!
@@ -60,6 +60,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         // look for taps
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
+        tap.delegate = self
     }
     
     deinit {
@@ -88,6 +89,14 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        if touch.view!.isKindOfClass(TTTAttributedLabel) {
+            return false
+        } else {
+            return true
+        }
     }
     
     func step1() {
