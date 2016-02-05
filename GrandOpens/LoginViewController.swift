@@ -121,7 +121,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         usernameTextField.layer.cornerRadius = textFieldCornerRadius
         usernameTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
-        usernameTextField.attributedPlaceholder = NSAttributedString(string: "username", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
+        usernameTextField.attributedPlaceholder = NSAttributedString(string: "nickname", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         usernameTextField.textColor = UIColor.whiteColor()
         usernameTextField.tintColor = UIColor.whiteColor()
         usernameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
@@ -198,6 +198,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         disclaimerLabel.hidden = true
     }
     
+    // UITextField functions
+    
     func textFieldDidChange(sender: UITextField) {
         if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!usernameTextField.hidden && usernameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
             loginButton.enabled = false
@@ -223,17 +225,25 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         return true
     }
     
-    func step2() {
-        headlineLabel.text = "Enter your 4-digit confirmation code."
-        subtitleLabel.text = "It was sent in an SMS message to +1 "
-        disclaimerLabel.text = ""
-        loginButton.setTitle("Log In", forState: UIControlState.Normal)
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else {return true}
+        
+        if textField == usernameTextField {
+            let newLength = text.utf16.count + string.utf16.count - range.length
+            return newLength <= 20
+        } else if textField == emailTextField {
+            let newLength = text.utf16.count + string.utf16.count - range.length
+            return newLength <= 30
+        } else if textField == passwordTextField {
+            let newLength = text.utf16.count + string.utf16.count - range.length
+            return newLength <= 20
+        } else {
+            return true
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-
     }
     
     @IBAction func didTapLoginButton(sender: AnyObject) {
@@ -241,8 +251,46 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         print("here we gooooo")
     }
     
+    // Showing SCLAlertViews in the below function causes issues with the functions watching for keyboard movement
+    // Unable to use .becomeFirstResponder for offending field as that causes issues with the keyboard movement functions
+    
     @IBAction func didTapSignupButton(sender: AnyObject) {
-        print("signup yo")
+        let email = emailTextField.text
+        let password = passwordTextField.text
+        let username = usernameTextField.text
+        
+        if email == "" {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
+//            emailTextField.becomeFirstResponder()
+            return
+        } else if !self.isValidEmail(email!) {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
+//            emailTextField.becomeFirstResponder()
+            return
+        }
+        
+        let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
+        if password?.characters.count < 6 {
+            showSimpleAlertWithTitle("Whoops!", message: "Choose a password at least 6 characters long", actionTitle: "OK", viewController: self)
+            // The below line is causing the error 'Snapshotting a view that has not been rendered results in an empty snapshot'
+//            passwordTextField.becomeFirstResponder()
+            return
+        } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
+            showSimpleAlertWithTitle("Whoops!", message: "Choose a password without special characters", actionTitle: "OK", viewController: self)
+//            passwordTextField.becomeFirstResponder()
+            return
+        }
+        
+        if username == "" {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter your nickname", actionTitle: "OK", viewController: self)
+//            usernameTextField.becomeFirstResponder()
+            return
+        } else if username?.characters.count > 20 {
+            showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter nickname", actionTitle: "OK", viewController: self)
+//            usernameTextField.becomeFirstResponder()
+            return
+        }
+    
     }
 
     @IBAction func didTapToggleSignupButton(sender: UIButton) {
@@ -270,6 +318,14 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             textFieldDidChange(passwordTextField)
             disclaimerLabel.hidden = true
         }
+    }
+    
+    // Email validation
+    
+    func isValidEmail(emailAddress: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+        let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluateWithObject(emailAddress)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
