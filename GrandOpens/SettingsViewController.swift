@@ -13,15 +13,13 @@ import SafariServices
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
     var usernameLabel: UILabel!
-    var nameTextField: UITextField!
-    var saveSettingsButton: UIButton!
     
-    var user: PFUser? = PFUser.currentUser()
+    var username: String = NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
     
     var settingsTableView: UITableView!
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
-    var myAccountRows = ["Username", "Phone Number", "Muted Users"]
+    var myAccountRows = ["Nickname", "Muted Users"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
     override func viewDidLoad() {
@@ -51,25 +49,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return .LightContent
     }
     
-    @IBAction func didTapLogOut(sender: AnyObject) {
-        PFUser.logOutInBackgroundWithBlock { error in
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
-    func checkSetting(user: PFUser, settingName : String) -> Bool {
-        if let value = user[settingName] as? Bool {
-            return value
-        }
-        return false
-    }
-    
     // TableView
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 3
+            return 2
         case 1:
             return 2
         case 2:
@@ -90,11 +75,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             cell.textLabel?.text = myAccountRows[indexPath.row]
             switch (indexPath.row) {
             case 0:
-                cell.detailTextLabel?.text = user!["name"] as? String
+                cell.detailTextLabel?.text = username
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-            case 1:
-                let phoneNumber = user?.username
-                cell.detailTextLabel?.text = "(" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + ") " + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
+//            case 1:
+//                let phoneNumber = user?.username
+//                cell.detailTextLabel?.text = "(" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + ") " + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
             default:
                 cell.detailTextLabel?.text = ""
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
@@ -122,11 +107,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                let vc = GOUsernameEntryViewController()
-                vc.user = user
-                vc.title = "Username"
-                navigationController!.view.backgroundColor = UIColor.whiteColor()
-                navigationController?.pushViewController(vc, animated: true)
+//                let vc = GOUsernameEntryViewController()
+//                vc.user = user
+//                vc.title = "Username"
+//                navigationController!.view.backgroundColor = UIColor.whiteColor()
+//                navigationController?.pushViewController(vc, animated: true)
             } else if indexPath.row == 2 {
                 let vc = GOMutedUsersViewController()
                 navigationController?.pushViewController(vc, animated: true)
@@ -150,9 +135,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 print("Cancel")
             }))
             alertController.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
-                PFUser.logOutInBackgroundWithBlock { error in
                     (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
-                }
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
