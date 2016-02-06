@@ -132,11 +132,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     }
     
     func logOut() {
+        DataService.dataService.BASE_REF.unauth()
+        
         // Clear cache
         GOCache.sharedCache.clear()
         
         // Clear NSUserDefaults
-        NSUserDefaults.standardUserDefaults().synchronize()
+        let appDomain = NSBundle.mainBundle().bundleIdentifier!
+        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+//        NSUserDefaults.standardUserDefaults().synchronize()
         
         // Unsubscribe from push notifications by removing the user association from the current installation
         PFInstallation.currentInstallation().removeObjectForKey(kGOInstallationKey)
