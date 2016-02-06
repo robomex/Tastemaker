@@ -13,23 +13,23 @@ import Whisper
 import Firebase
 //import SCLAlertView
 import SCLAlertView_Objective_C
-import TTTAttributedLabel
-import SafariServices
+//import TTTAttributedLabel
+//import SafariServices
 
-class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate {
+class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     var venueID: String!
     var venue: Venue?
     var segmentedControl: UISegmentedControl!
     
-    private var user = PFUser.currentUser()!.objectId
+    private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
     private var userActivitiesSaveHandle = UInt?()
-    private var authRefHandle = UInt?()
+//    private var authRefHandle = UInt?()
     private var userActivitiesSaveRef: Firebase?
     private var venueActivitiesSaverRef: Firebase?
     
-    private var signupLabel: TTTAttributedLabel!
+//    private var signupLabel: TTTAttributedLabel!
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
@@ -96,9 +96,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
 //        }
 
         // Hide the chat inputToolbar if banned
-        if PFUser.currentUser()!.objectForKey("banned") as? Bool == true {
-            chatVC.inputToolbar?.hidden = true
-        }
+//        if PFUser.currentUser()!.objectForKey("banned") as? Bool == true {
+//            chatVC.inputToolbar?.hidden = true
+//        }
         
         // Reachability checks
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
@@ -112,8 +112,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(user!)/saves/\(venueID)")
-        venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(user!)")
+        userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves/\(venueID)")
+        venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
         userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
@@ -124,20 +124,20 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             }
         })
         
-        authRefHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
-            authData in
-            
-            if authData == nil {
-                self.presentLogin()
-            }
-        })
+//        authRefHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
+//            authData in
+//            
+//            if authData == nil {
+//                self.presentLogin()
+//            }
+//        })
         
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authRefHandle!)
+//        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authRefHandle!)
         userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
     }
 

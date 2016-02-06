@@ -25,6 +25,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 //    var venueIDs = [String]()
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
+    let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
     
     // MARK: Initialization
@@ -252,7 +253,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
 
             venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
         })
-        ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
+        ref.childByAppendingPath("userActivities/\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
@@ -390,15 +391,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount++
-            ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venueId)").setValue(true)
-            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(PFUser.currentUser()!.objectId!)").setValue(true)
+            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").setValue(true)
+            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").setValue(true)
 //            GOCache.sharedCache.incrementVoteCountForVenue(venue)
         } else {
             if voteCount > 0 {
                 voteCount--
             }
-            ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/votes/\(venueId)").removeValue()
-            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(PFUser.currentUser()!.objectId!)").removeValue()
+            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").removeValue()
+            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").removeValue()
 //            GOCache.sharedCache.decrementVoteCountForVenue(venue)
         }
         
