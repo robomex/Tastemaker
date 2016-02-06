@@ -290,7 +290,29 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
 //            usernameTextField.becomeFirstResponder()
             return
         }
-    
+        
+        if email != "" && password != "" && username != "" {
+            DataService.dataService.BASE_REF.createUser(email, password: password, withValueCompletionBlock: {
+                error, result in
+                
+                if error != nil {
+                    showSimpleAlertWithTitle("Whoops!", message: "We were unable to create your account, please try again", actionTitle: "OK", viewController: self)
+                } else {
+                    DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
+                        err, authData in
+                        
+                        let user = ["provider": authData.provider!, "email": email!, "username": username!]
+                        DataService.dataService.createNewAccount(authData.uid, user: user)
+                    })
+                    
+                    // Store the uid for future access
+                    NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
+                    
+                    // Enter the app
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                }
+            })
+        }
     }
 
     @IBAction func didTapToggleSignupButton(sender: UIButton) {
