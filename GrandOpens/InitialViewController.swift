@@ -8,13 +8,13 @@
 
 import UIKit
 import Parse
-// test for Onboard
 import Onboard
 import CoreLocation
+import Firebase
 
 class InitialViewController: UIViewController {
 
-    private var _presentedLoginViewController: Bool = false
+//    private var _presentedLoginViewController: Bool = false
     let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
@@ -23,38 +23,41 @@ class InitialViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-    override func viewDidAppear(animated: Bool) {
-//        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
-        if let _ = PFUser.currentUser() {
+        DataService.dataService.BASE_REF.observeAuthEventWithBlock({
+            authData in
             
-            let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
-            if !launchedBefore {
-                let firstOnboardingPage = OnboardingContentViewController(title: "Let's get set up", body: "To discover the newest places around tap \"OK\" to share your location and get notifications", image: UIImage(named: "Permission.png"), buttonText: "OK") { () -> Void in
-                    self.locationManager.requestAlwaysAuthorization()
-                    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
-                    UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-                    let vc = GOUsernameEntryViewController()
-                    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentedViewController!.presentViewController(vc, animated: true, completion: nil)
+            if authData != nil {
+                let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
+                if !launchedBefore {
+                    let firstOnboardingPage = OnboardingContentViewController(title: "Let's get set up", body: "To discover the newest places around tap \"OK\" to share your location and get notifications", image: UIImage(named: "Permission.png"), buttonText: "OK") { () -> Void in
+                        self.locationManager.requestAlwaysAuthorization()
+                        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+                        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+                    }
+                    let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage])
+                    onboardingVC.shouldMaskBackground = false
+                    onboardingVC.shouldFadeTransitions = true
+                    onboardingVC.titleFontSize = 20
+                    onboardingVC.bodyFontSize = 16
+                    onboardingVC.topPadding = 150
+                    onboardingVC.underIconPadding = -340
+                    onboardingVC.fontName = UIFont.systemFontOfSize(UIFont.systemFontSize()).familyName
+                    onboardingVC.hidePageControl = true
+                    self.presentViewController(onboardingVC, animated: false, completion: nil)
+                    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
+                } else {
+                    // Present Grand Opens UI
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
                 }
-                let onboardingVC = OnboardingViewController(backgroundImage: UIImage(named: "onboarding_bg.png"), contents: [firstOnboardingPage])
-                onboardingVC.shouldMaskBackground = false
-                onboardingVC.shouldFadeTransitions = true
-                onboardingVC.titleFontSize = 20
-                onboardingVC.bodyFontSize = 16
-                onboardingVC.topPadding = 150
-                onboardingVC.underIconPadding = -340
-                onboardingVC.fontName = UIFont.systemFontOfSize(UIFont.systemFontSize()).familyName
-                onboardingVC.hidePageControl = true
-                self.presentViewController(onboardingVC, animated: false, completion: nil)
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
             } else {
-                // Present Grand Opens UI
-                (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+                self.performSegueWithIdentifier("toLogin", sender: self)
             }
-        } else {
-            self.performSegueWithIdentifier("toLogin", sender: self)
-        }
+        })
     }
     
     override func didReceiveMemoryWarning() {
