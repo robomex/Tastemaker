@@ -12,6 +12,7 @@ import Parse
 import Bolts
 import MBProgressHUD
 import CoreLocation
+import Firebase
 //import ReachabilitySwift
 
 
@@ -31,6 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     let locationManager = CLLocationManager()
 
+    override init() {
+        super.init()
+        
+        Firebase.defaultConfig().persistenceEnabled = true
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
