@@ -128,7 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         locationManager.startMonitoringSignificantLocationChanges()
         print("monitoring")
     
-        navController!.setViewControllers([initialViewController!, tabBarController!], animated: false)
+        navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
     
     func logOut() {
@@ -153,7 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         PFUser.logOut()
         
         // Clear out cached data, view controllers, etc.
-        navController!.popToRootViewControllerAnimated(false)
+        navController!.popToRootViewControllerAnimated(true)
         
         self.feedTableViewController = nil
         self.listViewController = nil
