@@ -11,6 +11,7 @@ import Parse
 import Bolts
 import TTTAttributedLabel
 import SafariServices
+import Firebase
 
 class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
@@ -247,8 +248,43 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     }
     
     @IBAction func didTapLoginButton(sender: AnyObject) {
-
-        print("here we gooooo")
+        let email = emailTextField.text
+        let password = passwordTextField.text
+        
+        if email == "" {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
+            return
+        } else if !self.isValidEmail(email!) {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
+            return
+        }
+        
+        let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
+        if password?.characters.count < 6 {
+            showSimpleAlertWithTitle("Whoops!", message: "Passwords are at least 6 characters long", actionTitle: "OK", viewController: self)
+            return
+        } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
+            showSimpleAlertWithTitle("Whoops!", message: "Passwords cannot contain special characters", actionTitle: "OK", viewController: self)
+            return
+        }
+        
+        if email != "" && password != "" {
+            DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
+                error, authData in
+                
+                if error != nil {
+                    showSimpleAlertWithTitle("Whoops!", message: "Please check your login email and password", actionTitle: "OK", viewController: self)
+                } else {
+                    NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                    DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
+                        snapshot in
+                        
+                        NSUserDefaults.standardUserDefaults().setValue(snapshot.value["username"], forKey: "username")
+                        self.navigationController?.popToRootViewControllerAnimated(true)
+                    })
+                }
+            })
+        }
     }
     
     // Showing SCLAlertViews in the below function causes issues with the functions watching for keyboard movement
@@ -261,33 +297,26 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         if email == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
-//            emailTextField.becomeFirstResponder()
             return
         } else if !self.isValidEmail(email!) {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
-//            emailTextField.becomeFirstResponder()
             return
         }
         
         let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
         if password?.characters.count < 6 {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a password at least 6 characters long", actionTitle: "OK", viewController: self)
-            // The below line is causing the error 'Snapshotting a view that has not been rendered results in an empty snapshot'
-//            passwordTextField.becomeFirstResponder()
             return
         } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a password without special characters", actionTitle: "OK", viewController: self)
-//            passwordTextField.becomeFirstResponder()
             return
         }
         
         if username == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your nickname", actionTitle: "OK", viewController: self)
-//            usernameTextField.becomeFirstResponder()
             return
         } else if username?.characters.count > 20 {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter nickname", actionTitle: "OK", viewController: self)
-//            usernameTextField.becomeFirstResponder()
             return
         }
         
@@ -307,6 +336,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     
                     // Store the uid for future access
                     NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
+                    NSUserDefaults.standardUserDefaults().setValue(username, forKey: "username")
                     
                     // Enter the app
                     self.navigationController?.popToRootViewControllerAnimated(true)
