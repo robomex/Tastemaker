@@ -9,12 +9,14 @@
 import UIKit
 import Parse
 import SafariServices
+import SCLAlertView_Objective_C
+import Firebase
 
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
     var usernameLabel: UILabel!
     
-    var username: String = NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
+    var username: String = "" //NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
     
     var settingsTableView: UITableView!
     
@@ -38,11 +40,19 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     override func viewWillAppear(animated: Bool) {
-
+        super.viewWillAppear(animated)
+        
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
-        self.settingsTableView.reloadData()
+//        self.settingsTableView.reloadData()
+        
+        DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            self.username = snapshot.value["username"] as! String
+            self.settingsTableView.reloadData()
+        })
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -77,9 +87,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             case 0:
                 cell.detailTextLabel?.text = username
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-//            case 1:
-//                let phoneNumber = user?.username
-//                cell.detailTextLabel?.text = "(" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex)!, end: (phoneNumber?.endIndex.advancedBy(-7))!)) + ") " + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(3))!, end: (phoneNumber?.endIndex.advancedBy(-4))!)) + "-" + phoneNumber!.substringWithRange(Range<String.Index>(start: (phoneNumber?.startIndex.advancedBy(6))!, end: (phoneNumber?.endIndex)!))
             default:
                 cell.detailTextLabel?.text = ""
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
@@ -90,7 +97,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case 2:
             cell.textLabel?.text = "Log Out"
         default:
-            cell.textLabel?.text = "Oh shit something broke"
+            cell.textLabel?.text = ""
         }
         return cell
     }
@@ -112,7 +119,38 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 //                vc.title = "Username"
 //                navigationController!.view.backgroundColor = UIColor.whiteColor()
 //                navigationController?.pushViewController(vc, animated: true)
-            } else if indexPath.row == 2 {
+                let nicknameAlert = SCLAlertView()
+                let nicknameTextField = nicknameAlert.addTextField("Nickname")
+                nicknameTextField.text = username
+                nicknameTextField.autocorrectionType = .No
+                nicknameTextField.autocapitalizationType = .None
+                nicknameTextField.keyboardType = .Default
+                nicknameAlert.addButton("Save Nickname", validationBlock: {
+                    let nickname = nicknameTextField.text
+                    
+                    if nickname == "" {
+                        showSimpleAlertWithTitle("Please enter a nickname", message: "", actionTitle: "OK", viewController: self)
+                        nicknameTextField.becomeFirstResponder()
+                        return false
+                    } else if nickname?.characters.count > 20 {
+                        showSimpleAlertWithTitle("Please enter a shorter nickname", message: "", actionTitle: "OK", viewController: self)
+                        nicknameTextField.becomeFirstResponder()
+                        return false
+                    }
+                    return true
+                    }, actionBlock: {
+                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["username": nicknameTextField.text!])
+                        NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "username")
+                        self.viewWillAppear(false)
+                })
+                nicknameAlert.showAnimationType = .SlideInToCenter
+                nicknameAlert.hideAnimationType = .FadeOut
+                nicknameAlert.customViewColor = kPurple
+                nicknameAlert.backgroundType = .Blur
+                nicknameAlert.shouldDismissOnTapOutside = true
+                nicknameAlert.showEdit(self.view.window?.rootViewController, title: nil, subTitle: "No pressure, you can change your nickname at any time", closeButtonTitle: "Cancel", duration: 0)
+//                nicknameTextField.becomeFirstResponder()
+            } else if indexPath.row == 1 {
                 let vc = GOMutedUsersViewController()
                 navigationController?.pushViewController(vc, animated: true)
             }
