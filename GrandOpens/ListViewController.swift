@@ -18,7 +18,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var saveListHandle: UInt?
-    private var user = PFUser.currentUser()?.objectId
+//    internal let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     private var listVenues = [Venue]()
     
     deinit {
@@ -66,7 +66,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         // This is supposed to be in viewWillAppear, however the empty state always flashes when placed there, troubleshoot later
         listVenues = []
-        saveListHandle = ref.childByAppendingPath("userActivities/\(user!)/saves").observeEventType(FEventType.Value, withBlock: {
+        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").observeEventType(FEventType.Value, withBlock: {
             snapshot in
             let enumerator = snapshot.children
             self.listVenues = []

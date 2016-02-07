@@ -19,6 +19,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let ref = Firebase(url: "https://grandopens.firebaseio.com")
+    let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String]()
     
     // used for grabbing avatars via containedIn PFQuery
@@ -33,7 +34,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ref.childByAppendingPath("userActivities/\(PFUser.currentUser()!.objectId!)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
+        ref.childByAppendingPath("userActivities/\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
             let enumerator = snapshot.children
@@ -62,7 +63,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             }
         })
         
-        self.senderId = PFUser.currentUser()?.objectId!
+        self.senderId = uid
         self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
         self.showLoadEarlierMessagesHeader = true
             
@@ -117,7 +118,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         
         let data = self.messages[indexPath.row]
-        if data.senderId == PFUser.currentUser()!.objectId {
+        if data.senderId == uid {
             return outgoingBubble
         } else {
             return incomingBubble
@@ -128,7 +129,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
         let message = messages[indexPath.item]
-        if message.senderId == PFUser.currentUser()!.objectId {
+        if message.senderId == uid {
             cell.textView?.textColor = UIColor.whiteColor()
         } else {
             cell.textView?.textColor = UIColor.blackColor()
@@ -156,7 +157,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let message = messages[indexPath.item]
         
         // Sent by current user, skip
-        if message.senderId == PFUser.currentUser()?.objectId {
+        if message.senderId == uid {
             return nil
         }
         
@@ -174,7 +175,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         let message = messages[indexPath.item]
         // Sent by current user, skip
-        if message.senderId == PFUser.currentUser()?.objectId {
+        if message.senderId == uid {
             return CGFloat(0.0)
         }
         

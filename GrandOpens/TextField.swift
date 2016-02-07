@@ -8,9 +8,11 @@
 
 import UIKit
 
+// Custom class to provide some padding in UITextFields
+
 class TextField: UITextField {
 
-    let padding = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+    let padding = UIEdgeInsets(top: 8, left: 15, bottom: 8, right: 15)
     
     override func textRectForBounds(bounds: CGRect) -> CGRect {
         return self.newBounds(bounds)
@@ -33,4 +35,19 @@ class TextField: UITextField {
         return newBounds
     }
 
+}
+
+// Extension for jumping to next UITextField
+
+private var kAssociationKeyNextField: UInt8 = 0
+
+extension UITextField {
+    var nextField: UITextField? {
+        get {
+            return objc_getAssociatedObject(self, &kAssociationKeyNextField) as? UITextField
+        }
+        set(newField) {
+            objc_setAssociatedObject(self, &kAssociationKeyNextField, newField, .OBJC_ASSOCIATION_RETAIN)
+        }
+    }
 }
