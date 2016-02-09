@@ -293,6 +293,14 @@ func showSimpleAlertWithTitle(title: String!, message: String, actionTitle: Stri
     viewController.presentViewController(alert, animated: true, completion: nil)
 }
 
+let dateFormat = "yyyy-MM-dd-HH:mm:ss ZZZZ"
+func dateFormatter() -> NSDateFormatter {
+    let dateFormatter = NSDateFormatter()
+    dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
+    dateFormatter.dateFormat = dateFormat
+    return dateFormatter
+}
+
 // Below may be useful after adding MapKit
 
 func zoomToUserLocationInMapView(mapView: MKMapView) {

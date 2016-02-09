@@ -110,15 +110,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         return 40.0
     }
     
-    // Date formatting
-    
-    private let dateFormat = "yyyy-MM-dd-HHmmss"
-    private func dateFormatter() -> NSDateFormatter {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        return dateFormatter
-    }
-    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         if indexPath.section == 0 {
@@ -148,7 +139,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                     return true
                     }, actionBlock: {
-                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": self.dateFormatter().stringFromDate(NSDate())])
+                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
                         NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
                         self.viewWillAppear(false)
                 })
