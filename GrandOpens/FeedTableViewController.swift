@@ -16,9 +16,7 @@ import Firebase
 
 class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
 
-//    var shouldReloadOnAppear: Bool = false
     var reusableViews: Set<GOVenueCellView>!
-//    var outstandingVenueCellViewQueries: [NSObject: AnyObject]
     let coachMarksController = CoachMarksController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
     var venues = [Venue]()
@@ -33,25 +31,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     // MARK: Initialization
     
     override init(style: UITableViewStyle) {
-//        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
         super.init(style: style)
-//
-//        // The className to query on
-//        self.parseClassName = kVenueClassKey
-//        
-//        // Whether the built-in pull-to-refresh is enabled
-//        self.pullToRefreshEnabled = true
-//        
-//        // Whether the built-in pagination is enabled
-//        self.paginationEnabled = false
-//        
-//        // The number of objects to show per page
-//        // self.objectsPerPage = 10
-//        
-//        // Improve scrolling performance by reusing views
-//        self.reusableViews = Set<GOVenueCellView>(minimumCapacity: 3)
-//
-//        self.shouldReloadOnAppear = false
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -82,25 +62,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         defaultNotificationCenter.addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
         try! reachability.startNotifier()
         
-        // Cache muted users
-        if PFUser.currentUser() != nil {
-            let mutedUsers = PFQuery(className: kUserActivityClassKey)
-            mutedUsers.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
-            mutedUsers.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
-            mutedUsers.includeKey(kUserActivityToUserKey)
-            mutedUsers.cachePolicy = PFCachePolicy.NetworkOnly
-            mutedUsers.findObjectsInBackgroundWithBlock { (activities, error) in
-                if error == nil {
-                    for activity in activities! {
-                        let user: PFUser? = activity.objectForKey(kUserActivityToUserKey) as? PFUser
-                        GOCache.sharedCache.setAttributesForUser(user!.objectId!, mutedByCurrentUser: true)
-                    }
-                }
-            }
-        }
-        
-        PFUser.currentUser()?.fetchInBackground()
-        
         // Prevents additional cells from being drawn for short lists
         self.tableView.tableFooterView = UIView()
     }
@@ -130,7 +91,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             var newList = [Venue]()
             for venue in venues {
                 newList.insert(venue, atIndex: 0)
-                //                self.venueIDs.insert(venue.objectId!, atIndex: 0)
             }
             self.venues = newList
             self.tableView.reloadData()
@@ -155,18 +115,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             self.coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
         }
-        
-//        let connectedRef = DataService.dataService.BASE_REF.childByAppendingPath(".info/connected")
-//        connectedRef.observeEventType(.Value, withBlock: {
-//            snapshot in
-//            
-//            let connected = snapshot.value as? Bool
-//            if connected != nil && connected! {
-//                
-//                DataService.dataService.CURRENT_USER_REF.onDisconnectUpdateChildValues(["lastOnline": [".sv": "timestamp"]]) //self.dateFormatter().stringFromDate(NSDate())])
-//                DataService.dataService.CURRENT_USER_REF.updateChildValues(["lastOnline": "now"])
-//            }
-//        })
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -209,44 +157,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return venues.count
     }
-
-    
-    // MARK: PFQueryTableViewController
-    
-//    override func queryForTable() -> PFQuery {
-//        if (PFUser.currentUser() == nil) {
-//            let query = PFQuery(className: self.parseClassName!)
-//            query.limit = 0
-//            return query
-//        }
-//        
-//        var today = NSDate()
-//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
-//        calendar.timeZone = NSTimeZone.localTimeZone()
-//        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
-//        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
-//        
-//        let query = PFQuery(className: self.parseClassName!)
-//        query.whereKey(kVenueOpeningDate, greaterThanOrEqualTo: standardOpeningDateCoverage)
-//        query.whereKey(kVenueOpeningDate, lessThan: today)
-//        query.orderByDescending(kVenueOpeningDate)
-//        
-//        // A pull-to-refresh should always trigger a network request.
-//        query.cachePolicy = PFCachePolicy.NetworkOnly
-//        
-//        // If no objects are loaded in memory, we look to the cache first to fill the table 
-//        // and then subsequently do a query against the network.
-//        //
-//        // If there is no network connection, we will hit the cache first.
-//        
-//        if self.objects!.count == 0
-//            //|| (UIApplication.sharedApplication().delegate!.performSelector(Selector("isParseReachable")) == nil) 
-//        {
-//            query.cachePolicy = PFCachePolicy.CacheThenNetwork
-//        }
-//        
-//        return query
-//    }
     
     func objectAtIndexPath(indexPath: NSIndexPath?) -> AnyObject? {
         let index = self.indexForObjectAtIndexPath(indexPath!)
@@ -290,81 +200,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             }
         })
         
-//        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
-//        
-//        if attributesForVenue != nil {
-//            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
-//            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-//            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-//            
-//            if venueCell!.voteButton!.alpha < 1.0 {
-//                UIView.animateWithDuration(0.200, animations: {
-//                    venueCell!.voteButton!.alpha = 1.0
-//                })
-//            }
-//        } else {
-//            venueCell!.voteButton!.alpha = 0.0
-//            
-//            synchronized(self) {
-//                // Check if we can update the cache
-//                let outstandingVenueCellViewQueryStatus: Int? = self.outstandingVenueCellViewQueries[index] as? Int
-//                
-//                if outstandingVenueCellViewQueryStatus == nil {
-//                    let query: PFQuery = GOUtility.queryForActivitiesOnVenue(object!, cachePolicy: PFCachePolicy.NetworkOnly)
-//                    query.findObjectsInBackgroundWithBlock{ (objects, error) in
-//                        synchronized(self) {
-//                            self.outstandingVenueCellViewQueries.removeValueForKey(index)
-//                            
-//                            if error != nil {
-//                                return
-//                            }
-//                            
-//                            var voters = [PFUser]()
-//                            
-//                            var isVotedByCurrentUser = false
-//                            var isSavedByCurrentUser = false
-//                            var isVisitedByCurrentUser = false
-//                            
-//                            for activity in objects! {
-//                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
-//                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
-//                                }
-//                                
-//                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-//                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
-//                                        isVotedByCurrentUser = true
-//                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
-//                                        isSavedByCurrentUser = true
-//                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
-//                                        isVisitedByCurrentUser = true
-//                                    }
-//                                }
-//                            }
-//                            
-//                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
-//                            
-//                            if venueCell!.tag != index {
-//                                return
-//                            }
-//                            
-//                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
-//                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-//                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-//                            
-//                            if venueCell!.voteButton!.alpha < 1.0 {
-//                                UIView.animateWithDuration(0.200, animations: {
-//                                    venueCell!.voteButton!.alpha = 1.0
-//                                })
-//                            }
-//                            
-//                        }
-//                        
-//                    }
-//                }
-//                
-//            }
-//        }
-        
         return venueCell!
     }
 
@@ -391,15 +226,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-    
-//    // Date formatting
-//    
-//    private let dateFormat = "yyyy-MM-dd-HHmmss"
-//    private func dateFormatter() -> NSDateFormatter {
-//        let dateFormatter = NSDateFormatter()
-//        dateFormatter.dateFormat = dateFormat
-//        return dateFormatter
-//    }
     
     
     // MARK: FeedTableViewController
@@ -432,40 +258,22 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             voteCount++
             ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").setValue(true)
             ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").setValue(true)
-//            GOCache.sharedCache.incrementVoteCountForVenue(venue)
         } else {
             if voteCount > 0 {
                 voteCount--
             }
             ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").removeValue()
             ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").removeValue()
-//            GOCache.sharedCache.decrementVoteCountForVenue(venue)
         }
-        
-//        GOCache.sharedCache.setVenueIsVotedByCurrentUser(venue, voted: voted)
         
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
         
         if voted {
-//            GOUtility.voteVenueInBackground(venue, block: { (succeeded, error) in
-                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(false)
-//                actualVenueCellView?.setVoteStatus(succeeded)
-//                
-//                if !succeeded {
-//                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
-//                }
-//            })
+            let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+            actualVenueCellView?.shouldEnableVoteButton(false)
         } else {
-//            GOUtility.unvoteVenueInBackground(venue, block: { (succeeded, error) in
-                let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-                actualVenueCellView?.shouldEnableVoteButton(true)
-//                actualVenueCellView?.setVoteStatus(!succeeded)
-//
-//                if !succeeded{
-//                    actualVenueCellView?.voteButton!.setTitle(originalButtonTitle, forState: UIControlState.Normal)
-//                }
-//            })
+            let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
+            actualVenueCellView?.shouldEnableVoteButton(true)
         }
     }
     
