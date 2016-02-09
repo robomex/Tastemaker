@@ -141,6 +141,18 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             self.coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
         }
+        
+//        let connectedRef = DataService.dataService.BASE_REF.childByAppendingPath(".info/connected")
+//        connectedRef.observeEventType(.Value, withBlock: {
+//            snapshot in
+//            
+//            let connected = snapshot.value as? Bool
+//            if connected != nil && connected! {
+//                
+//                DataService.dataService.CURRENT_USER_REF.onDisconnectUpdateChildValues(["lastOnline": [".sv": "timestamp"]]) //self.dateFormatter().stringFromDate(NSDate())])
+//                DataService.dataService.CURRENT_USER_REF.updateChildValues(["lastOnline": "now"])
+//            }
+//        })
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -361,6 +373,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
+    
+//    // Date formatting
+//    
+//    private let dateFormat = "yyyy-MM-dd-HHmmss"
+//    private func dateFormatter() -> NSDateFormatter {
+//        let dateFormatter = NSDateFormatter()
+//        dateFormatter.dateFormat = dateFormat
+//        return dateFormatter
+//    }
     
     
     // MARK: FeedTableViewController
