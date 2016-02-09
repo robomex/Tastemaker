@@ -43,7 +43,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
             let enumerator = snapshot.children
             self.listVenues = []
             while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.ref.childByAppendingPath("venues/\(data.key)").observeEventType(FEventType.Value, withBlock: {
+                self.ref.childByAppendingPath("venues/\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
                     snapshot in
              
                     self.listVenues.insert(snapshotToVenue(snapshot), atIndex: 0)
