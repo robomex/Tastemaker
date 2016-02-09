@@ -18,40 +18,12 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var saveListHandle: UInt?
-//    internal let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     private var listVenues = [Venue]()
     
     deinit {
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.removeObserver(self, name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
     }
-    
-    //    override init(style: UITableViewStyle, className: String?) {
-    ////        self.outstandingVenueCellViewQueries = [NSObject: AnyObject]()
-    //
-    //        super.init(style: style, className: kVenueClassKey)
-    //
-    //        // The className to query on
-    //        self.parseClassName = kVenueClassKey
-    //
-    //        // Whether the built-in pull-to-refresh is enabled
-    //        self.pullToRefreshEnabled = true
-    //
-    //        // Whether the built-in pagination is enabled
-    //        self.paginationEnabled = false
-    //
-    //        // The number of objects to show per page
-    //        // self.objectsPerPage = 10
-    //
-    //        // Improve scrolling performance by reusing views
-    //        self.reusableViews = Set<GOVenueCellView>(minimumCapacity: 3)
-    //
-    //        self.shouldReloadOnAppear = false
-    //    }
-    
-    //    required init?(coder aDecoder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,31 +58,12 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
-        
-        //        self.loadObjects()
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         ref.removeObserverWithHandle(saveListHandle!)
     }
-    
-    //    override func queryForTable() -> PFQuery {
-    //        if PFUser.currentUser() == nil {
-    //            let query = PFQuery(className: self.parseClassName!)
-    //            query.limit = 0
-    //            return query
-    //        }
-    //
-    //        let activityQuery = PFQuery(className: kVenueActivityClassKey)
-    //        activityQuery.cachePolicy = PFCachePolicy.NetworkOnly
-    //        activityQuery.whereKey(kVenueActivityByUserKey, equalTo: PFUser.currentUser()!)
-    //        activityQuery.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
-    //        activityQuery.orderByAscending("createdAt")
-    //        activityQuery.includeKey(kVenueActivityToVenueKey)
-    //
-    //        return activityQuery
-    //    }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.listVenues.count
@@ -122,119 +75,15 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        //        let cellIdentifier = "VenueCell"
-        
-        //        let index: Int = self.indexForObjectAtIndexPath(indexPath)
+
         super.venues = self.listVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) //self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
-        //        if venueCell == nil {
-        //            venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
-        //            venueCell!.delegate = self
-        //            venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
-        //        }
-        
-        //        super.venues = self.listVenues
-        //        venueCell.venue = venue
-        //        venueCell.tag = index
-        //        venueCell.voteButton!.tag = index
-        //
-        //        ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
-        //            snapshot in
-        //            venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
-        //            self.ref.childByAppendingPath("userActivities/\(self.user!)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
-        //                snapshot in
-        //
-        //                if snapshot.exists() {
-        //                    venueCell!.setVoteStatus(true)
-        //                } else {
-        //                    venueCell!.setVoteStatus(false)
-        //                }
-        //            })
-        //        })
-        
-        //        let attributesForVenue = GOCache.sharedCache.attributesForVenue(object!)
-        //
-        //        if attributesForVenue != nil {
-        //            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
-        //            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-        //            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-        //
-        //            if venueCell!.voteButton!.alpha < 1.0 {
-        //                UIView.animateWithDuration(0.200, animations: {
-        //                    venueCell!.voteButton!.alpha = 1.0
-        //                })
-        //            }
-        //        } else {
-        //            venueCell!.voteButton!.alpha = 0.0
-        //
-        //            synchronized(self) {
-        //                // Check if we can update the cache
-        //                let outstandingVenueCellViewQueryStatus: Int? = self.outstandingVenueCellViewQueries[index] as? Int
-        //
-        //                if outstandingVenueCellViewQueryStatus == nil {
-        //                    let query: PFQuery = GOUtility.queryForActivitiesOnVenue(object!, cachePolicy: PFCachePolicy.NetworkOnly)
-        //                    query.findObjectsInBackgroundWithBlock{ (objects, error) in
-        //                        synchronized(self) {
-        //                            self.outstandingVenueCellViewQueries.removeValueForKey(index)
-        //
-        //                            if error != nil {
-        //                                return
-        //                            }
-        //
-        //                            var voters = [PFUser]()
-        //
-        //                            var isVotedByCurrentUser = false
-        //                            var isSavedByCurrentUser = false
-        //                            var isVisitedByCurrentUser = false
-        //
-        //                            for activity in objects! {
-        //                                if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote && activity.objectForKey(kVenueActivityByUserKey) != nil {
-        //                                    voters.append(activity.objectForKey(kVenueActivityByUserKey) as! PFUser)
-        //                                }
-        //
-        //                                if (activity.objectForKey(kVenueActivityByUserKey) as? PFUser)?.objectId == PFUser.currentUser()!.objectId {
-        //                                    if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVote {
-        //                                        isVotedByCurrentUser = true
-        //                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeSave {
-        //                                        isSavedByCurrentUser = true
-        //                                    } else if (activity.objectForKey(kVenueActivityTypeKey) as! String) == kVenueActivityTypeVisit {
-        //                                        isVisitedByCurrentUser = true
-        //                                    }
-        //                                }
-        //                            }
-        //
-        //                            GOCache.sharedCache.setAttributesForVenue(object!, voters: voters, votedByCurrentUser: isVotedByCurrentUser, savedByCurrentUser: isSavedByCurrentUser, visitedByCurrentUser: isVisitedByCurrentUser)
-        //
-        //                            if venueCell!.tag != index {
-        //                                return
-        //                            }
-        //
-        //                            venueCell!.setVisitStatus(GOCache.sharedCache.isVenueVisitedByCurrentUser(object!))
-        //                            venueCell!.setVoteStatus(GOCache.sharedCache.isVenueVotedByCurrentUser(object!))
-        //                            venueCell!.voteButton!.setTitle(GOCache.sharedCache.voteCountForVenue(object!).description, forState: UIControlState.Normal)
-        //
-        //                            if venueCell!.voteButton!.alpha < 1.0 {
-        //                                UIView.animateWithDuration(0.200, animations: {
-        //                                    venueCell!.voteButton!.alpha = 1.0
-        //                                })
-        //                            }
-        //
-        //                        }
-        //
-        //                    }
-        //                }
-        //
-        //            }
-        //        }
-        
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
         return venueCell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        
         
         let venue = self.listVenues[indexPath.row]
         vc.venue = venue

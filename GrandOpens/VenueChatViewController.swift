@@ -86,7 +86,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
-                if self.mutedUsers[message.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
+                if self.mutedUsers[message.senderID] == nil {
                     self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
                     self.userIdList.append(message.senderID)
                 }
