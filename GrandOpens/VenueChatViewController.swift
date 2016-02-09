@@ -20,7 +20,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let ref = Firebase(url: "https://grandopens.firebaseio.com")
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
-    var mutedUsers = [String]()
+    var mutedUsers = [String: String]()
+    var mutedRefHandle = UInt()
     
     // used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
@@ -34,12 +35,13 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
         ref.childByAppendingPath("userActivities/\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
             let enumerator = snapshot.children
             while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.mutedUsers.append(data.key)
+                self.mutedUsers[data.key] = "muted"
             }
             print (self.mutedUsers)
             
@@ -48,7 +50,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     messages in
                     
                     for m in messages {
-                        if !self.mutedUsers.contains(m.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                        if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
                             self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
                             self.userIdList.append(m.senderID)
                         }
@@ -68,7 +70,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.showLoadEarlierMessagesHeader = true
             
 //        if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
-            self.senderDisplayName = "A No-Namer"
+            self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
 //        } else {
 //            self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
 //        }
@@ -85,7 +87,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if let id = venueID {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
-                if !self.mutedUsers.contains(message.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
+                if self.mutedUsers[message.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(message.senderID) {
                     self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
                     self.userIdList.append(message.senderID)
                 }
@@ -93,6 +95,18 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.userIdList = Array(Set(self.userIdList))
             })
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        mutedRefHandle = ref.childByAppendingPath("userActivities/\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            let enumerator = snapshot.children
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                self.mutedUsers[data.key] = "muted"
+            }
+            print (self.mutedUsers)
+        })
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -103,6 +117,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
         messageListener?.stop()
+        ref.childByAppendingPath("userActivities/\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -266,20 +281,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
         let message = self.messages[indexPath.item]
-        let user = users[message.senderId]
-//        let vc = GOUserProfileViewController()
-//        vc.user = user
-//        navigationController?.pushViewController(vc, animated: true)
+        let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
+        vc.userId = message.senderId
+        vc.userNickname = message.senderDisplayName
+        vc.title = message.senderDisplayName
+        navigationController?.pushViewController(vc, animated: true)
     }
-
-    // Date formatting for earlier messages checks
-//    private let dateFormat = "yyyyMMddHHmmss"
-//    
-//    private func dateFormatter() -> NSDateFormatter {
-//        let dateFormatter = NSDateFormatter()
-//        dateFormatter.dateFormat = dateFormat
-//        return dateFormatter
-//    }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
         
@@ -294,7 +301,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             messages in
             
             for m in messages {
-                if !self.mutedUsers.contains(m.senderID) { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
                     self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
                     self.userIdList.append(m.senderID)
                 }

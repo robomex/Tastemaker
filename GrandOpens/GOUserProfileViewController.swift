@@ -9,21 +9,34 @@
 import UIKit
 import ParseUI
 import Parse
+import Firebase
 
 class GOUserProfileViewController: ListViewController {
 
-    var user: PFUser?
+//    let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+    var userId: String!
+    var userNickname: String!
+    private var userActivitiesMuteHandle = UInt?()
+    private var userActivitiesMuteRef: Firebase?
+    
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if user?.objectForKey(kUserDisplayNameKey) == nil || (user?.objectForKey(kUserDisplayNameKey))! as! String == "" {
-            self.title = "A No-Namer"
-        } else {
-            self.title = user?.objectForKey(kUserDisplayNameKey) as? String
-        }
+        DataService.dataService.USERS_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if let nickname = snapshot.value["nickname"] as? String {
+//                UIView.animateWithDuration(0.2, animations: {
+//                    self.
+//                })
+                
+                self.userNickname = nickname
+                self.title = nickname
+            }
+        })
         
         self.headerView = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.bounds.size.width, 222.0))
         // Should be clear, this will be the container for our avatar, counts, and whatevz later
@@ -49,75 +62,80 @@ class GOUserProfileViewController: ListViewController {
         layer.masksToBounds = true
         profilePictureImageView.alpha = 0.0
         
-        if GOUtility.userHasProfilePicture(self.user!) {
-            let imageFile: PFFile! = self.user!.objectForKey(kUserProfilePicKey) as! PFFile
-            profilePictureImageView.file = imageFile
-            profilePictureImageView.loadInBackground { (image, error) in
-                if error == nil {
-                    UIView.animateWithDuration(0.2, animations: {
-                        profilePictureBackgroundView.alpha = 1.0
-                        profilePictureImageView.alpha = 1.0
-                    })
-                    
-                    let backgroundImageView = UIImageView(image: image!) // .applyDarkEffect() is throwing an error
-                    backgroundImageView.frame = self.tableView.backgroundView!.bounds
-                    backgroundImageView.alpha = 0.0
-                    backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
-                    let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
-                    visualEffectView.frame = backgroundImageView.bounds
-                    backgroundImageView.addSubview(visualEffectView)
-                    self.tableView.backgroundView!.addSubview(backgroundImageView)
-                    
-                    UIView.animateWithDuration(0.2, animations: {
-                        backgroundImageView.alpha = 1.0
-                    })
-                }
-            }
-        } else {
-            profilePictureImageView.image = GOUtility.defaultProfilePicture()
-            UIView.animateWithDuration(0.2, animations: {
-                profilePictureBackgroundView.alpha = 1.0
-                profilePictureImageView.alpha = 1.0
-            })
-            
-            let backgroundImageView = UIImageView(image: GOUtility.defaultProfilePicture()!)
-            backgroundImageView.frame = self.tableView.backgroundView!.bounds
-            backgroundImageView.alpha = 0.0
-            backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
-            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
-            visualEffectView.frame = backgroundImageView.bounds
-            backgroundImageView.addSubview(visualEffectView)
-            self.tableView.backgroundView!.addSubview(backgroundImageView)
-            
-            UIView.animateWithDuration(0.2, animations: {
-                backgroundImageView.alpha = 1.0
-            })
-        }
+//        if GOUtility.userHasProfilePicture(self.user!) {
+//            let imageFile: PFFile! = self.user!.objectForKey(kUserProfilePicKey) as! PFFile
+//            profilePictureImageView.file = imageFile
+//            profilePictureImageView.loadInBackground { (image, error) in
+//                if error == nil {
+//                    UIView.animateWithDuration(0.2, animations: {
+//                        profilePictureBackgroundView.alpha = 1.0
+//                        profilePictureImageView.alpha = 1.0
+//                    })
+//                    
+//                    let backgroundImageView = UIImageView(image: image!) // .applyDarkEffect() is throwing an error
+//                    backgroundImageView.frame = self.tableView.backgroundView!.bounds
+//                    backgroundImageView.alpha = 0.0
+//                    backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
+//                    let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
+//                    visualEffectView.frame = backgroundImageView.bounds
+//                    backgroundImageView.addSubview(visualEffectView)
+//                    self.tableView.backgroundView!.addSubview(backgroundImageView)
+//                    
+//                    UIView.animateWithDuration(0.2, animations: {
+//                        backgroundImageView.alpha = 1.0
+//                    })
+//                }
+//            }
+//        } else {
+//            profilePictureImageView.image = GOUtility.defaultProfilePicture()
+//            UIView.animateWithDuration(0.2, animations: {
+//                profilePictureBackgroundView.alpha = 1.0
+//                profilePictureImageView.alpha = 1.0
+//            })
+//            
+//            let backgroundImageView = UIImageView(image: GOUtility.defaultProfilePicture()!)
+//            backgroundImageView.frame = self.tableView.backgroundView!.bounds
+//            backgroundImageView.alpha = 0.0
+//            backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
+//            let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .ExtraLight))
+//            visualEffectView.frame = backgroundImageView.bounds
+//            backgroundImageView.addSubview(visualEffectView)
+//            self.tableView.backgroundView!.addSubview(backgroundImageView)
+//            
+//            UIView.animateWithDuration(0.2, animations: {
+//                backgroundImageView.alpha = 1.0
+//            })
+//        }
+//        
+//        if self.user!.objectId != PFUser.currentUser()!.objectId {
+//            let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+//            loadingActivityIndicatorView.startAnimating()
+//            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+//            
+//            // check if the currentUser is muting this user
+//            let queryIsMuting = PFQuery(className: kUserActivityClassKey)
+//            queryIsMuting.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
+//            queryIsMuting.whereKey(kUserActivityToUserKey, equalTo: self.user!)
+//            queryIsMuting.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
+//            queryIsMuting.cachePolicy = PFCachePolicy.CacheThenNetwork
+//            queryIsMuting.countObjectsInBackgroundWithBlock { (number, error) in
+//                if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
+//                    print("Couldn't determine mute relationship: \(error)")
+//                    self.navigationItem.rightBarButtonItem = nil
+//                } else {
+//                    if number == 0 {
+//                        self.configureMuteButton()
+//                    } else {
+//                        self.configureUnmuteButton()
+//                    }
+//                }
+//            }
+//        }
         
-        if self.user!.objectId != PFUser.currentUser()!.objectId {
-            let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
-            loadingActivityIndicatorView.startAnimating()
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-            
-            // check if the currentUser is muting this user
-            let queryIsMuting = PFQuery(className: kUserActivityClassKey)
-            queryIsMuting.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
-            queryIsMuting.whereKey(kUserActivityToUserKey, equalTo: self.user!)
-            queryIsMuting.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
-            queryIsMuting.cachePolicy = PFCachePolicy.CacheThenNetwork
-            queryIsMuting.countObjectsInBackgroundWithBlock { (number, error) in
-                if error != nil && error!.code != PFErrorCode.ErrorCacheMiss.rawValue {
-                    print("Couldn't determine mute relationship: \(error)")
-                    self.navigationItem.rightBarButtonItem = nil
-                } else {
-                    if number == 0 {
-                        self.configureMuteButton()
-                    } else {
-                        self.configureUnmuteButton()
-                    }
-                }
-            }
-        }
+        // Mute and unmute setup, check if this user is muted
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
+        loadingActivityIndicatorView.startAnimating()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
@@ -135,8 +153,26 @@ class GOUserProfileViewController: ListViewController {
         super.viewWillAppear(animated)
         
         self.tabBarController!.tabBar.hidden = true
+        
+        userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
+        userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                self.configureUnmuteButton()
+            } else if super.uid == self.userId {
+                self.navigationItem.rightBarButtonItem = nil
+            } else {
+                self.configureMuteButton()
+            }
+        })
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
+    }
     
     // MARK:- PFQueryTableViewController
     
@@ -162,10 +198,10 @@ class GOUserProfileViewController: ListViewController {
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.text = user!.objectForKey(kUserDisplayNameKey) as? String ?? "A No-Namer"
-        if header.textLabel?.text == "" {
-            header.textLabel?.text = "A No-Namer"
-        }
+        header.textLabel?.text = userNickname //user!.objectForKey(kUserDisplayNameKey) as? String ?? "A No-Namer"
+//        if header.textLabel?.text == "" {
+//            header.textLabel?.text = "A No-Namer"
+//        }
         header.textLabel?.font = UIFont.systemFontOfSize(16)
         header.textLabel?.textColor = UIColor.darkGrayColor()
         header.textLabel?.text = header.textLabel!.text! + "'s Saved Venues"
@@ -179,36 +215,31 @@ class GOUserProfileViewController: ListViewController {
     // MARK:- ()
     
     func muteButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureUnmuteButton()
         
-        GOUtility.muteUserInBackground(self.user!, block: { (succeeded, error) in
-            if error != nil {
-                self.configureMuteButton()
-            }
-        })
+        userActivitiesMuteRef?.setValue(true)
+//        super.mutedUsers[self.userId] = "muted"
     }
     
     func unmuteButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureMuteButton()
         
-        GOUtility.unmuteUserInBackground(self.user!)
+        userActivitiesMuteRef?.removeValue()
     }
     
     func configureMuteButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: "muteButtonAction:")
-        GOCache.sharedCache.setMuteStatus(false, userId: self.user!.objectId!)
     }
     
     func configureUnmuteButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: "unmuteButtonAction:")
-        GOCache.sharedCache.setMuteStatus(true, userId: self.user!.objectId!)
     }
 }
