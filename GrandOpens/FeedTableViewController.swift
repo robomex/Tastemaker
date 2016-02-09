@@ -26,6 +26,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+    var banned: Bool?
+    var bannedHandle: UInt?
     
     
     // MARK: Initialization
@@ -133,6 +135,16 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             self.venues = newList
             self.tableView.reloadData()
         })
+        
+        bannedHandle = DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                self.banned = true
+            } else {
+                self.banned = nil
+            }
+        })
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -160,6 +172,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
         venueListener?.stop()
+        DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -366,6 +379,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         let venue = venues[indexPath.row]
         vc.venue = venue
         vc.venueID = venue.objectId
+        if self.banned != nil {
+            vc.banned = self.banned
+        }
         
         let venueName: String = venue.name!
         vc.title = venueName

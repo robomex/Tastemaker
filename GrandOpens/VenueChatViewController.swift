@@ -43,7 +43,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             while let data = enumerator.nextObject() as? FDataSnapshot {
                 self.mutedUsers[data.key] = "muted"
             }
-            print (self.mutedUsers)
             
             if let id = self.venueID {
                 fetchMessages(id, callback: {
@@ -105,7 +104,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             while let data = enumerator.nextObject() as? FDataSnapshot {
                 self.mutedUsers[data.key] = "muted"
             }
-            print (self.mutedUsers)
         })
     }
     

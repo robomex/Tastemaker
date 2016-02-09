@@ -32,6 +32,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     let detailsVC = VenueDetailsViewController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
     
+    var banned: Bool?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -73,9 +75,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
 //        }
 
         // Hide the chat inputToolbar if banned
-//        if PFUser.currentUser()!.objectForKey("banned") as? Bool == true {
-//            chatVC.inputToolbar?.hidden = true
-//        }
+        if self.banned != nil {
+            chatVC.inputToolbar?.hidden = true
+        }
         
         // Reachability checks
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
