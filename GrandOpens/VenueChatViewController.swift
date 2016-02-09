@@ -273,13 +273,13 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
 
     // Date formatting for earlier messages checks
-    private let dateFormat = "yyyyMMddHHmmss"
-    
-    private func dateFormatter() -> NSDateFormatter {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        return dateFormatter
-    }
+//    private let dateFormat = "yyyyMMddHHmmss"
+//    
+//    private func dateFormatter() -> NSDateFormatter {
+//        let dateFormatter = NSDateFormatter()
+//        dateFormatter.dateFormat = dateFormat
+//        return dateFormatter
+//    }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
         
@@ -303,7 +303,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             self.finishReceivingMessageAnimated(false)
             self.collectionView?.layoutIfNeeded()
             
-            if self.dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
+            if dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
                 self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
             } else if messages.count < 12 {
                 self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
