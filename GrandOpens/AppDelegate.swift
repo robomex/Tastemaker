@@ -35,7 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     override init() {
         super.init()
         
-        Firebase.defaultConfig().persistenceEnabled = true
+        // Persistence is causing issues with not loading the latest messages/hitting the cache and ignoring the latest messages called by observeSingleEventOfType queries
+//        Firebase.defaultConfig().persistenceEnabled = true
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
