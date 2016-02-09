@@ -124,11 +124,11 @@ class GOVenueCellView: UITableViewCell {
             self.venueNeighborhoodLabel!.text = venueNeighborhood
             
             let venueOpeningDate: String? = venue?.openingDate
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let date = dateFormatter.dateFromString(venueOpeningDate!)
-            dateFormatter.dateFormat = "MMM d"
-            let venueOpeningDateString = dateFormatter.stringFromDate(date!)
+            let truncatedOpeningDateFormatter = NSDateFormatter()
+            truncatedOpeningDateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = truncatedOpeningDateFormatter.dateFromString(venueOpeningDate!)
+            truncatedOpeningDateFormatter.dateFormat = "MMM d"
+            let venueOpeningDateString = truncatedOpeningDateFormatter.stringFromDate(date!)
             
             if venueName != "Chicago Chat" {
                 self.venueOpeningDateLabel!.text = venueOpeningDateString

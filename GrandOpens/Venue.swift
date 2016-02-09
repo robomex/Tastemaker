@@ -30,7 +30,7 @@ class VenueListener {
     
     init (//startDate: NSDate,
         endDate: NSDate, callback: ([Venue]) -> ()) {
-            let handle = ref.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).queryStartingAtValue(dateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
+            let handle = ref.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 var venues = Array<Venue>()
                 let enumerator = snapshot.children
@@ -80,12 +80,12 @@ class VenueListener {
 }
 
 private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
-private let dateFormat = "yyyy-MM-dd"
+private let openingDateFormat = "yyyy-MM-dd"
 
-private func dateFormatter() -> NSDateFormatter {
-    let dateFormatter = NSDateFormatter()
-    dateFormatter.dateFormat = dateFormat
-    return dateFormatter
+private func openingDateFormatter() -> NSDateFormatter {
+    let openingDateFormatter = NSDateFormatter()
+    openingDateFormatter.dateFormat = openingDateFormat
+    return openingDateFormatter
 }
 
 func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {

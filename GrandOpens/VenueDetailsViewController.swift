@@ -43,11 +43,11 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         let venueFoodType: String = (venue?.foodType)!
         let venueOpeningDate: String = (venue?.openingDate)!
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let date = dateFormatter.dateFromString(venueOpeningDate)
-        dateFormatter.dateFormat = "MMMM d"
-        let OpeningDateString = dateFormatter.stringFromDate(date!)
+        let expandedOpeningDateFormatter = NSDateFormatter()
+        expandedOpeningDateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = expandedOpeningDateFormatter.dateFromString(venueOpeningDate)
+        expandedOpeningDateFormatter.dateFormat = "MMMM d"
+        let OpeningDateString = expandedOpeningDateFormatter.stringFromDate(date!)
         
         venueFoodTypeAndOpeningDateLabel.text = venueFoodType + " - Opened " + OpeningDateString
         venueFoodTypeAndOpeningDateLabel.textAlignment = NSTextAlignment.Left
