@@ -16,7 +16,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     var nicknameLabel: UILabel!
     
-    var nickname: String = "" //NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
+    var nickname: String = ""
     
     var settingsTableView: UITableView!
     
@@ -45,7 +45,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
-//        self.settingsTableView.reloadData()
         
         DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
@@ -114,11 +113,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-//                let vc = GOUsernameEntryViewController()
-//                vc.user = user
-//                vc.title = "Username"
-//                navigationController!.view.backgroundColor = UIColor.whiteColor()
-//                navigationController?.pushViewController(vc, animated: true)
                 let nicknameAlert = SCLAlertView()
                 let nicknameTextField = nicknameAlert.addTextField("Nickname")
                 nicknameTextField.text = nickname
@@ -149,6 +143,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 nicknameAlert.backgroundType = .Blur
                 nicknameAlert.shouldDismissOnTapOutside = true
                 nicknameAlert.showEdit(self.view.window?.rootViewController, title: nil, subTitle: "No pressure, you can change your nickname at any time", closeButtonTitle: "Cancel", duration: 0)
+                // becomeFirstResponder causes keyboard issues
 //                nicknameTextField.becomeFirstResponder()
             } else if indexPath.row == 1 {
                 let vc = GOMutedUsersViewController()
