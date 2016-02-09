@@ -243,6 +243,15 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         }
     }
     
+    // Date formatting
+    
+    private let dateFormat = "yyyy-MM-dd-HHmmss"
+    private func dateFormatter() -> NSDateFormatter {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        return dateFormatter
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
@@ -330,7 +339,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
                         err, authData in
                         
-                        let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!]
+                        let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!, "createdOn": self.dateFormatter().stringFromDate(NSDate()), "updatedOn": self.dateFormatter().stringFromDate(NSDate())]
                         DataService.dataService.createNewAccount(authData.uid, user: user)
                     })
                     
