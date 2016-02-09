@@ -119,8 +119,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         self.tabBarController?.tabBar.hidden = false
         
         //        let calendar = NSCalendar.autoupdatingCurrentCalendar()
-        let today = NSDate()
-        venueListener = VenueListener(endDate: today, callback: {
+        let todayString = localDateFormatter().stringFromDate(NSDate())
+        let todayDate = localDateFormatter().dateFromString(todayString)
+        print(todayDate)
+        venueListener = VenueListener(endDate: todayDate!, callback: {
             venues in
             
             var newList = [Venue]()

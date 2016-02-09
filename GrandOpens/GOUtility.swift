@@ -301,6 +301,14 @@ func dateFormatter() -> NSDateFormatter {
     return dateFormatter
 }
 
+let localDateFormat = "yyyy-MM-dd"
+func localDateFormatter() -> NSDateFormatter {
+    let localDateFormatter = NSDateFormatter()
+    localDateFormatter.timeZone = NSTimeZone.localTimeZone()
+    localDateFormatter.dateFormat = localDateFormat
+    return localDateFormatter
+}
+
 // Below may be useful after adding MapKit
 
 func zoomToUserLocationInMapView(mapView: MKMapView) {
