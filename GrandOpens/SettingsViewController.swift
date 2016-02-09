@@ -14,9 +14,9 @@ import Firebase
 
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
-    var usernameLabel: UILabel!
+    var nicknameLabel: UILabel!
     
-    var username: String = "" //NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
+    var nickname: String = "" //NSUserDefaults.standardUserDefaults().valueForKey("username") as! String
     
     var settingsTableView: UITableView!
     
@@ -50,7 +50,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
-            self.username = snapshot.value["username"] as! String
+            self.nickname = snapshot.value["nickname"] as! String
             self.settingsTableView.reloadData()
         })
     }
@@ -85,7 +85,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             cell.textLabel?.text = myAccountRows[indexPath.row]
             switch (indexPath.row) {
             case 0:
-                cell.detailTextLabel?.text = username
+                cell.detailTextLabel?.text = nickname
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             default:
                 cell.detailTextLabel?.text = ""
@@ -121,7 +121,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
 //                navigationController?.pushViewController(vc, animated: true)
                 let nicknameAlert = SCLAlertView()
                 let nicknameTextField = nicknameAlert.addTextField("Nickname")
-                nicknameTextField.text = username
+                nicknameTextField.text = nickname
                 nicknameTextField.autocorrectionType = .No
                 nicknameTextField.autocapitalizationType = .None
                 nicknameTextField.keyboardType = .Default
@@ -139,8 +139,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                     return true
                     }, actionBlock: {
-                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["username": nicknameTextField.text!])
-                        NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "username")
+                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["nickname": nicknameTextField.text!])
+                        NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
                         self.viewWillAppear(false)
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter

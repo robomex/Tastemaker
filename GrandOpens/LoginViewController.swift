@@ -25,7 +25,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
 
     @IBOutlet weak var emailTextField: TextField!
     @IBOutlet weak var passwordTextField: TextField!
-    @IBOutlet weak var usernameTextField: TextField!
+    @IBOutlet weak var nicknameTextField: TextField!
     
     // Onboarding code for testing
     var gradient: CAGradientLayer?
@@ -52,7 +52,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         // UITextField's nextField setup
         self.emailTextField.nextField = self.passwordTextField
-        self.passwordTextField.nextField = self.usernameTextField
+        self.passwordTextField.nextField = self.nicknameTextField
         
         // move view with keyboard
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
@@ -120,14 +120,14 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         passwordTextField.returnKeyType = .Done
         passwordTextField.delegate = self
         
-        usernameTextField.layer.cornerRadius = textFieldCornerRadius
-        usernameTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
-        usernameTextField.attributedPlaceholder = NSAttributedString(string: "nickname", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
-        usernameTextField.textColor = UIColor.whiteColor()
-        usernameTextField.tintColor = UIColor.whiteColor()
-        usernameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
-        usernameTextField.delegate = self
-        usernameTextField.hidden = true
+        nicknameTextField.layer.cornerRadius = textFieldCornerRadius
+        nicknameTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
+        nicknameTextField.attributedPlaceholder = NSAttributedString(string: "nickname", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
+        nicknameTextField.textColor = UIColor.whiteColor()
+        nicknameTextField.tintColor = UIColor.whiteColor()
+        nicknameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        nicknameTextField.delegate = self
+        nicknameTextField.hidden = true
 
         let loginButtonBorderAlpha: CGFloat = 0.4
         loginButton.enabled = false
@@ -202,7 +202,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // UITextField functions
     
     func textFieldDidChange(sender: UITextField) {
-        if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!usernameTextField.hidden && usernameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
+        if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!nicknameTextField.hidden && nicknameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
             loginButton.enabled = false
             signupButton.enabled = false
         } else {
@@ -214,12 +214,12 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == emailTextField {
             textField.nextField?.becomeFirstResponder()
-        } else if textField == passwordTextField && usernameTextField.hidden {
+        } else if textField == passwordTextField && nicknameTextField.hidden {
             textField.resignFirstResponder()
             self.didTapLoginButton(textField)
-        } else if textField == passwordTextField && !usernameTextField.hidden {
+        } else if textField == passwordTextField && !nicknameTextField.hidden {
             textField.nextField?.becomeFirstResponder()
-        } else if textField == usernameTextField {
+        } else if textField == nicknameTextField {
             textField.resignFirstResponder()
             self.didTapSignupButton(textField)
         }
@@ -229,7 +229,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else {return true}
         
-        if textField == usernameTextField {
+        if textField == nicknameTextField {
             let newLength = text.utf16.count + string.utf16.count - range.length
             return newLength <= 20
         } else if textField == emailTextField {
@@ -279,7 +279,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
                         snapshot in
                         
-                        NSUserDefaults.standardUserDefaults().setValue(snapshot.value["username"], forKey: "username")
+                        NSUserDefaults.standardUserDefaults().setValue(snapshot.value["nickname"], forKey: "nickname")
                         self.navigationController?.popToRootViewControllerAnimated(true)
                     })
                 }
@@ -293,7 +293,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     @IBAction func didTapSignupButton(sender: AnyObject) {
         let email = emailTextField.text
         let password = passwordTextField.text
-        let username = usernameTextField.text
+        let nickname = nicknameTextField.text
         
         if email == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
@@ -312,15 +312,15 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             return
         }
         
-        if username == "" {
+        if nickname == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your nickname", actionTitle: "OK", viewController: self)
             return
-        } else if username?.characters.count > 20 {
+        } else if nickname?.characters.count > 20 {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter nickname", actionTitle: "OK", viewController: self)
             return
         }
         
-        if email != "" && password != "" && username != "" {
+        if email != "" && password != "" && nickname != "" {
             DataService.dataService.BASE_REF.createUser(email, password: password, withValueCompletionBlock: {
                 error, result in
                 
@@ -330,13 +330,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
                         err, authData in
                         
-                        let user = ["provider": authData.provider!, "email": email!, "username": username!]
+                        let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!]
                         DataService.dataService.createNewAccount(authData.uid, user: user)
                     })
                     
                     // Store the uid for future access
                     NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
-                    NSUserDefaults.standardUserDefaults().setValue(username, forKey: "username")
+                    NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
                     
                     // Enter the app
                     self.navigationController?.popToRootViewControllerAnimated(true)
@@ -351,19 +351,19 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             subtitleLabel.hidden = true
             passwordTextField.returnKeyType = .Next
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password (6+ characters)", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
-            usernameTextField.hidden = false
+            nicknameTextField.hidden = false
             signupButton.hidden = false
             signupShown = false
             toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
             // not an issue to just pass in UITextField like this?
-            textFieldDidChange(usernameTextField)
+            textFieldDidChange(nicknameTextField)
             disclaimerLabel.hidden = false
         } else {
             loginButton.hidden = false
             subtitleLabel.hidden = false
             passwordTextField.returnKeyType = .Done
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
-            usernameTextField.hidden = true
+            nicknameTextField.hidden = true
             signupButton.hidden = true
             signupShown = true
             toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)

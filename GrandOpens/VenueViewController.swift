@@ -199,20 +199,20 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         let alert = SCLAlertView()
         let emailTextField = alert.addTextField("Email")
         let passwordTextField = alert.addTextField("Password")
-        let usernameTextField = alert.addTextField("Choose a username")
+        let nicknameTextField = alert.addTextField("Choose a nickname")
         
         emailTextField.autocorrectionType = .No
         emailTextField.keyboardType = .EmailAddress
         passwordTextField.autocorrectionType = .No
         passwordTextField.secureTextEntry = true
         passwordTextField.keyboardType = .Default
-        usernameTextField.autocorrectionType = .No
-        usernameTextField.keyboardType = .Default
+        nicknameTextField.autocorrectionType = .No
+        nicknameTextField.keyboardType = .Default
         
         alert.addButton("Create Account", validationBlock: {
             let email = emailTextField.text
             let password = passwordTextField.text
-            let username = usernameTextField.text
+            let nickname = nicknameTextField.text
             
             if email == "" {
                 showSimpleAlertWithTitle("Whoops!", message: "You forgot to enter your email", actionTitle: "OK", viewController: self)
@@ -236,13 +236,13 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 return false
             }
             
-            if username == "" {
-                showSimpleAlertWithTitle("Whoops!", message: "Choose a username first", actionTitle: "OK", viewController: self)
-                usernameTextField.becomeFirstResponder()
+            if nickname == "" {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a nickname first", actionTitle: "OK", viewController: self)
+                nicknameTextField.becomeFirstResponder()
                 return false
-            } else if username?.characters.count > 20 {
-                showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter username", actionTitle: "OK", viewController: self)
-                usernameTextField.becomeFirstResponder()
+            } else if nickname?.characters.count > 20 {
+                showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter nickname", actionTitle: "OK", viewController: self)
+                nicknameTextField.becomeFirstResponder()
                 return false
             }
             
@@ -273,7 +273,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
 //            var subtitle: NSMutableAttributedString = NSMutableAttributedString(string: value)
 //            return subtitle
 //        }
-        alert.showEdit(self.view.window?.rootViewController, title: "Sign up to join the chat!", subTitle: "No pressure, you can change your username at any time", closeButtonTitle: "Cancel", duration: 0)
+        alert.showEdit(self.view.window?.rootViewController, title: "Sign up to join the chat!", subTitle: "No pressure, you can change your nickname at any time", closeButtonTitle: "Cancel", duration: 0)
     }
     
     func isValidEmail(emailAddress: String) -> Bool {

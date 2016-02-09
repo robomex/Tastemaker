@@ -151,7 +151,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         finishSendingMessage()
     }
     
-    // View usernames above bubbles
+    // View nicknames above bubbles
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = messages[indexPath.item]

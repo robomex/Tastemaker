@@ -29,7 +29,7 @@ class InitialViewController: UIViewController {
 //            authData in
             
             // this if clause added since deleting the app and reinstalling resulted in persisted Firebase auth but deleted NSUserDefaults, causing crashes
-            if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("username") ==  nil {
+            if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
                 DataService.dataService.BASE_REF.unauth()
                 self.performSegueWithIdentifier("toLogin", sender: self)
             }
