@@ -84,7 +84,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         //        let calendar = NSCalendar.autoupdatingCurrentCalendar()
         let todayString = localDateFormatter().stringFromDate(NSDate())
         let todayDate = localDateFormatter().dateFromString(todayString)
-        print(todayDate)
         venueListener = VenueListener(endDate: todayDate!, callback: {
             venues in
             
