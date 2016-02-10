@@ -75,7 +75,7 @@ let kVenueActivityTypeVisit                     = "visit"
 let kUserClassKey                               = "User"
 
 // Field keys
-let kUserDisplayNameKey                         = "name"
+let kUserNicknameKey                            = "nickname"
 let kUserProfilePicKey                          = "profilePicture"
 let kUserProfilePicSmallKey                     = "profilePictureSmall"
 

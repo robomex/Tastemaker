@@ -250,26 +250,26 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         let message = self.messages[indexPath.item]
         if avatars[message.senderId] == nil {
-            let query = PFUser.query()
-            query?.whereKey("objectId", containedIn: userIdList)
-            query?.selectKeys([kUserDisplayNameKey, kUserProfilePicKey, kUserProfilePicSmallKey])
-            query?.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-                if error == nil {
-                    for object in objects! {
-                        if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {
-                            thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
-                                if (error == nil) && message.senderId == object.objectId {
-                                    self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
-                                    self.collectionView?.reloadData()
-                                }
-                            })
-                        }
-                        if message.senderId == object.objectId {
-                            self.users[message.senderId] = object as? PFUser
-                        }
-                    }
-                }
-            }
+//            let query = PFUser.query()
+//            query?.whereKey("objectId", containedIn: userIdList)
+//            query?.selectKeys([kUserDisplayNameKey, kUserProfilePicKey, kUserProfilePicSmallKey])
+//            query?.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
+//                if error == nil {
+//                    for object in objects! {
+//                        if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {
+//                            thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
+//                                if (error == nil) && message.senderId == object.objectId {
+//                                    self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
+//                                    self.collectionView?.reloadData()
+//                                }
+//                            })
+//                        }
+//                        if message.senderId == object.objectId {
+//                            self.users[message.senderId] = object as? PFUser
+//                        }
+//                    }
+//                }
+//            }
             self.setupAvatarImage(message.senderId, name: message.senderDisplayName, incoming: true)
             return avatars[message.senderId]
         } else {

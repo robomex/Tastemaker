@@ -7,22 +7,28 @@
 //
 
 import Foundation
-import Parse
+import Firebase
 
 struct User {
     let id: String
-    let name: String
-    private let pfUser: PFUser
-    
-    func getProfilePhoto(callback:(UIImage) -> ()) {
-        let imageFile = pfUser.objectForKey(kUserProfilePicKey) as! PFFile
-        imageFile.getDataInBackgroundWithBlock({
-            data, error in
-            if let data = data {
-                callback(UIImage(data: data)!)
-            }
-        })
-    }
+    let nickname: String
+//    private let pfUser: PFUser
+//    
+//    func getProfilePhoto(callback:(UIImage) -> ()) {
+//        let imageFile = pfUser.objectForKey(kUserProfilePicKey) as! PFFile
+//        imageFile.getDataInBackgroundWithBlock({
+//            data, error in
+//            if let data = data {
+//                callback(UIImage(data: data)!)
+//            }
+//        })
+//    }
+}
+
+func snapshotToUser(snapshot: FDataSnapshot) -> User {
+    let id = snapshot.key
+    let nickname = snapshot.value.objectForKey(kUserNicknameKey) as? String
+    return User(id: id, nickname: nickname!)
 }
 
 //func pfUserToUser(user: PFUser) -> User {

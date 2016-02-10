@@ -10,20 +10,25 @@ import UIKit
 import ParseUI
 import Parse
 import DZNEmptyDataSet
+import Firebase
 
-class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
-    // MARK: Initialization
+    private var mutedUsersHandle: UInt?
+    private var mutedUsers = [User]()
+    private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
-    override init(style: UITableViewStyle, className: String?) {
-        super.init(style: style, className: kUserClassKey)
-        
-        self.pullToRefreshEnabled = true
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    // MARK: Initialization
+//    
+//    override init(style: UITableViewStyle, className: String?) {
+//        super.init(style: style, className: kUserClassKey)
+//        
+//        self.pullToRefreshEnabled = true
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +43,8 @@ class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSou
         }
         // Next line prevents empty cells from displaying
         self.tableView.tableFooterView = UIView()
+        
+
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -45,7 +52,30 @@ class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSou
         
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.tabBarController?.tabBar.hidden = true
-        self.loadObjects()
+        
+        mutedUsers = []
+        mutedUsersHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            let enumerator = snapshot.children
+            self.mutedUsers = []
+            // Unsure why unlike listsVC I gotta call the below reloadData() here to clear users that were just unmuted via the GOUserProfileVC's linked here
+            self.tableView.reloadData()
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                DataService.dataService.USERS_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                    snapshot in
+                    
+                    self.mutedUsers.insert(snapshotToUser(snapshot), atIndex: 0)
+                    print(self.mutedUsers)
+                    self.tableView.reloadData()
+                })
+            }
+        })
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedUsersHandle!)
     }
     
     override func didReceiveMemoryWarning() {
@@ -80,45 +110,42 @@ class GOMutedUsersViewController: PFQueryTableViewController, DZNEmptyDataSetSou
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.objects!.count
+        return self.mutedUsers.count
     }
     
     
     // MARK: PFQueryTableViewController
+//    
+//    override func queryForTable() -> PFQuery {
+//        if (PFUser.currentUser() == nil) {
+//            let query = PFQuery(className: self.parseClassName!)
+//            query.limit = 0
+//            return query
+//        }
+//        
+//        let activityQuery = PFQuery(className: kUserActivityClassKey)
+//        activityQuery.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
+//        activityQuery.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
+//        activityQuery.includeKey(kUserActivityToUserKey)
+//        activityQuery.cachePolicy = PFCachePolicy.NetworkElseCache
+//        return activityQuery
+//    }
     
-    override func queryForTable() -> PFQuery {
-        if (PFUser.currentUser() == nil) {
-            let query = PFQuery(className: self.parseClassName!)
-            query.limit = 0
-            return query
-        }
-        
-        let activityQuery = PFQuery(className: kUserActivityClassKey)
-        activityQuery.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
-        activityQuery.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
-        activityQuery.includeKey(kUserActivityToUserKey)
-        activityQuery.cachePolicy = PFCachePolicy.NetworkElseCache
-        return activityQuery
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject?) -> PFTableViewCell? {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "UserCell"
-        let cell = PFTableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellIdentifier)
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellIdentifier)
         
-        let user: PFUser = object?.objectForKey(kUserActivityToUserKey) as! PFUser
-        if user.objectForKey(kUserDisplayNameKey) == nil || (user.objectForKey(kUserDisplayNameKey))! as! String == "" {
-            cell.textLabel!.text = "A No-Namer"
-        } else {
-            cell.textLabel!.text = user.objectForKey(kUserDisplayNameKey) as? String
-        }
+        let user = mutedUsers[indexPath.row]
+        cell.textLabel?.text = user.nickname
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        let vc = GOUserProfileViewController()
-        let user = objectAtIndexPath(indexPath)?.objectForKey(kUserActivityToUserKey) as! PFUser
-//        vc.user = user
-//        navigationController?.pushViewController(vc, animated: true)
+        let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
+        let user = mutedUsers[indexPath.row]
+        vc.userId = user.id
+        vc.userNickname = user.nickname
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
