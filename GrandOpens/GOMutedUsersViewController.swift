@@ -63,10 +63,9 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
             self.tableView.reloadData()
             while let data = enumerator.nextObject() as? FDataSnapshot {
                 DataService.dataService.USERS_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                    snapshot in
+                    snap in
                     
-                    self.mutedUsers.insert(snapshotToUser(snapshot), atIndex: 0)
-                    print(self.mutedUsers)
+                    self.mutedUsers.insert(snapshotToUser(snap), atIndex: 0)
                     self.tableView.reloadData()
                 })
             }
