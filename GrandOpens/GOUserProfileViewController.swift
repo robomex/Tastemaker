@@ -10,20 +10,28 @@ import UIKit
 import ParseUI
 import Parse
 import Firebase
+import DZNEmptyDataSet
 
-class GOUserProfileViewController: ListViewController {
+class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
 //    let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var userId: String!
     var userNickname: String!
     private var userActivitiesMuteHandle = UInt?()
     private var userActivitiesMuteRef: Firebase?
+    private var usersSavedListRef: Firebase?
+    private var usersSavedListHandle = UInt?()
+    private var usersSavedListVenues = [Venue]()
+    
     
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.emptyDataSetDelegate = self
+        self.tableView.emptyDataSetSource = self
         
         DataService.dataService.USERS_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
@@ -166,12 +174,30 @@ class GOUserProfileViewController: ListViewController {
                 self.configureMuteButton()
             }
         })
+        
+        usersSavedListRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves")
+        usersSavedListHandle = usersSavedListRef?.observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            let enumerator = snapshot.children
+            self.usersSavedListVenues = []
+            self.tableView.reloadData()
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                    snap in
+                    
+                    self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
+                    self.tableView.reloadData()
+                })
+            }
+        })
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
         userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
+        usersSavedListRef?.removeObserverWithHandle(usersSavedListHandle!)
     }
     
     // MARK:- PFQueryTableViewController
@@ -198,10 +224,7 @@ class GOUserProfileViewController: ListViewController {
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.text = userNickname //user!.objectForKey(kUserDisplayNameKey) as? String ?? "A No-Namer"
-//        if header.textLabel?.text == "" {
-//            header.textLabel?.text = "A No-Namer"
-//        }
+        header.textLabel?.text = userNickname
         header.textLabel?.font = UIFont.systemFontOfSize(16)
         header.textLabel?.textColor = UIColor.darkGrayColor()
         header.textLabel?.text = header.textLabel!.text! + "'s Saved Venues"
@@ -209,6 +232,16 @@ class GOUserProfileViewController: ListViewController {
     
    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30.0
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.usersSavedListVenues.count
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        super.venues = self.usersSavedListVenues
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+        return venueCell
     }
     
     
@@ -222,7 +255,6 @@ class GOUserProfileViewController: ListViewController {
         self.configureUnmuteButton()
         
         userActivitiesMuteRef?.setValue(true)
-//        super.mutedUsers[self.userId] = "muted"
     }
     
     func unmuteButtonAction(sender: AnyObject) {
@@ -241,5 +273,20 @@ class GOUserProfileViewController: ListViewController {
     
     func configureUnmuteButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: "unmuteButtonAction:")
+    }
+    
+    
+    // MARK: DZNEmptyDataSet
+    
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let title = ":-|"
+        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
+        return NSAttributedString(string: title, attributes: attributes)
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let description = "This person's list is empty. \nShoot them a recommendation of somewhere good!"
+        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+        return NSAttributedString(string: description, attributes: attributes)
     }
 }
