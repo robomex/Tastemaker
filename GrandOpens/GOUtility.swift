@@ -293,7 +293,7 @@ func showSimpleAlertWithTitle(title: String!, message: String, actionTitle: Stri
     viewController.presentViewController(alert, animated: true, completion: nil)
 }
 
-let dateFormat = "yyyy-MM-dd-HH:mm:ss ZZZZ"
+let dateFormat = "yyyy-MM-dd HH:mm:ss ZZZZ"
 func dateFormatter() -> NSDateFormatter {
     let dateFormatter = NSDateFormatter()
     dateFormatter.timeZone = NSTimeZone(abbreviation: "UTC")
