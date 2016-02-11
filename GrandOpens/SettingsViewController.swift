@@ -48,12 +48,6 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             snapshot in
             
             self.nickname = snapshot.value["nickname"] as! String
-            print(snapshot.value)
-            if snapshot.value["admin"] as? Bool == true {
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .Plain, target: self, action: "addVenue:")
-            } else {
-                self.navigationItem.rightBarButtonItem = nil
-            }
             self.settingsTableView.reloadData()
         })
     }
@@ -188,13 +182,5 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    
-    // MARK: Adding Venues
-    
-    func addVenue(sender: AnyObject) {
-        let vc = UIViewController()
-        self.presentViewController(vc, animated: true, completion: nil)
     }
 }
