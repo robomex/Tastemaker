@@ -18,6 +18,7 @@
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
 		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
 		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
+		DE58D6D81C6B5EBD0063FDD8 /* AddVenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D6D71C6B5EBD0063FDD8 /* AddVenueViewController.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
 		DE6126251B2505950009FB34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6126231B2505950009FB34 /* Main.storyboard */; };
@@ -74,6 +75,7 @@
 		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
 		DE5068311C5978EC006FFD51 /* OSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCache.h; sourceTree = "<group>"; };
 		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
+		DE58D6D71C6B5EBD0063FDD8 /* AddVenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddVenueViewController.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */,
 				DE283D141B61670E0003466D /* InitialViewController.swift */,
 				DE283D121B615F040003466D /* LoginViewController.swift */,
+				DE58D6D71C6B5EBD0063FDD8 /* AddVenueViewController.swift */,
 				DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */,
 			);
 			name = ViewControllers;
@@ -474,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE58D6D81C6B5EBD0063FDD8 /* AddVenueViewController.swift in Sources */,
 				DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */,
 				DEEB760C1B32990700A94305 /* Venue.swift in Sources */,
 				DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */,
