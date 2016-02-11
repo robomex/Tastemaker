@@ -14,8 +14,8 @@ struct Venue {
     let name: String?
     let openingDate: String?
     let address: String?
-//    let lat: String
-//    let long: String
+    let latitude: Double?
+    let longitude: Double?
     let neighborhood: String?
     let phoneNumber: String?
     let foodType: String?
@@ -92,14 +92,14 @@ func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     let objectId = snapshot.key
     let name = snapshot.value.objectForKey(kVenueName) as? String
     let openingDate = snapshot.value.objectForKey(kVenueOpeningDate) as? String
-    //let openingDate = dateFormatter().dateFromString(snapshot.value.objectForKey(kVenueOpeningDate))//unformattedDate!)
-//    let openingDate = dateFormatter().dateFromString(unformattedDate!)
+    let latitude = snapshot.value.objectForKey(kVenueLatitude) as? Double
+    let longitude = snapshot.value.objectForKey(kVenueLongitude) as? Double
     let address = snapshot.value.objectForKey(kVenueAddress) as? String
     let neighborhood = snapshot.value.objectForKey(kVenueNeighborhood) as? String
     let phoneNumber = snapshot.value.objectForKey(kVenuePhoneNumber) as? String
     let foodType = snapshot.value.objectForKey(kVenueFoodType) as? String
     let description = snapshot.value.objectForKey(kVenueDescription) as? String
-    return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
+    return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
 }
 
 //func getVoteSnapshot(venueKey: String) -> FDataSnapshot {
