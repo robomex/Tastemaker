@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     var navController: UINavigationController?
     
     let locationManager = CLLocationManager()
+    var venues = [Venue]()
 
     override init() {
         super.init()
@@ -178,36 +179,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         UINavigationBar.appearance().barTintColor = kBlue
         UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
     }
-    
-//    func reachabilityChanged(note: NSNotification) {
-//        let reachability = note.object as! Reachability
-//        
-//        if reachability.isReachable() {
-//            if reachability.isReachableViaWiFi() {
-//                print("reachable via wifi - appdelegate")
-//            } else {
-//                print("reachable via cellular - appdelegate")
-//            }
-//        } else {
-//            print("not reachable - appdelegate")
-//        }
-//    }
 
     
     // MARK: CoreLocation
     
     // MARK: CLLocationManagerDelegate
     
-    func regionFromVenue(venue: PFObject) -> CLCircularRegion {
+    func regionFromVenue(venue: Venue) -> CLCircularRegion {
 
-        let venueLocation = venue.objectForKey(kVenueLocation) as? PFGeoPoint
-        let venueLocation2D = venueLocation?.locationCoordinate2D()
-        let region = CLCircularRegion(center: venueLocation2D!, radius: 40.0, identifier: venue.objectId!)
+//        let venueLocation = venue.objectForKey(kVenueLocation) as? PFGeoPoint
+        let venueLocation2D = CLLocationCoordinate2D(latitude: venue.latitude!, longitude: venue.longitude!)
+        let region = CLCircularRegion(center: venueLocation2D, radius: 30.0, identifier: venue.objectId!)
         region.notifyOnEntry = true
+        region.notifyOnExit = true
         return region
     }
     
-    func startMonitoringVenueVisits(venue: PFObject) {
+    func startMonitoringVenueVisits(venue: Venue) {
         
         // I'll need to come back and fix this shit so people know that either their devices don't support visit tracking OR more importantly a lot of GO functionality is lost until they grant location permission
 //        if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
@@ -223,7 +211,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         locationManager.startMonitoringForRegion(region)
     }
     
-    func stopMonitoringVenueVisits(venue: PFObject) {
+    func stopMonitoringVenueVisits(venue: Venue) {
         for region in locationManager.monitoredRegions {
             if let circularRegion = region as? CLCircularRegion {
                 if circularRegion.identifier == venue.objectId! {
@@ -247,56 +235,91 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         print("location updated")
         
         let location = locations.last as CLLocation?
-        let locationAsPFGeoPoint = PFGeoPoint(location: location)
+//        let locationAsPFGeoPoint = PFGeoPoint(location: location)
         
-        var today = NSDate()
-        let calendar = NSCalendar.autoupdatingCurrentCalendar()
-        calendar.timeZone = NSTimeZone.localTimeZone()
-        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
-        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
-        
-        let queryNearbyVenues = PFQuery(className: kVenueClassKey)
-        queryNearbyVenues.whereKey(kVenueLocation, nearGeoPoint: locationAsPFGeoPoint, withinMiles: 50.0)
-        queryNearbyVenues.whereKey(kVenueOpeningDate, greaterThanOrEqualTo: standardOpeningDateCoverage)
-        queryNearbyVenues.whereKey(kVenueOpeningDate, lessThan: today)
-        queryNearbyVenues.limit = 20
-        queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
-            if error == nil {
-                for venue in venues! {
-                    self.startMonitoringVenueVisits(venue)
-                }
-            }
+//        var today = NSDate()
+//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
+//        calendar.timeZone = NSTimeZone.localTimeZone()
+//        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
+//        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
+//        
+//        let queryNearbyVenues = PFQuery(className: kVenueClassKey)
+//        queryNearbyVenues.whereKey(kVenueLocation, nearGeoPoint: locationAsPFGeoPoint, withinMiles: 50.0)
+//        queryNearbyVenues.whereKey(kVenueOpeningDate, greaterThanOrEqualTo: standardOpeningDateCoverage)
+//        queryNearbyVenues.whereKey(kVenueOpeningDate, lessThan: today)
+//        queryNearbyVenues.limit = 20
+//        queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
+//            if error == nil {
+//                for venue in venues! {
+//                    self.startMonitoringVenueVisits(venue)
+//                }
+//            }
+//        }
+        let venueSort = VenueSorter()
+        let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(self.venues, location: location!).prefix(20)
+        for venue in sortedVenues {
+            self.startMonitoringVenueVisits(venue)
         }
     }
     
-    func handleRegionEvent(region: CLRegion!) {
+    func handleEnterRegionEvent(region: CLRegion!) {
         
-        let venue = PFQuery(className: kVenueClassKey)
-        venue.getObjectInBackgroundWithId(region.identifier) { (venue: PFObject?, error: NSError?) -> Void in
-            if error == nil && venue != nil {
-                let visitActivity = PFObject(className: kVenueActivityClassKey)
-                visitActivity.setObject(kVenueActivityTypeVisit, forKey: kVenueActivityTypeKey)
-                visitActivity.setObject(PFUser.currentUser()!, forKey: kVenueActivityByUserKey)
-                visitActivity.setObject(venue!, forKey: kVenueActivityToVenueKey)
-                let visitACL = PFACL(user: PFUser.currentUser()!)
-                visitActivity.ACL = visitACL
-                visitActivity.saveInBackground()
-            }
+//        let venue = PFQuery(className: kVenueClassKey)
+//        venue.getObjectInBackgroundWithId(region.identifier) { (venue: PFObject?, error: NSError?) -> Void in
+//            if error == nil && venue != nil {
+//                let visitActivity = PFObject(className: kVenueActivityClassKey)
+//                visitActivity.setObject(kVenueActivityTypeVisit, forKey: kVenueActivityTypeKey)
+//                visitActivity.setObject(PFUser.currentUser()!, forKey: kVenueActivityByUserKey)
+//                visitActivity.setObject(venue!, forKey: kVenueActivityToVenueKey)
+//                let visitACL = PFACL(user: PFUser.currentUser()!)
+//                visitActivity.ACL = visitACL
+//                visitActivity.saveInBackground()
+//            }
+//        }
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
         }
         
         print("Geofence triggered!")
     }
     
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            handleRegionEvent(region)
+    func handleExitRegionEvent(region: CLRegion!) {
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            var visitsToDelete = [String]()
+            
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)").queryOrderedByChild("date").queryStartingAtValue(dateFormatter().stringFromDate(NSDate().dateByAddingTimeInterval(-900))).observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                let enumerator = snapshot.children
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    visitsToDelete.append(data.key)
+                }
+                
+                if visitsToDelete.isEmpty {
+                    DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(region.identifier)/visitors/\(uid)").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
+                } else {
+                    for visit in visitsToDelete {
+                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)/\(visit)").removeValue()
+                    }
+                }
+            })
+                
         }
     }
     
-//    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-//        if region is CLCircularRegion {
-//            handleRegionEvent(region)
-//        }
-//    }
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            handleEnterRegionEvent(region)
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            handleExitRegionEvent(region)
+        }
+    }
 }
 

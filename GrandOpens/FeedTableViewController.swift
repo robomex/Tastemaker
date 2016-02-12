@@ -20,7 +20,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     let coachMarksController = CoachMarksController()
     let reachability = try! Reachability.reachabilityForInternetConnection()
     var venues = [Venue]()
-//    var venueIDs = [String]()
+    
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
@@ -93,6 +93,19 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             }
             self.venues = newList
             self.tableView.reloadData()
+            (UIApplication.sharedApplication().delegate as! AppDelegate).venues = self.venues
+//            
+//            let home = CLLocation(latitude: 41.8887633, longitude: -87.6466934)
+//            let venueSort = VenueSorter()
+//            let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(newList, location: home).prefix(3)
+//            
+//            for venue in newList {
+//                print(venue.name)
+//            }
+//            print("\n")
+//            for venue in sortedVenues {
+//                print(venue.name)
+//            }
         })
         
         bannedHandle = DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
@@ -179,10 +192,17 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
+//        let geofire = GeoFire(firebaseRef: ref)
+        
         let venue = venues[indexPath.row]
+//        print(venue)
         venueCell!.venue = venue
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
+//        geofire.setLocation(CLLocation(latitude: venue.latitude!, longitude: venue.longitude!), forKey: venue.objectId)
+//        let center = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
+//        var circleQuery = geofire.queryAtLocation(center, withRadius: 0.6)
+//        circleQuery.
 
         ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in

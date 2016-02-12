@@ -18,6 +18,7 @@
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
 		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
 		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
+		DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
 		DE6126251B2505950009FB34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6126231B2505950009FB34 /* Main.storyboard */; };
@@ -74,6 +75,7 @@
 		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
 		DE5068311C5978EC006FFD51 /* OSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCache.h; sourceTree = "<group>"; };
 		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
+		DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueSorter.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
 				DEA5EE2C1BA1408600D0F221 /* GOCache.swift */,
 				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
+				DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -486,6 +489,7 @@
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
 				DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */,
 				DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */,
+				DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */,
 				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
 				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
