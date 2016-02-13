@@ -22,6 +22,9 @@ struct Venue {
     let description: String?
 }
 
+private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
+private let openingDateFormat = "yyyy-MM-dd"
+
 class VenueListener {
 //    var currentChildAddedHandle: UInt?
 //    var currentChildChangedHandle: UInt?
@@ -79,10 +82,7 @@ class VenueListener {
     }
 }
 
-private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
-private let openingDateFormat = "yyyy-MM-dd"
-
-private func openingDateFormatter() -> NSDateFormatter {
+func openingDateFormatter() -> NSDateFormatter {
     let openingDateFormatter = NSDateFormatter()
     openingDateFormatter.dateFormat = openingDateFormat
     return openingDateFormatter
