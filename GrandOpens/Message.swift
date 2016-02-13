@@ -15,6 +15,7 @@ struct ChatMessage {
     let senderID: String
     let senderName: String
     let date: NSDate
+    let visitStatus: String
 }
 
 class MessageListener {
@@ -46,7 +47,7 @@ private let ref = Firebase(url: "https://grandopens.firebaseio.com/messages")
 //}
 
 func saveChatMessage(venueID: String, message: ChatMessage) {
-    ref.childByAppendingPath(venueID).childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(message.date), "message": message.message, "sender": message.senderID, "senderName": message.senderName])
+    ref.childByAppendingPath(venueID).childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(message.date), "message": message.message, "sender": message.senderID, "senderName": message.senderName, "visitStatus": message.visitStatus])
 }
 
 private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
@@ -54,7 +55,8 @@ private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
     let sender = snapshot.value["sender"] as? String
     let text = snapshot.value["message"] as? String
     let senderName = snapshot.value["senderName"] as? String
-    return ChatMessage(message: text!, senderID: sender!, senderName: senderName!, date: date!)
+    let visitStatus = snapshot.value["visitStatus"] as? String
+    return ChatMessage(message: text!, senderID: sender!, senderName: senderName!, date: date!, visitStatus: visitStatus!)
 }
 
 func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
