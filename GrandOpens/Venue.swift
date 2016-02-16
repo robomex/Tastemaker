@@ -102,14 +102,32 @@ func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
 }
 
-//func getVoteSnapshot(venueKey: String) -> FDataSnapshot {
-//    ref.childByAppendingPath("venueActivities/\(venueKey)/votes").observeSingleEventOfType(FEventType.Value, withBlock: {
-//        snapshot in
-////        let count: UInt = snapshot.childrenCount
-//        return snapshot
-//    })
-//}
+private let objectIdKey = "objectId"
+private let nameKey = "name"
+private let openingDateKey = "openingDate"
+private let latitudeKey = "latitude"
+private let longitudeKey = "longitude"
+private let addressKey = "address"
+private let neighborhoodKey = "neighborhood"
+private let phoneNumberKey = "phoneNumber"
+private let foodTypeKey = "foodType"
+private let descriptionKey = "description"
 
+func serializeVenue(venue: Venue) -> Dictionary <String, AnyObject> {
+    return [
+        objectIdKey: venue.objectId!,
+        nameKey: venue.name!,
+        openingDateKey: venue.openingDate!,
+        latitudeKey: venue.latitude!,
+        longitudeKey: venue.longitude!,
+        addressKey: venue.address!,
+        neighborhoodKey: venue.neighborhood!,
+        phoneNumberKey: venue.phoneNumber!,
+        foodTypeKey: venue.foodType!,
+        descriptionKey: venue.description!
+    ]
+}
 
-
-
+func deserializeVenue(dictionary: Dictionary <String, AnyObject>) -> Venue {
+    return Venue(objectId: dictionary[objectIdKey] as! String, name: dictionary[nameKey] as! String, openingDate: dictionary[openingDateKey] as! String, address: dictionary[addressKey] as! String, latitude: dictionary[latitudeKey] as! Double, longitude: dictionary[longitudeKey] as! Double, neighborhood: dictionary[neighborhoodKey] as! String, phoneNumber: dictionary[phoneNumberKey] as! String, foodType: dictionary[foodTypeKey] as! String, description: dictionary[descriptionKey] as! String)
+}
