@@ -184,7 +184,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     // MARK: CLLocationManagerDelegate
     
     func locationManager(manager: CLLocationManager, didVisit visit: CLVisit) {
-        DataService.dataService.BASE_REF.childByAppendingPath("/visitsRawData").childByAutoId().updateChildValues(["coordinates": String(visit.coordinate), "accuracy": String(visit.horizontalAccuracy), "startedDate": dateFormatter().stringFromDate(visit.arrivalDate), "endedDate": dateFormatter().stringFromDate(visit.departureDate), "timestamp": dateFormatter().stringFromDate(NSDate())])
         
         let fetchedVenuesDictionary = NSUserDefaults.standardUserDefaults().objectForKey("venues") as! [[String:AnyObject]]
         var fetchedVenues = [Venue]()
@@ -193,9 +192,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         }
         let venueSort = VenueSorter()
         let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(fetchedVenues, location: CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude)).prefix(3)
-        
-        DataService.dataService.BASE_REF.childByAppendingPath("/visitConfirmation").childByAutoId().updateChildValues(["closest venue": sortedVenues[0].name!, "second closest venue": sortedVenues[1].name!, "third closest venue": sortedVenues[2].name!])
-        
         
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
