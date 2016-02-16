@@ -41,6 +41,7 @@ class VenueListener {
                 while let data = enumerator.nextObject() as? FDataSnapshot {
                     venues.append(snapshotToVenue(data))
                 }
+                
                 callback(venues)
             })
             self.currentHandle = handle

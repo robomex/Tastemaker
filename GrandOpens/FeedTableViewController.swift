@@ -93,6 +93,22 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 newList.insert(venue, atIndex: 0)
                 newNSUserDefaultsList.append(serializeVenue(venue))
             }
+            
+            DataService.dataService.BASE_REF.childByAppendingPath("specials").queryOrderedByChild("active").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+            
+                let enumerator = snapshot.children
+                
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    let special = snapshotToVenue(data)
+                    newList.insert(special, atIndex: 3)
+                    newNSUserDefaultsList.append(serializeVenue(special))
+                }
+                
+                self.venues = newList
+                self.tableView.reloadData()
+                NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
+            })
             self.venues = newList
             self.tableView.reloadData()
             NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
