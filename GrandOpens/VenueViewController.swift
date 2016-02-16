@@ -172,7 +172,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         self.configureUnsaveButton()
         
         userActivitiesSaveRef?.setValue(true)
-        venueActivitiesSaverRef?.setValue(true)
+        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
     }
     
     func unsaveButtonAction(sender: AnyObject) {
@@ -183,7 +183,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         self.configureSaveButton()
         
         userActivitiesSaveRef?.removeValue()
-        venueActivitiesSaverRef?.removeValue()
     }
     
     func configureSaveButton() {
