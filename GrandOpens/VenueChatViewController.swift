@@ -118,7 +118,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
             snapshot in
-            print(snapshot.children)
+
             if snapshot.exists() {
                 self.visitStatus = "visited"
 

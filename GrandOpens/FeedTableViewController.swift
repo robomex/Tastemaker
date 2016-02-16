@@ -217,6 +217,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 venueCell!.setVoteStatus(false)
             }
         })
+        ref.childByAppendingPath("userActivities/\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                venueCell!.setVisitStatus(true)
+            } else {
+                venueCell!.setVisitStatus(false)
+            }
+        })
         
         return venueCell!
     }

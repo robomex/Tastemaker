@@ -38,6 +38,7 @@ class GOVenueCellView: UITableViewCell {
     var venueNameLabel: UILabel?
     var venueNeighborhoodLabel: UILabel?
     var venueOpeningDateLabel: UILabel?
+    var isSpecial: String?
     
     
     // MARK: Initialization
@@ -136,6 +137,9 @@ class GOVenueCellView: UITableViewCell {
                 self.venueOpeningDateLabel!.text = ""
             }
             
+            let special: String? = venue?.foodType
+            self.isSpecial = special
+            
             self.setNeedsDisplay()
         }
     }
@@ -162,10 +166,15 @@ class GOVenueCellView: UITableViewCell {
     func setVisitStatus(visited: Bool) {
         self.voteButton!.enabled = visited
         if visited {
-            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.25)
+            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.2)
         } else if venueNameLabel!.text == "Chicago Chat" {
             self.voteButton!.enabled = true
-            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.25)
+            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.2)
+        } else if self.isSpecial != nil {
+            if self.isSpecial! == "Special" {
+                self.voteButton!.enabled = true
+                self.containerView?.backgroundColor = kRed.colorWithAlphaComponent(0.2)
+            }
         }
     }
     
