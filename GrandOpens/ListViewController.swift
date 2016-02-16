@@ -38,7 +38,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         // This is supposed to be in viewWillAppear, however the empty state always flashes when placed there, troubleshoot later
         listVenues = []
-        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").observeEventType(FEventType.Value, withBlock: {
+        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
             snapshot in
             let enumerator = snapshot.children
             self.listVenues = []

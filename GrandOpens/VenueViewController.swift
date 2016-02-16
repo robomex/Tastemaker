@@ -97,7 +97,11 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             snapshot in
             
             if snapshot.exists() {
-                self.configureUnsaveButton()
+                if snapshot.value["saved"] as! Bool == true {
+                    self.configureUnsaveButton()
+                } else {
+                    self.configureSaveButton()
+                }
             } else {
                 self.configureSaveButton()
             }
@@ -171,7 +175,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureUnsaveButton()
         
-        userActivitiesSaveRef?.setValue(true)
+        userActivitiesSaveRef?.updateChildValues(["saved": true])
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
     }
     
@@ -182,7 +186,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureSaveButton()
         
-        userActivitiesSaveRef?.removeValue()
+        userActivitiesSaveRef?.updateChildValues(["saved": false])
     }
     
     func configureSaveButton() {
