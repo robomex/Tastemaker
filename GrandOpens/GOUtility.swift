@@ -369,9 +369,3 @@ func zoomToUserLocationInMapView(mapView: MKMapView) {
         mapView.setRegion(region, animated: true)
     }
 }
-
-extension PFGeoPoint {
-    func locationCoordinate2D() -> CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude)
-    }
-}
