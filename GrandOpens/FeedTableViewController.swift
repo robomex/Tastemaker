@@ -88,24 +88,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venues in
             
             var newList = [Venue]()
+            var newNSUserDefaultsList: [[String:AnyObject]] = []
             for venue in venues {
                 newList.insert(venue, atIndex: 0)
+                newNSUserDefaultsList.append(serializeVenue(venue))
             }
             self.venues = newList
             self.tableView.reloadData()
-            (UIApplication.sharedApplication().delegate as! AppDelegate).venues = self.venues
-//            
-//            let home = CLLocation(latitude: 41.8887633, longitude: -87.6466934)
-//            let venueSort = VenueSorter()
-//            let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(newList, location: home).prefix(3)
-//            
-//            for venue in newList {
-//                print(venue.name)
-//            }
-//            print("\n")
-//            for venue in sortedVenues {
-//                print(venue.name)
-//            }
+            NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
         })
         
         bannedHandle = DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
