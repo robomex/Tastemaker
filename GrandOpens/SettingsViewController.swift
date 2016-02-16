@@ -14,10 +14,8 @@ import Firebase
 
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
-    var nicknameLabel: UILabel!
-    
     var nickname: String = ""
-    
+    var currentUserHandle = UInt()
     var settingsTableView: UITableView!
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
@@ -46,12 +44,18 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
         
-        DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
+        currentUserHandle = DataService.dataService.CURRENT_USER_REF.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             self.nickname = snapshot.value["nickname"] as! String
             self.settingsTableView.reloadData()
         })
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        DataService.dataService.CURRENT_USER_REF.removeObserverWithHandle(currentUserHandle)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -135,7 +139,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }, actionBlock: {
                         DataService.dataService.CURRENT_USER_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
                         NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
-                        self.viewWillAppear(false)
+//                        self.viewWillAppear(false)
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter
                 nicknameAlert.hideAnimationType = .FadeOut

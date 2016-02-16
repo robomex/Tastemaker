@@ -14,5 +14,6 @@ pod 'ReachabilitySwift'
 pod 'Whisper'
 pod 'SCLAlertView'
 pod 'SCLAlertView-Objective-C'
+pod 'GeoFire'
 
 use_frameworks!

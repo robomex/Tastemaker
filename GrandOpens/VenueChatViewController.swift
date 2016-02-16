@@ -15,6 +15,7 @@ import Firebase
 class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     var messages: [JSQMessage] = []
+    var visitStatuses: [String] = []
     var venueID: String?
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
@@ -22,6 +23,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String: String]()
     var mutedRefHandle = UInt()
+    var visitRefHandle = UInt()
+    
+    var visitStatus = "noVisits"
     
     // used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
@@ -30,7 +34,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var users = Dictionary<String, PFUser>()
     
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
+    let outgoingVisitedBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kPurple)
+    let outgoingThereNowBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kRed)
     let incomingBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
+    let incomingVisitedBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(kPurple)
+    let incomingThereNowBubble = JSQMessagesBubbleImageFactory().incomingMessagesBubbleImageWithColor(kRed)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +59,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     for m in messages {
                         if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
                             self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                            self.visitStatuses.append(m.visitStatus)
                             self.userIdList.append(m.senderID)
                         }
                     }
@@ -88,6 +97,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 message in
                 if self.mutedUsers[message.senderID] == nil {
                     self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                    self.visitStatuses.append(message.visitStatus)
                     self.userIdList.append(message.senderID)
                 }
                 self.finishReceivingMessage()
@@ -105,6 +115,27 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.mutedUsers[data.key] = "muted"
             }
         })
+        
+        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            print(snapshot.children)
+            if snapshot.exists() {
+                self.visitStatus = "visited"
+
+                let enumerator = snapshot.children
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    if let date = dateFormatter().dateFromString(data.value["date"] as! String) {
+                        if date.timeIntervalSinceNow > (-3*60*60) {
+                            self.visitStatus = "thereNow"
+                        } else {
+                            self.visitStatus = "visited"
+                        }
+                    }
+                }
+            } else {
+                self.visitStatus = "noVisits"
+            }
+        })
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -116,6 +147,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidDisappear(true)
         messageListener?.stop()
         ref.childByAppendingPath("userActivities/\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID)").removeObserverWithHandle(visitRefHandle)
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -131,10 +163,19 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         
         let data = self.messages[indexPath.row]
+        let visitData = self.visitStatuses[indexPath.row]
         if data.senderId == uid {
-            return outgoingBubble
+            switch visitData {
+                case "thereNow": return outgoingThereNowBubble
+                case "visited": return outgoingVisitedBubble
+                default: return outgoingBubble
+            }
         } else {
-            return incomingBubble
+            switch visitData {
+                case "thereNow": return incomingThereNowBubble
+                case "visited": return incomingVisitedBubble
+                default: return incomingBubble
+            }
         }
     }
     
@@ -142,10 +183,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
         let message = messages[indexPath.item]
-        if message.senderId == uid {
-            cell.textView?.textColor = UIColor.whiteColor()
-        } else {
+        let visitData = self.visitStatuses[indexPath.row]
+        if message.senderId != uid && visitData == "noVisits" {
             cell.textView?.textColor = UIColor.blackColor()
+        } else {
+            cell.textView?.textColor = UIColor.whiteColor()
         }
         
         // The below two lines were originally for formatting of links within messages, I will have to consider how to handle links 
@@ -157,12 +199,16 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         
+        let messageVisitStatus = visitStatus
+        let chatMessage = ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date, visitStatus: messageVisitStatus)
         if let id = venueID {
-            saveChatMessage(id, message: ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date))
+            saveChatMessage(id, message: chatMessage)
         }
         
         finishSendingMessage()
     }
+    
+//    ChatMessage(message: text, senderID: senderId, date: date, senderName: senderDisplayName)
     
     // View nicknames above bubbles
     
@@ -301,6 +347,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             for m in messages {
                 if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
                     self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
+                    self.visitStatuses.insert(m.visitStatus, atIndex: 0)
                     self.userIdList.append(m.senderID)
                 }
             }
