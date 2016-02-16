@@ -198,17 +198,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-//        let geofire = GeoFire(firebaseRef: ref)
-        
         let venue = venues[indexPath.row]
-//        print(venue)
         venueCell!.venue = venue
         venueCell!.tag = index
         venueCell!.voteButton!.tag = index
-//        geofire.setLocation(CLLocation(latitude: venue.latitude!, longitude: venue.longitude!), forKey: venue.objectId)
-//        let center = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
-//        var circleQuery = geofire.queryAtLocation(center, withRadius: 0.6)
-//        circleQuery.
 
         ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
