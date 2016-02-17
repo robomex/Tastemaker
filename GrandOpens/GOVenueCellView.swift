@@ -148,12 +148,6 @@ class GOVenueCellView: UITableViewCell {
     func setVoteStatus(voted: Bool) {
         self.voteButton!.selected = voted
         
-        // FIXME: both are the same???
-//        if (voted) {
-//            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
-//        } else {
-//            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
-//        }
     }
     
     func shouldEnableVoteButton(enable: Bool) {
