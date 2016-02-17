@@ -124,7 +124,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 
                 let enumerator = snapshot.children
                 while let data = enumerator.nextObject() as? FDataSnapshot {
-                    if let date = dateFormatter().dateFromString(data.value["date"] as! String) {
+                    if let date = dateFormatter().dateFromString(data.value["startedAt"] as! String) {
                         if date.timeIntervalSinceNow > (-3*60*60) {
                             self.visitStatus = "thereNow"
                         } else {
