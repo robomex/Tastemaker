@@ -22,7 +22,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     private var usersSavedListRef: Firebase?
     private var usersSavedListHandle = UInt?()
     private var usersSavedListVenues = [Venue]()
-    
+    private var loading: Bool = true
     
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
@@ -37,9 +37,6 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
             snapshot in
             
             if let nickname = snapshot.value["nickname"] as? String {
-//                UIView.animateWithDuration(0.2, animations: {
-//                    self.
-//                })
                 
                 self.userNickname = nickname
                 self.title = nickname
@@ -179,6 +176,10 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         usersSavedListHandle = usersSavedListRef?.queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
+            if !snapshot.exists() {
+                self.loading = false
+            }
+            
             let enumerator = snapshot.children
             self.usersSavedListVenues = []
             self.tableView.reloadData()
@@ -188,6 +189,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
                     
                     self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
                     self.tableView.reloadData()
+                    self.loading = false
                 })
             }
         })
@@ -279,14 +281,22 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     // MARK: DZNEmptyDataSet
     
     func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
-        let title = ":-|"
-        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
-        return NSAttributedString(string: title, attributes: attributes)
+        if loading {
+            return nil
+        } else {
+            let title = ":-|"
+            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
+            return NSAttributedString(string: title, attributes: attributes)
+        }
     }
     
     func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
-        let description = "This person's list is empty. \nShoot them a recommendation of somewhere good!"
-        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
-        return NSAttributedString(string: description, attributes: attributes)
+        if loading {
+            return  nil
+        } else {
+            let description = "This person's list is empty. \nShoot them a recommendation of somewhere good!"
+            let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+            return NSAttributedString(string: description, attributes: attributes)
+        }
     }
 }
