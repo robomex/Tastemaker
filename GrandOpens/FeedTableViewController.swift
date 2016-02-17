@@ -98,9 +98,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 snapshot in
             
                 let enumerator = snapshot.children
-                
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    let special = snapshotToVenue(data)
+                let reversed = enumerator.reverse()
+                for data in reversed {
+                    let special = snapshotToVenue(data as! FDataSnapshot)
                     newList.insert(special, atIndex: 3)
                     newNSUserDefaultsList.append(serializeVenue(special))
                 }
@@ -109,6 +109,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 self.tableView.reloadData()
                 NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
             })
+            
+            // I don't want to include the below, however it causes less flashing while loading the screen vs. having it commented
             self.venues = newList
             self.tableView.reloadData()
             NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
