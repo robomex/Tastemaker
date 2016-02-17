@@ -76,7 +76,8 @@ class GOVenueCellView: UITableViewCell {
             self.voteButton!.setBackgroundImage(UIImage(named: "VoteNormal.png"), forState: UIControlState.Normal)
             self.voteButton!.setBackgroundImage(UIImage(named: "VoteSelected.png"), forState: UIControlState.Selected)
             self.voteButton!.setBackgroundImage(UIImage(named: "VoteDisabled.png"), forState: UIControlState.Disabled)
-            
+            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
+
             self.voteButton!.selected = false
         }
         
@@ -148,11 +149,11 @@ class GOVenueCellView: UITableViewCell {
         self.voteButton!.selected = voted
         
         // FIXME: both are the same???
-        if (voted) {
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
-        } else {
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
-        }
+//        if (voted) {
+//            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
+//        } else {
+//            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
+//        }
     }
     
     func shouldEnableVoteButton(enable: Bool) {
