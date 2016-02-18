@@ -14,7 +14,6 @@ import DZNEmptyDataSet
 
 class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
-//    let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var userId: String!
     var userNickname: String!
     private var userActivitiesMuteHandle = UInt?()
@@ -157,6 +156,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.tableView.alpha = 1.0
         self.tabBarController!.tabBar.hidden = true
         
         userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
@@ -201,26 +201,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
         usersSavedListRef?.removeObserverWithHandle(usersSavedListHandle!)
     }
-    
-    // MARK:- PFQueryTableViewController
-    
-//    override func objectsDidLoad(error: NSError?) {
-//        super.objectsDidLoad(error)
-//        
-//        self.tableView.tableHeaderView = headerView!
-//    }
-    
-//    override func queryForTable() -> PFQuery {
-//        let userSavedVenues = PFQuery(className: kVenueActivityClassKey)
-//        userSavedVenues.cachePolicy = PFCachePolicy.NetworkOnly
-//        userSavedVenues.whereKey(kVenueActivityByUserKey, equalTo: user!)
-//        userSavedVenues.whereKey(kVenueActivityTypeKey, equalTo: kVenueActivityTypeSave)
-//        userSavedVenues.orderByAscending("createdAt")
-//        userSavedVenues.includeKey(kVenueActivityToVenueKey)
-//        
-//        return userSavedVenues
-//    }
-    
+
     
     // MARK:- TableViewController
     
@@ -242,7 +223,8 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         super.venues = self.usersSavedListVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
+        venueCell.containerView?.alpha = 0.0
         return venueCell
     }
     

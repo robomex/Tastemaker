@@ -75,13 +75,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.tableView.alpha = 0.0
 
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false
         
-        //        let calendar = NSCalendar.autoupdatingCurrentCalendar()
         let todayString = localDateFormatter().stringFromDate(NSDate())
         let todayDate = localDateFormatter().dateFromString(todayString)
         venueListener = VenueListener(endDate: todayDate!, callback: {
@@ -227,9 +228,25 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             } else {
                 venueCell!.setVisitStatus(false)
             }
+            
+            if indexPath.row == self.tableView.numberOfRowsInSection(indexPath.section) - 1 || venue.foodType == "Special" {
+                UIView.animateWithDuration(0.1, animations: {
+                    self.tableView.alpha = 1.0
+                    venueCell!.containerView?.alpha = 1.0
+                })
+            } else {
+                // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
+                UIView.animateWithDuration(0.1, animations: {
+                    venueCell!.containerView?.alpha = 1.0
+                })
+            }
         })
         
         return venueCell!
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+
     }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
