@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Set up Grand Open's global UIAppearance
         self.setupAppearance()
         
-        // CoreLocation shit for region monitoring
+        // CoreLocation shit for visit monitoring
         locationManager.delegate = self
         locationManager.startMonitoringVisits()
         print("monitoring")
@@ -112,10 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         tabBarController!.delegate = self
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
-        
-        for CLRegion in self.locationManager.monitoredRegions {
-            self.locationManager.stopMonitoringForRegion(CLRegion)
-        }
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
@@ -189,8 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 
     // TO-DO: come back and fix this shit up so the users are informed of what went wrong
     
-    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
-        print("Monitoring failed for region with identifier: \(region?.identifier)")
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Location Manager failed with the following error: \(error)")
     }
 }
-
