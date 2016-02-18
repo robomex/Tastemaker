@@ -38,10 +38,6 @@ let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
 let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"
 
 
-// MARK: Installation Class
-let kGOInstallationKey                          = "user"
-
-
 // MARK: User Activity Class
 // Class key
 let kUserActivityClassKey                       = "UserActivity"

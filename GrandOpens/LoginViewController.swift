@@ -276,6 +276,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     showSimpleAlertWithTitle("Whoops!", message: "Please check your login email and password", actionTitle: "OK", viewController: self)
                 } else {
                     NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
                     DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
                         snapshot in
                         
@@ -337,6 +339,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     // Store the uid for future access
                     NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
                     NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
                     
                     // Enter the app
                     self.navigationController?.popToRootViewControllerAnimated(true)
