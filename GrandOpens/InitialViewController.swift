@@ -14,7 +14,6 @@ import Firebase
 
 class InitialViewController: UIViewController {
 
-//    private var _presentedLoginViewController: Bool = false
     let locationManager = CLLocationManager()
     
     override func viewDidLoad() {
