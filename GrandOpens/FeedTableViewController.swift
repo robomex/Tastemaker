@@ -190,6 +190,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
+        // I had to add the following if statement since otherwise I would get array out of index errors when saving a venue for the first time, immediately backing out to the feed, and then immediately clicking on the list tab - CRASH - it appeared this was an issue with trying to create a cell for an empty venue array
         if !venues.isEmpty {
             let venue = venues[indexPath.row]
             venueCell!.venue = venue
