@@ -334,6 +334,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         
                         let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate())]
                         DataService.dataService.createNewAccount(authData.uid, user: user)
+                        
+                        // Enter the app
+                        self.navigationController?.popToRootViewControllerAnimated(true)
                     })
                     
                     // Store the uid for future access
@@ -341,9 +344,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
-                    
-                    // Enter the app
-                    self.navigationController?.popToRootViewControllerAnimated(true)
                 }
             })
         }
