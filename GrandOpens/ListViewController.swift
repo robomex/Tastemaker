@@ -19,6 +19,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var saveListHandle: UInt?
     private var listVenues = [Venue]()
+    private var loading: Bool = true
     
     deinit {
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
@@ -35,22 +36,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         self.tableView.emptyDataSetSource = self
         self.tableView.emptyDataSetDelegate = self
         self.tableView.tableFooterView = UIView()
-        
-        // This is supposed to be in viewWillAppear, however the empty state always flashes when placed there, troubleshoot later
-        listVenues = []
-        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            let enumerator = snapshot.children
-            self.listVenues = []
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.ref.childByAppendingPath("venues/\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                    snap in
-             
-                    self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                    self.tableView.reloadData()
-                })
-            }
-        })
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -58,6 +43,28 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+        
+        listVenues = []
+        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if !snapshot.exists() {
+                self.loading = false
+                self.tableView.alpha = 1.0
+            }
+            
+            let enumerator = snapshot.children
+            self.listVenues = []
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                self.ref.childByAppendingPath("venues/\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                    snap in
+                    
+                    self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
+                    self.tableView.reloadData()
+                    self.loading = false
+                })
+            }
+        })
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -77,7 +84,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         super.venues = self.listVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
         return venueCell
     }
     
@@ -109,15 +116,23 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     // MARK: DZNEmptyDataSet
     
     func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
-        let title = "/.-("
-        let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
-        return NSAttributedString(string: title, attributes: attributes)
+        if loading {
+            return nil
+        } else {
+            let title = "/.-("
+            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(50.0)]
+            return NSAttributedString(string: title, attributes: attributes)
+        }
     }
     
     func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
-        let description = "You haven't saved any venues yet. \nIf a new place catches your eye, save it and it'll pop up here!"
-        let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
-        return NSAttributedString(string: description, attributes: attributes)
+        if loading {
+            return nil
+        } else {
+            let description = "You haven't saved any venues yet. \nIf a new place catches your eye, save it and it'll pop up here!"
+            let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+            return NSAttributedString(string: description, attributes: attributes)
+        }
     }
     
     
