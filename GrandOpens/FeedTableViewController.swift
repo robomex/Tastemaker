@@ -178,21 +178,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return venues.count
     }
-    
-    func objectAtIndexPath(indexPath: NSIndexPath?) -> AnyObject? {
-        let index = self.indexForObjectAtIndexPath(indexPath!)
-        if (index < self.venues.count) {
-            return self.venues[index] as? AnyObject
-        }
-        
-        return nil
-    }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         let cellIdentifier = "VenueCell"
-        
-        let index: Int = self.indexForObjectAtIndexPath(indexPath)
         
         var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
         if venueCell == nil {
@@ -201,48 +190,52 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
-        let venue = venues[indexPath.row]
-        venueCell!.venue = venue
-        venueCell!.tag = index
-        venueCell!.voteButton!.tag = index
+        if !venues.isEmpty {
+            let venue = venues[indexPath.row]
+            venueCell!.venue = venue
+            venueCell!.tag = indexPath.row
+            venueCell!.voteButton!.tag = indexPath.row
 
-        ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
-            snapshot in
+            ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
+                snapshot in
 
-            venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
-        })
-        ref.childByAppendingPath("userActivities/\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
-            snapshot in
+                venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
+            })
+            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    venueCell!.setVoteStatus(true)
+                } else {
+                    venueCell!.setVoteStatus(false)
+                }
+            })
+            ref.childByAppendingPath("userActivities/\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    venueCell!.setVisitStatus(true)
+                } else {
+                    venueCell!.setVisitStatus(false)
+                }
+                
+                if indexPath.row == self.tableView.numberOfRowsInSection(indexPath.section) - 1 || venue.foodType == "Special" {
+                    UIView.animateWithDuration(0.1, animations: {
+                        self.tableView.alpha = 1.0
+                        venueCell!.containerView?.alpha = 1.0
+                    })
+                } else {
+                    // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
+                    UIView.animateWithDuration(0.1, animations: {
+                        venueCell!.containerView?.alpha = 1.0
+                    })
+                }
+            })
             
-            if snapshot.exists() {
-                venueCell!.setVoteStatus(true)
-            } else {
-                venueCell!.setVoteStatus(false)
-            }
-        })
-        ref.childByAppendingPath("userActivities/\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-            snapshot in
-            
-            if snapshot.exists() {
-                venueCell!.setVisitStatus(true)
-            } else {
-                venueCell!.setVisitStatus(false)
-            }
-            
-            if indexPath.row == self.tableView.numberOfRowsInSection(indexPath.section) - 1 || venue.foodType == "Special" {
-                UIView.animateWithDuration(0.1, animations: {
-                    self.tableView.alpha = 1.0
-                    venueCell!.containerView?.alpha = 1.0
-                })
-            } else {
-                // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
-                UIView.animateWithDuration(0.1, animations: {
-                    venueCell!.containerView?.alpha = 1.0
-                })
-            }
-        })
-        
-        return venueCell!
+            return venueCell!
+        } else {
+            return GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
+        }
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -402,10 +395,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 Shout(announcement, to: self)
             }
         }
-    }
-    
-    func indexForObjectAtIndexPath(indexPath: NSIndexPath) -> Int {
-        return indexPath.row
     }
     
     /*
