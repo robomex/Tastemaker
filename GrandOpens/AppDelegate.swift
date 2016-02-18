@@ -8,12 +8,8 @@
 
 import UIKit
 import CoreData
-import Parse
-import Bolts
-import MBProgressHUD
 import CoreLocation
 import Firebase
-//import ReachabilitySwift
 
 
 @UIApplicationMain
@@ -41,20 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        
-        // Optional Parse local datastore enabled - helpful comment
-//        Parse.enableLocalDatastore()
-        
-        // Initialize Parse
-        Parse.setApplicationId(valueForAPIKey("PARSE_APPLICATION_ID"), clientKey: valueForAPIKey("PARSE_CLIENT_KEY"))
-        
-        // Track statistics around application opens with Parse
-        PFAnalytics.trackAppOpenedWithLaunchOptions(launchOptions)
-
-        // Use Reachability to monitor connectivity
-//        let reachability = try! Reachability.reachabilityForInternetConnection()
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
-//        try! reachability.startNotifier()
         
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
@@ -147,17 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Clear NSUserDefaults
         let appDomain = NSBundle.mainBundle().bundleIdentifier!
         NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
-//        NSUserDefaults.standardUserDefaults().synchronize()
-        
-        // Unsubscribe from push notifications by removing the user association from the current installation
-        PFInstallation.currentInstallation().removeObjectForKey(kGOInstallationKey)
-        PFInstallation.currentInstallation().saveInBackground()
-        
-        // Clear all caches
-        PFQuery.clearAllCachedResults()
-        
-        // Log out
-        PFUser.logOut()
         
         // Clear out cached data, view controllers, etc.
         navController!.popToRootViewControllerAnimated(true)
@@ -215,170 +186,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
             }
         }
     }
-    
-    func regionFromVenue(venue: Venue) -> CLCircularRegion {
 
-//        let venueLocation = venue.objectForKey(kVenueLocation) as? PFGeoPoint
-        let venueLocation2D = CLLocationCoordinate2D(latitude: venue.latitude!, longitude: venue.longitude!)
-        let region = CLCircularRegion(center: venueLocation2D, radius: 30.0, identifier: venue.objectId!)
-        region.notifyOnEntry = true
-        region.notifyOnExit = true
-        return region
-    }
-    
-    func startMonitoringVenueVisits(venue: Venue) {
-        
-        // I'll need to come back and fix this shit so people know that either their devices don't support visit tracking OR more importantly a lot of GO functionality is lost until they grant location permission
-//        if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
-//            showSimpleAlertWithTitle("Error", message: "Visit tracking is not supported on this device!", viewController: self)
-//            return
-//        }
-//        
-//        if CLLocationManager.authorizationStatus() != .AuthorizedAlways {
-//            showSimpleAlertWithTitle("Warning", message: "Your ability to vote, comment, and track visits will be unlocked once you grant Grand Opens permission to access the device location", viewController: self)
-//        }
-        
-        let region = regionFromVenue(venue)
-        print(region.identifier)
-        locationManager.startMonitoringForRegion(region)
-    }
-    
-    func stopMonitoringVenueVisits(venue: Venue) {
-        for region in locationManager.monitoredRegions {
-            if let circularRegion = region as? CLCircularRegion {
-                if circularRegion.identifier == venue.objectId! {
-                    locationManager.stopMonitoringForRegion(circularRegion)
-                }
-            }
-        }
-    }
-    
     // TO-DO: come back and fix this shit up so the users are informed of what went wrong
     
     func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
         print("Monitoring failed for region with identifier: \(region?.identifier)")
-    }
-    
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        print("Location Manager failed with the following error: \(error)")
-    }
-    
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("location updated")
-        
-        let location = locations.last as CLLocation?
-//        let locationAsPFGeoPoint = PFGeoPoint(location: location)
-        
-//        var today = NSDate()
-//        let calendar = NSCalendar.autoupdatingCurrentCalendar()
-//        calendar.timeZone = NSTimeZone.localTimeZone()
-//        today = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: 1, toDate: today, options: NSCalendarOptions())!)
-//        let standardOpeningDateCoverage = calendar.startOfDayForDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: today, options: NSCalendarOptions())!)
-//        
-//        let queryNearbyVenues = PFQuery(className: kVenueClassKey)
-//        queryNearbyVenues.whereKey(kVenueLocation, nearGeoPoint: locationAsPFGeoPoint, withinMiles: 50.0)
-//        queryNearbyVenues.whereKey(kVenueOpeningDate, greaterThanOrEqualTo: standardOpeningDateCoverage)
-//        queryNearbyVenues.whereKey(kVenueOpeningDate, lessThan: today)
-//        queryNearbyVenues.limit = 20
-//        queryNearbyVenues.findObjectsInBackgroundWithBlock { (venues, error) in
-//            if error == nil {
-//                for venue in venues! {
-//                    self.startMonitoringVenueVisits(venue)
-//                }
-//            }
-//        }
-        
-        print(location)
-        
-        // REV2 calls to Firebase after every updated locations to sort and start monitoring venue visits
-//        let venueSort = VenueSorter()
-//        
-//        DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(NSDate())).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: NSDate(), options: [])!)).observeSingleEventOfType(FEventType.Value, withBlock: {
-//            snapshot in
-//            
-//            var venues = [Venue]()
-//            let enumerator = snapshot.children
-//            
-//            while let data = enumerator.nextObject() as? FDataSnapshot {
-//                venues.append(snapshotToVenue(data))
-//            }
-//            let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(venues, location: location!).prefix(20)
-//            for venue in sortedVenues {
-//                self.startMonitoringVenueVisits(venue)
-//            }
-//        })
-        
-        // REV1 relied on updating array from FeedTableVC, but wouldn't always load before starting to monitor for regions
-//        print(self.venues)
-//        let sortedVenues = venueSort.sortVenuesByDistanceFromLocation(self.venues, location: location!).prefix(20)
-//        for venue in sortedVenues {
-//            self.startMonitoringVenueVisits(venue)
-//        }
-    }
-    
-    func handleEnterRegionEvent(region: CLRegion!) {
-        
-//        let venue = PFQuery(className: kVenueClassKey)
-//        venue.getObjectInBackgroundWithId(region.identifier) { (venue: PFObject?, error: NSError?) -> Void in
-//            if error == nil && venue != nil {
-//                let visitActivity = PFObject(className: kVenueActivityClassKey)
-//                visitActivity.setObject(kVenueActivityTypeVisit, forKey: kVenueActivityTypeKey)
-//                visitActivity.setObject(PFUser.currentUser()!, forKey: kVenueActivityByUserKey)
-//                visitActivity.setObject(venue!, forKey: kVenueActivityToVenueKey)
-//                let visitACL = PFACL(user: PFUser.currentUser()!)
-//                visitActivity.ACL = visitACL
-//                visitActivity.saveInBackground()
-//            }
-//        }
-        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
-            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
-
-            // REV1 and REV2 below would just create visits on entry
-//            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
-        }
-        print("Geofence triggered!")
-    }
-    
-    func handleExitRegionEvent(region: CLRegion!) {
-        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
-            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
-            
-            // REV2 below was going to just log all regionExit events for better understanding
-//            var visitsToDelete = [String]()
-//
-//            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(region.identifier)/visitors/\(uid)").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
-            
-            // REV1 below deleted existing visits if they were within the past 3, or in production 15, minutes - however the problem was that exitRegion was fired when location was fluctuating, resulting in creating venueActivities visits when no visits had occurred
-//            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)").queryOrderedByChild("date").queryStartingAtValue(dateFormatter().stringFromDate(NSDate().dateByAddingTimeInterval(-180))).observeEventType(FEventType.Value, withBlock: {
-//                snapshot in
-//                
-//                let enumerator = snapshot.children
-//                while let data = enumerator.nextObject() as? FDataSnapshot {
-//                    visitsToDelete.append(data.key)
-//                }
-//                
-//                if visitsToDelete.isEmpty {
-//                    DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(region.identifier)/visitors/\(uid)").childByAutoId.updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
-//                } else {
-//                    for visit in visitsToDelete {
-//                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(region.identifier)/\(visit)").removeValue()
-//                    }
-//                }
-//            })
-            
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            handleEnterRegionEvent(region)
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            handleExitRegionEvent(region)
-        }
     }
 }
 
