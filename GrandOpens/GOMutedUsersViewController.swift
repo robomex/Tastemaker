@@ -62,7 +62,7 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
             // Unsure why unlike listsVC I gotta call the below reloadData() here to clear users that were just unmuted via the GOUserProfileVC's linked here
             self.tableView.reloadData()
             while let data = enumerator.nextObject() as? FDataSnapshot {
-                DataService.dataService.USERS_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
                     snap in
                     
                     self.mutedUsers.insert(snapshotToUser(snap), atIndex: 0)

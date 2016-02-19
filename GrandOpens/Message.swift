@@ -22,22 +22,21 @@ class MessageListener {
     var currentHandle: UInt?
     
     init (venueID: String, startDate: NSDate, callback: (ChatMessage) -> ()) {
-        let handle = ref.childByAppendingPath(venueID).queryOrderedByChild("date").queryStartingAtValue(dateFormatter().stringFromDate(startDate)).observeEventType(FEventType.ChildAdded, withBlock: {
+        let handle = DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).queryOrderedByChild("date").queryStartingAtValue(dateFormatter().stringFromDate(startDate)).observeEventType(FEventType.ChildAdded, withBlock: {
             snapshot in
             let message = snapshotToChatMessage(snapshot)
             callback(message)
         })
         self.currentHandle = handle
     }
-    func stop() {
+    func stop(venueID: String) {
         if let handle = currentHandle {
-            ref.removeObserverWithHandle(handle)
+            DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).removeObserverWithHandle(handle)
             currentHandle = nil
         }
     }
 }
 
-private let ref = Firebase(url: "https://grandopens.firebaseio.com/messages")
 //private let dateFormat = "yyyyMMddHHmmss"
 //
 //private func dateFormatter() -> NSDateFormatter {
@@ -47,7 +46,7 @@ private let ref = Firebase(url: "https://grandopens.firebaseio.com/messages")
 //}
 
 func saveChatMessage(venueID: String, message: ChatMessage) {
-    ref.childByAppendingPath(venueID).childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(message.date), "message": message.message, "sender": message.senderID, "senderName": message.senderName, "visitStatus": message.visitStatus])
+    DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(message.date), "message": message.message, "sender": message.senderID, "senderName": message.senderName, "visitStatus": message.visitStatus])
 }
 
 private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
@@ -60,7 +59,7 @@ private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
 }
 
 func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
-    ref.childByAppendingPath(venueID).queryOrderedByChild("date").queryLimitedToLast(15).observeSingleEventOfType(FEventType.Value, withBlock: {
+    DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).queryOrderedByChild("date").queryLimitedToLast(15).observeSingleEventOfType(FEventType.Value, withBlock: {
         snapshot in
         
         var messages = Array<ChatMessage>()
@@ -74,7 +73,7 @@ func fetchMessages(venueID: String, callback: ([ChatMessage]) -> ()) {
 }
 
 func fetchEarlierMessages(venueID: String, firstMessageTime: String, callback: ([ChatMessage]) -> ()) {
-    ref.childByAppendingPath(venueID).queryOrderedByChild("date").queryEndingAtValue(firstMessageTime).queryLimitedToLast(13).observeSingleEventOfType(FEventType.Value, withBlock: {
+    DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).queryOrderedByChild("date").queryEndingAtValue(firstMessageTime).queryLimitedToLast(13).observeSingleEventOfType(FEventType.Value, withBlock: {
         snapshot in
         
         var messages = Array<ChatMessage>()

@@ -278,7 +278,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
                     NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
-                    DataService.dataService.CURRENT_USER_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
                         snapshot in
                         
                         NSUserDefaults.standardUserDefaults().setValue(snapshot.value["nickname"], forKey: "nickname")
@@ -333,7 +333,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         err, authData in
                         
                         let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate())]
-                        DataService.dataService.createNewAccount(authData.uid, user: user)
+                        let publicUser = ["nickname": nickname!]
+                        DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
+                        DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                         
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)

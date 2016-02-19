@@ -21,7 +21,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     let reachability = try! Reachability.reachabilityForInternetConnection()
     var venues = [Venue]()
     
-    private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var banned: Bool?
@@ -117,7 +116,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
         })
         
-        bannedHandle = DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
+        bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
@@ -141,7 +140,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
         venueListener?.stop()
-        DataService.dataService.CURRENT_USER_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -197,12 +196,12 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             venueCell!.tag = indexPath.row
             venueCell!.voteButton!.tag = indexPath.row
 
-            ref.childByAppendingPath("venueActivities/\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
+            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
 
                 venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
             })
-            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {
@@ -211,7 +210,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                     venueCell!.setVoteStatus(false)
                 }
             })
-            ref.childByAppendingPath("userActivities/\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {

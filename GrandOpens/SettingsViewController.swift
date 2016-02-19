@@ -44,7 +44,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
         
-        currentUserHandle = DataService.dataService.CURRENT_USER_REF.observeEventType(FEventType.Value, withBlock: {
+        currentUserHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             self.nickname = snapshot.value["nickname"] as! String
@@ -55,7 +55,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        DataService.dataService.CURRENT_USER_REF.removeObserverWithHandle(currentUserHandle)
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.removeObserverWithHandle(currentUserHandle)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -137,9 +137,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     }
                     return true
                     }, actionBlock: {
-                        DataService.dataService.CURRENT_USER_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+                        DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+                        DataService.dataService.CURRENT_USER_PUBLIC_REF.updateChildValues(["nickname": nicknameTextField.text!])
                         NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
-//                        self.viewWillAppear(false)
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter
                 nicknameAlert.hideAnimationType = .FadeOut

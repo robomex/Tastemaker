@@ -16,7 +16,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     // MARK: Initialization
     
-    private let ref = Firebase(url: "https://grandopens.firebaseio.com")
     private var saveListHandle: UInt?
     private var listVenues = [Venue]()
     private var loading: Bool = true
@@ -45,7 +44,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
         listVenues = []
-        saveListHandle = ref.childByAppendingPath("userActivities/\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+        saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             if !snapshot.exists() {
@@ -56,7 +55,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
             let enumerator = snapshot.children
             self.listVenues = []
             while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.ref.childByAppendingPath("venues/\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
                     snap in
                     
                     self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
@@ -69,7 +68,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        ref.removeObserverWithHandle(saveListHandle!)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

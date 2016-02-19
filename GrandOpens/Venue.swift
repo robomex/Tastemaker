@@ -22,7 +22,6 @@ struct Venue {
     let description: String?
 }
 
-private let ref = Firebase(url: "https://grandopens.firebaseio.com/venues")
 private let openingDateFormat = "yyyy-MM-dd"
 
 class VenueListener {
@@ -33,7 +32,7 @@ class VenueListener {
     
     init (//startDate: NSDate,
         endDate: NSDate, callback: ([Venue]) -> ()) {
-            let handle = ref.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
+            let handle = DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 var venues = Array<Venue>()
                 let enumerator = snapshot.children
@@ -65,7 +64,7 @@ class VenueListener {
     }
     func stop() {
         if let handle = currentHandle {
-            ref.removeObserverWithHandle(handle)
+            DataService.dataService.VENUES_REF.removeObserverWithHandle(handle)
             currentHandle = nil
         }
 //        if let addHandle = currentChildAddedHandle {

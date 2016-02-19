@@ -32,7 +32,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.tableView.emptyDataSetDelegate = self
         self.tableView.emptyDataSetSource = self
         
-        DataService.dataService.USERS_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
+        DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
             if let nickname = snapshot.value["nickname"] as? String {

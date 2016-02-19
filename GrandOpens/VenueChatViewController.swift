@@ -44,7 +44,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidLoad()
         
         // Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
-        ref.childByAppendingPath("userActivities/\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
             let enumerator = snapshot.children
@@ -107,7 +107,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func viewWillAppear(animated: Bool) {
-        mutedRefHandle = ref.childByAppendingPath("userActivities/\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+        mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
             let enumerator = snapshot.children
@@ -145,8 +145,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        messageListener?.stop()
-        ref.childByAppendingPath("userActivities/\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
+        messageListener?.stop(venueID!)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID)").removeObserverWithHandle(visitRefHandle)
     }
     
