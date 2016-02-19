@@ -177,8 +177,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureUnsaveButton()
         
-        userActivitiesSaveRef?.updateChildValues(["saved": true])
-        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate())])
+        userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
     }
     
     func unsaveButtonAction(sender: AnyObject) {
@@ -188,7 +188,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         self.configureSaveButton()
         
-        userActivitiesSaveRef?.updateChildValues(["saved": false])
+        userActivitiesSaveRef?.updateChildValues(["saved": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": false, "date": dateFormatter().stringFromDate(NSDate())])
     }
     
     func configureSaveButton() {

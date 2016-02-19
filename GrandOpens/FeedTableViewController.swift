@@ -205,7 +205,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 snapshot in
                 
                 if snapshot.exists() {
-                    venueCell!.setVoteStatus(true)
+                    if snapshot.value["voted"] as! Bool == true {
+                        venueCell!.setVoteStatus(true)
+                    } else {
+                        venueCell!.setVoteStatus(false)
+                    }
                 } else {
                     venueCell!.setVoteStatus(false)
                 }
@@ -295,14 +299,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount++
-            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").setValue(true)
-            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").setValue(true)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": true, "date": dateFormatter().stringFromDate(NSDate())])
         } else {
             if voteCount > 0 {
                 voteCount--
             }
-            ref.childByAppendingPath("userActivities/\(uid)/votes/\(venueId)").removeValue()
-            ref.childByAppendingPath("venueActivities/\(venueId)/voters/\(uid)").removeValue()
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])
         }
         
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
