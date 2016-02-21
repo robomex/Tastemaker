@@ -19,7 +19,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var venueID: String?
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
-    let ref = Firebase(url: "https://grandopens.firebaseio.com")
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String: String]()
     var mutedRefHandle = UInt()
