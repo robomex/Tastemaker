@@ -378,7 +378,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     func showThrottleAlert() {
         let messageThrottleAlert = SCLAlertView()
-        // Adding a timer is causing SCLAlertView console printouts "unknown action type for button" 
+        // Adding a timer is causing SCLAlertView console printouts "unknown action type for button"
 //        messageThrottleAlert.addTimerToButtonIndex(0, reverse: true)
         messageThrottleAlert.showAnimationType = .SlideInToCenter
         messageThrottleAlert.hideAnimationType = .FadeOut
