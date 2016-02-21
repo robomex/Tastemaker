@@ -10,6 +10,7 @@ import Foundation
 import Parse
 import JSQMessagesViewController
 import DZNEmptyDataSet
+import SCLAlertView_Objective_C
 import Firebase
 
 class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
@@ -25,6 +26,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var visitRefHandle = UInt()
     
     var visitStatus = "noVisits"
+    var currentMessageSendTime = NSDate()
+    var lastMessageSendTime = NSDate()
+    var secondToLastMessageSendTime = NSDate()
     
     // used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
@@ -75,12 +79,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.senderId = uid
         self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
         self.showLoadEarlierMessagesHeader = true
-            
-//        if PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String == "" {
-            self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
-//        } else {
-//            self.senderDisplayName = PFUser.currentUser()?.objectForKey(kUserDisplayNameKey) as? String
-//        }
+        
+        self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
 
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
         self.edgesForExtendedLayout = UIRectEdge.None
@@ -197,6 +197,14 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        
+        self.secondToLastMessageSendTime = self.lastMessageSendTime
+        self.lastMessageSendTime = self.currentMessageSendTime
+        self.currentMessageSendTime = NSDate()
+        if self.secondToLastMessageSendTime.timeIntervalSinceNow > -5 {
+            showThrottleAlert()
+            return
+        }
         
         let messageVisitStatus = visitStatus
         let chatMessage = ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date, visitStatus: messageVisitStatus)
@@ -363,6 +371,21 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             
             self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
         })
+    }
+    
+    
+    // MARK:-
+    
+    func showThrottleAlert() {
+        let messageThrottleAlert = SCLAlertView()
+        // Adding a timer is causing SCLAlertView console printouts "unknown action type for button" 
+//        messageThrottleAlert.addTimerToButtonIndex(0, reverse: true)
+        messageThrottleAlert.showAnimationType = .SlideInToCenter
+        messageThrottleAlert.hideAnimationType = .FadeOut
+        messageThrottleAlert.customViewColor = kPurple
+        messageThrottleAlert.backgroundType = .Blur
+        messageThrottleAlert.shouldDismissOnTapOutside = true
+        messageThrottleAlert.showInfo(self.view.window?.rootViewController, title: "Whoa there", subTitle: "There's no rush, please wait a moment before sending a new message", closeButtonTitle: "Dismiss", duration: 5.0)
     }
     
     
