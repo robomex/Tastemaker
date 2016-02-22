@@ -124,21 +124,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 nicknameTextField.autocapitalizationType = .None
                 nicknameTextField.keyboardType = .Default
                 nicknameAlert.addButton("Save Nickname", validationBlock: {
-                    let nickname = nicknameTextField.text
+                    self.updatedNickname = nicknameTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
+                    self.updatedNickname = self.updatedNickname!.stringByReplacingOccurrencesOfString(" ", withString: "")
                     
-                    if nickname == "" {
+                    if self.updatedNickname == "" {
                         showSimpleAlertWithTitle("Please enter a nickname", message: "", actionTitle: "OK", viewController: self)
                         nicknameTextField.becomeFirstResponder()
                         return false
-                    } else if nickname?.characters.count > 20 {
+                    } else if self.updatedNickname!.characters.count > 20 {
                         showSimpleAlertWithTitle("Please enter a shorter nickname", message: "", actionTitle: "OK", viewController: self)
                         nicknameTextField.becomeFirstResponder()
                         return false
                     }
                     return true
                     }, actionBlock: {
-                        DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["nickname": nicknameTextField.text!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
-                        DataService.dataService.CURRENT_USER_PUBLIC_REF.updateChildValues(["nickname": nicknameTextField.text!])
+                        DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["nickname": self.updatedNickname!, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+                        DataService.dataService.CURRENT_USER_PUBLIC_REF.updateChildValues(["nickname": self.updatedNickname!])
                         NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter
