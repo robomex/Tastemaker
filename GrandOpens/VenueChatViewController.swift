@@ -30,10 +30,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var lastMessageSendTime = NSDate()
     var secondToLastMessageSendTime = NSDate()
     
-    // used for grabbing avatars via containedIn PFQuery
+    // Used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
     
-    // indexed with messages and used for pushing GOUserProfile
+    // Indexed with messages and used for pushing GOUserProfile
     var users = Dictionary<String, PFUser>()
     
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
@@ -74,6 +74,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     }
                 })
             }
+            
+            // Items for Report function
+            JSQMessagesCollectionViewCell.registerMenuAction(Selector("reportMessage:"))
+            UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: Selector("reportMessage:"))]
         })
         
         self.senderId = uid
@@ -256,7 +260,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         return kJSQMessagesCollectionViewCellLabelHeightDefault
     }
 
-    // Timestamps
+    // MARK: Timestamps
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         if indexPath.item % 3 == 0 {
@@ -273,7 +277,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         return 0
     }
     
-    // Avatars
+    // MARK: Avatars
     
     func setupAvatarImage(id: String, name: String, incoming: Bool) {
         
@@ -338,6 +342,42 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         vc.title = message.senderDisplayName
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    
+    // MARK: Report button
+    
+    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        return super.collectionView(collectionView, shouldShowMenuForItemAtIndexPath: indexPath)
+    }
+    
+    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+        
+        let message = self.messages[indexPath.row]
+        if action == Selector("reportMessage:") && message.senderId == self.uid {
+            return false
+        } else if action == Selector("reportMessage:") {
+            return true
+        }
+        
+        return super.collectionView(collectionView, canPerformAction: action, forItemAtIndexPath: indexPath, withSender: sender)
+    }
+    
+    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+        
+        if action == Selector("reportMessage:") {
+            
+            let message = messages[indexPath.row]
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
+        }
+        
+        super.collectionView(collectionView, performAction: action, forItemAtIndexPath: indexPath, withSender: sender)
+    }
+    
+    
+    
+    
+    // MARK: Load earlier header
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
         
