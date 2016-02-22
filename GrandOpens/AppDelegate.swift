@@ -48,8 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // CoreLocation shit for visit monitoring
         locationManager.delegate = self
-        locationManager.startMonitoringVisits()
-        print("monitoring")
         
         self.window!.rootViewController = self.navController
         self.window!.makeKeyAndVisible()
@@ -112,6 +110,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         tabBarController!.delegate = self
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
+        
+        locationManager.startMonitoringVisits()
+        print("monitoring")
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
@@ -121,6 +122,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     func logOut() {
         DataService.dataService.BASE_REF.unauth()
+        
+        // Stop monitoring visits
+        locationManager.stopMonitoringVisits()
         
         // Clear cache
         GOCache.sharedCache.clear()
