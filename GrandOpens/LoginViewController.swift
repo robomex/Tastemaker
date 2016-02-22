@@ -248,13 +248,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     }
     
     @IBAction func didTapLoginButton(sender: AnyObject) {
-        let email = emailTextField.text
+        let email = emailTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
         let password = passwordTextField.text
         
         if email == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
             return
-        } else if !self.isValidEmail(email!) {
+        } else if !self.isValidEmail(email) {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
             return
         }
@@ -266,6 +266,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
             showSimpleAlertWithTitle("Whoops!", message: "Passwords cannot contain special characters", actionTitle: "OK", viewController: self)
             return
+        } else if password != nil {
+            var trimmedPassword = password!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            trimmedPassword = trimmedPassword.stringByReplacingOccurrencesOfString(" ", withString: "")
+            if password != trimmedPassword {
+                showSimpleAlertWithTitle("Whoops!", message: "Passwords cannot contain spaces", actionTitle: "OK", viewController: self)
+                return
+            }
         }
         
         if email != "" && password != "" {
@@ -293,14 +300,15 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // Unable to use .becomeFirstResponder for offending field as that causes issues with the keyboard movement functions
     
     @IBAction func didTapSignupButton(sender: AnyObject) {
-        let email = emailTextField.text
+        let email = emailTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
         let password = passwordTextField.text
-        let nickname = nicknameTextField.text
+        var nickname = nicknameTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
+        nickname = nickname.stringByReplacingOccurrencesOfString(" ", withString: "")
         
         if email == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
             return
-        } else if !self.isValidEmail(email!) {
+        } else if !self.isValidEmail(email) {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
             return
         }
@@ -312,12 +320,19 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         } else if regex.firstMatchInString(password!, options: NSMatchingOptions(), range: NSMakeRange(0, (password?.characters.count)!)) != nil {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a password without special characters", actionTitle: "OK", viewController: self)
             return
+        } else if password != nil {
+            var trimmedPassword = password!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            trimmedPassword = trimmedPassword.stringByReplacingOccurrencesOfString(" ", withString: "")
+            if password != trimmedPassword {
+                showSimpleAlertWithTitle("Whoops!", message: "Passwords cannot contain spaces", actionTitle: "OK", viewController: self)
+                return
+            }
         }
         
         if nickname == "" {
             showSimpleAlertWithTitle("Whoops!", message: "Please enter your nickname", actionTitle: "OK", viewController: self)
             return
-        } else if nickname?.characters.count > 20 {
+        } else if nickname.characters.count > 20 {
             showSimpleAlertWithTitle("Whoops!", message: "Choose a shorter nickname", actionTitle: "OK", viewController: self)
             return
         }
@@ -332,8 +347,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
                         err, authData in
                         
-                        let user = ["provider": authData.provider!, "email": email!, "nickname": nickname!, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate())]
-                        let publicUser = ["nickname": nickname!]
+                        let user = ["provider": authData.provider!, "email": email, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate())]
+                        let publicUser = ["nickname": nickname]
                         DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                         DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                         
@@ -402,7 +417,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    // Onboarding code for testing
+    // MARK: Animation
     func animateBackgroundGradient() {
         self.fromColors = self.gradient?.colors
         self.gradient!.colors = self.toColors! as? [AnyObject]
