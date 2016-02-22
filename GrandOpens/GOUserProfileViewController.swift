@@ -195,6 +195,12 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         })
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.navigationItem.rightBarButtonItem = nil
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
