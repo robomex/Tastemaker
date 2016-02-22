@@ -38,7 +38,7 @@ class GOVenueCellView: UITableViewCell {
     var venueNameLabel: UILabel?
     var venueNeighborhoodLabel: UILabel?
     var venueOpeningDateLabel: UILabel?
-    var isSpecial: String?
+    var isFeatured: String?
     
     
     // MARK: Initialization
@@ -138,8 +138,8 @@ class GOVenueCellView: UITableViewCell {
                 self.venueOpeningDateLabel!.text = ""
             }
             
-            let special: String? = venue?.foodType
-            self.isSpecial = special
+            let featured: String? = venue?.foodType
+            self.isFeatured = featured
             
             self.setNeedsDisplay()
         }
@@ -165,9 +165,10 @@ class GOVenueCellView: UITableViewCell {
         } else if venueNameLabel!.text == "Chicago Chat" {
             self.voteButton!.enabled = true
             self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.2)
-        } else if self.isSpecial != nil {
-            if self.isSpecial! == "Special" {
-                self.voteButton!.enabled = true
+        } else if self.isFeatured != nil {
+            if self.isFeatured! == "Featured" {
+                // During initial implementation of "Specials", i.e. featured's, the vote button was enabled, however if both the featured placement and the potential normal placement will coexist in the same list, don't want to automatically enable voting for everyone - instead of just visitors - as that will artificially inflate the vote numbers
+//                self.voteButton!.enabled = true
                 self.containerView?.backgroundColor = kRed.colorWithAlphaComponent(0.2)
             }
         }

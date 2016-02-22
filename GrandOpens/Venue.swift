@@ -18,7 +18,7 @@ struct Venue {
     let longitude: Double?
     let neighborhood: String?
     let phoneNumber: String?
-    let foodType: String?
+    var foodType: String?
     let description: String?
 }
 
@@ -38,10 +38,21 @@ class VenueListener {
                 let enumerator = snapshot.children
                 
                 while let data = enumerator.nextObject() as? FDataSnapshot {
-                    venues.append(snapshotToVenue(data))
+                    venues.insert(snapshotToVenue(data), atIndex: 0)
                 }
                 
-                callback(venues)
+                DataService.dataService.VENUES_REF.queryOrderedByChild("featured").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: {
+                    snap in
+                    
+                    let enumerator = snap.children
+                    let reversed = enumerator.reverse()
+                    for features in reversed {
+                        var featuredVenue: Venue = snapshotToVenue(features as! FDataSnapshot)
+                        featuredVenue.foodType = "Featured"
+                        venues.insert(featuredVenue, atIndex: 3)
+                    }
+                    callback(venues)
+                })
             })
             self.currentHandle = handle
 //        let childAddedHandle = ref.queryOrderedByChild(kVenueOpeningDate).queryStartingAtValue(dateFormatter().stringFromDate(startDate)).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).observeEventType(FEventType.ChildAdded, withBlock: { snapshot in

@@ -90,27 +90,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             var newList = [Venue]()
             var newNSUserDefaultsList: [[String:AnyObject]] = []
             for venue in venues {
-                newList.insert(venue, atIndex: 0)
+                newList.append(venue)
                 newNSUserDefaultsList.append(serializeVenue(venue))
             }
-            
-            DataService.dataService.BASE_REF.childByAppendingPath("specials").queryOrderedByChild("active").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: {
-                snapshot in
-            
-                let enumerator = snapshot.children
-                let reversed = enumerator.reverse()
-                for data in reversed {
-                    let special = snapshotToVenue(data as! FDataSnapshot)
-                    newList.insert(special, atIndex: 3)
-                    newNSUserDefaultsList.append(serializeVenue(special))
-                }
-                
-                self.venues = newList
-                self.tableView.reloadData()
-                NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-            })
-            
-            // I don't want to include the below, however it causes less flashing while loading the screen vs. having it commented
+
             self.venues = newList
             self.tableView.reloadData()
             NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
@@ -223,7 +206,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                     venueCell!.setVisitStatus(false)
                 }
                 
-                if indexPath.row == self.tableView.numberOfRowsInSection(indexPath.section) - 1 || venue.foodType == "Special" {
+                if indexPath.row == (self.tableView.indexPathsForVisibleRows?.count)! - 1 {
                     UIView.animateWithDuration(0.1, animations: {
                         self.tableView.alpha = 1.0
                         venueCell!.containerView?.alpha = 1.0

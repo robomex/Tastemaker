@@ -102,8 +102,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 } else {
                     self.configureSaveButton()
                 }
-            } else if self.venue!.foodType == "Special" {
-                self.navigationItem.rightBarButtonItem = nil
             } else {
                 self.configureSaveButton()
             }
