@@ -14,8 +14,9 @@ import Firebase
 
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
-    var nickname: String = ""
-    var currentUserHandle = UInt()
+    var nickname: String? = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as? String ?? ""
+    var updatedNickname: String?
+    var authHandle = UInt()
     var settingsTableView: UITableView!
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
@@ -43,19 +44,20 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
-        
-        currentUserHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.observeEventType(FEventType.Value, withBlock: {
-            snapshot in
+
+        authHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock {
+            authData in
             
-            self.nickname = snapshot.value["nickname"] as! String
-            self.settingsTableView.reloadData()
-        })
+            if authData == nil {
+                (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
+            }
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.removeObserverWithHandle(currentUserHandle)
+        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authHandle)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {

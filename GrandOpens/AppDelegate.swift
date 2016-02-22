@@ -116,6 +116,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
     
+    
+    // MARK: Logout
+    
     func logOut() {
         DataService.dataService.BASE_REF.unauth()
         
@@ -127,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
         
         // Clear out cached data, view controllers, etc.
-        navController!.popToRootViewControllerAnimated(true)
+//        navController!.popToRootViewControllerAnimated(true)
         
         self.feedTableViewController = nil
         self.listViewController = nil
