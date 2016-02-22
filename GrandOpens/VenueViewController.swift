@@ -11,10 +11,7 @@ import Parse
 import ReachabilitySwift
 import Whisper
 import Firebase
-//import SCLAlertView
 import SCLAlertView_Objective_C
-//import TTTAttributedLabel
-//import SafariServices
 
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
