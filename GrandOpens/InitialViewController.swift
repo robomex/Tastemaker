@@ -63,6 +63,7 @@ class InitialViewController: UIViewController {
                 let permissioningImage = UIImageView(image: UIImage(named: "Permission.png"))
                 permissioningImage.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, 200)
                 permissioningImage.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/2)
+                permissioningImage.contentMode = UIViewContentMode.ScaleAspectFill
                 self.view.addSubview(permissioningImage)
                 
                 let permissioningButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, 35))
