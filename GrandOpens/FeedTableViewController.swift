@@ -11,14 +11,16 @@ import Parse
 import ParseUI
 import Instructions
 import ReachabilitySwift
-import Whisper
 import Firebase
+import SwiftyDrop
 
 class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
 
     var reusableViews: Set<GOVenueCellView>!
     let coachMarksController = CoachMarksController()
-    let reachability = try! Reachability.reachabilityForInternetConnection()
+    
+    var reachability: Reachability?
+    
     var venues = [Venue]()
     
     var venueListener: VenueListener?
@@ -28,14 +30,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     
     // MARK: Initialization
-    
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +52,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
         defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
-        defaultNotificationCenter.addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
-        try! reachability.startNotifier()
+
+        setupReachability(true)
+        startNotifier()
         
         // Prevents additional cells from being drawn for short lists
         self.tableView.tableFooterView = UIView()
@@ -69,7 +64,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
         defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
         defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
-        defaultNotificationCenter.removeObserver(self, name: ReachabilityChangedNotification, object: reachability)
+        stopNotifier()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -363,25 +358,41 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         self.tableView.beginUpdates()
         self.tableView.endUpdates()
     }
-
-    func reachabilityChanged(note: NSNotification) {
-        let reachability = note.object as! Reachability
+    
+    
+    // MARK: Reachability
+    
+    func setupReachability(useClosures: Bool) {
+        do {
+            let reachability = try Reachability.reachabilityForInternetConnection()
+            self.reachability = reachability
+        } catch ReachabilityError.FailedToCreateWithAddress(let address) {
+            print("Reachability error at \(address)")
+            return
+        } catch {}
         
-        dispatch_async(dispatch_get_main_queue()) {
-            if reachability.isReachable() {
-                if reachability.isReachableViaWiFi() {
-                    print("reachable via wifi - feedTableVC")
-                } else {
-                    print("reachable via cellular - feedTableVC")
+        if useClosures {
+            reachability?.whenUnreachable = { reachability in
+                dispatch_async(dispatch_get_main_queue()) {
+
+                    Drop.down("Internet Connection Lost \n We'll refresh automatically when reconnected", state: .Color(kRed), duration: 3.0, action: nil)
                 }
-            } else {
-                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "We'll refresh automatically when reconnected", image: nil, duration: 4.0, action: nil)
-                ColorList.Shout.background = kRed
-                ColorList.Shout.title = UIColor.whiteColor()
-                ColorList.Shout.subtitle = UIColor.whiteColor()
-                Shout(announcement, to: self)
             }
         }
+    }
+    
+    func startNotifier() {
+        do {
+            try reachability?.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+            return
+        }
+    }
+    
+    func stopNotifier() {
+        reachability?.stopNotifier()
+        reachability = nil
     }
     
     /*

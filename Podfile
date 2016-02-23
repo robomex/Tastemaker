@@ -10,7 +10,7 @@ pod 'Onboard'
 pod 'Instructions', '~> 0.3'
 pod 'DZNEmptyDataSet'
 pod 'ReachabilitySwift'
-pod 'Whisper'
+pod 'SwiftyDrop'
 pod 'SCLAlertView-Objective-C'
 
 use_frameworks!

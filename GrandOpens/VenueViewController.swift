@@ -9,7 +9,6 @@
 import UIKit
 import Parse
 import ReachabilitySwift
-import Whisper
 import Firebase
 import SCLAlertView_Objective_C
 
@@ -27,7 +26,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
-    let reachability = try! Reachability.reachabilityForInternetConnection()
     
     var banned: Bool?
     
@@ -75,14 +73,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         if self.banned != nil {
             chatVC.inputToolbar?.hidden = true
         }
-        
-        // Reachability checks
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
-        try! reachability.startNotifier()
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: ReachabilityChangedNotification, object: reachability)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -193,28 +183,5 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     func configureUnsaveButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
-    }
-    
-    
-    // MARK: Reachability
-    
-    func reachabilityChanged(note: NSNotification) {
-        let reachability = note.object as! Reachability
-        
-        dispatch_async(dispatch_get_main_queue()) {
-            if reachability.isReachable() {
-                if reachability.isReachableViaWiFi() {
-                    print("reachable via wifi - venueVC")
-                } else {
-                    print("reachable via cellular - venueVC")
-                }
-            } else {
-                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "We'll refresh automatically when reconnected", image: nil, duration: 4.0, action: nil)
-                ColorList.Shout.background = kRed
-                ColorList.Shout.title = UIColor.whiteColor()
-                ColorList.Shout.subtitle = UIColor.whiteColor()
-                Shout(announcement, to: self)
-            }
-        }
     }
 }
