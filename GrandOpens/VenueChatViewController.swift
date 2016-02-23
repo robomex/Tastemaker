@@ -339,7 +339,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
         vc.userId = message.senderId
         vc.userNickname = message.senderDisplayName
-        vc.title = message.senderDisplayName
         navigationController?.pushViewController(vc, animated: true)
     }
     

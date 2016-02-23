@@ -14,8 +14,8 @@ import DZNEmptyDataSet
 
 class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
-    var userId: String!
-    var userNickname: String!
+    var userId = String()
+    var userNickname = String()
     private var userActivitiesMuteHandle = UInt?()
     private var userActivitiesMuteRef: Firebase?
     private var usersSavedListRef: Firebase?
@@ -28,17 +28,20 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.title = userNickname
         self.tableView.emptyDataSetDelegate = self
         self.tableView.emptyDataSetSource = self
         
         DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
-            if let nickname = snapshot.value["nickname"] as? String {
-                
-                self.userNickname = nickname
-                self.title = nickname
+            if snapshot.exists() {
+                if let nickname = snapshot.value["nickname"] as? String {
+                    
+                    self.userNickname = nickname
+                    self.title = nickname
+                }
             }
         })
         
