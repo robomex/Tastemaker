@@ -8,8 +8,6 @@
 
 import Foundation
 import UIKit
-import ParseUI
-import Parse
 
 struct GOVenueCellButtons: OptionSetType {
     let rawValue: Int
@@ -102,7 +100,7 @@ class GOVenueCellView: UITableViewCell {
         self.venueOpeningDateLabel!.font = UIFont.systemFontOfSize(14)
         self.venueOpeningDateLabel!.backgroundColor = UIColor.clearColor()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

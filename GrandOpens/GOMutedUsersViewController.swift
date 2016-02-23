@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import ParseUI
-import Parse
 import DZNEmptyDataSet
 import Firebase
 
@@ -18,17 +16,8 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
     private var mutedUsers = [User]()
     private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
+    
     // MARK: Initialization
-//    
-//    override init(style: UITableViewStyle, className: String?) {
-//        super.init(style: style, className: kUserClassKey)
-//        
-//        self.pullToRefreshEnabled = true
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,24 +100,6 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.mutedUsers.count
     }
-    
-    
-    // MARK: PFQueryTableViewController
-//    
-//    override func queryForTable() -> PFQuery {
-//        if (PFUser.currentUser() == nil) {
-//            let query = PFQuery(className: self.parseClassName!)
-//            query.limit = 0
-//            return query
-//        }
-//        
-//        let activityQuery = PFQuery(className: kUserActivityClassKey)
-//        activityQuery.whereKey(kUserActivityByUserKey, equalTo: PFUser.currentUser()!)
-//        activityQuery.whereKey(kUserActivityTypeKey, equalTo: kUserActivityTypeMute)
-//        activityQuery.includeKey(kUserActivityToUserKey)
-//        activityQuery.cachePolicy = PFCachePolicy.NetworkElseCache
-//        return activityQuery
-//    }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "UserCell"

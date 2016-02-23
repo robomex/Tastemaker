@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Parse
 import JSQMessagesViewController
 import DZNEmptyDataSet
 import SCLAlertView_Objective_C
@@ -34,7 +33,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var userIdList = [String]()
     
     // Indexed with messages and used for pushing GOUserProfile
-    var users = Dictionary<String, PFUser>()
+//    var users = Dictionary<String, PFUser>()
     
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
     let outgoingVisitedBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kPurple)
@@ -219,9 +218,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         finishSendingMessage()
     }
     
-//    ChatMessage(message: text, senderID: senderId, date: date, senderName: senderDisplayName)
-    
-    // View nicknames above bubbles
+    // MARK: View nicknames above bubbles
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         let message = messages[indexPath.item]
@@ -372,8 +369,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         super.collectionView(collectionView, performAction: action, forItemAtIndexPath: indexPath, withSender: sender)
     }
-    
-    
     
     
     // MARK: Load earlier header

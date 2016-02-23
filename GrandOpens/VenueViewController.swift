@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Parse
 import ReachabilitySwift
 import Firebase
 import SCLAlertView_Objective_C
@@ -63,11 +62,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
             self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
         }
-        
-        // Hide the chat inputToolbar unless they've visited the venue
-//        if !GOCache.sharedCache.isVenueVisitedByCurrentUser(self.venue!) && venue!.objectForKey(kVenueName) as! String != "Chicago Chat" {
-//            chatVC.inputToolbar?.hidden = true
-//        }
 
         // Hide the chat inputToolbar if banned
         if self.banned != nil {

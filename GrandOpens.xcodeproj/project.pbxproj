@@ -25,13 +25,10 @@
 		DE6126271B2505950009FB34 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE6126261B2505950009FB34 /* Images.xcassets */; };
 		DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE6126281B2505950009FB34 /* LaunchScreen.xib */; };
 		DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE61267D1B26978E0009FB34 /* MobileCoreServices.framework */; };
-		DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE6126931B26A3CB0009FB34 /* ApiKeys.plist */; };
-		DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6126951B26A4E40009FB34 /* ApiKeys.swift */; };
 		DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78E0971C62BEE500CD22F3 /* DataService.swift */; };
 		DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */; };
 		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
-		DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */; };
 		DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5F1C19FD06007CB294 /* TextField.swift */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
 		DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */; };
@@ -94,14 +91,11 @@
 		DE6126851B2697A80009FB34 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DE6126871B2697B30009FB34 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DE6126891B2697C80009FB34 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		DE6126931B26A3CB0009FB34 /* ApiKeys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ApiKeys.plist; sourceTree = "<group>"; };
-		DE6126951B26A4E40009FB34 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		DE78E0971C62BEE500CD22F3 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUsernameEntryViewController.swift; sourceTree = "<group>"; };
 		DEA2DF5F1C19FD06007CB294 /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
 		DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueChatViewController.swift; sourceTree = "<group>"; };
@@ -212,8 +206,6 @@
 			isa = PBXGroup;
 			children = (
 				DE61261B1B2505950009FB34 /* Info.plist */,
-				DE6126931B26A3CB0009FB34 /* ApiKeys.plist */,
-				DE6126951B26A4E40009FB34 /* ApiKeys.swift */,
 				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
 				DE5068311C5978EC006FFD51 /* OSCache.h */,
 				DE5068321C5978EC006FFD51 /* OSCache.m */,
@@ -227,7 +219,6 @@
 			children = (
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
 				DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */,
-				DEA2DF5D1C195F95007CB294 /* GOUsernameEntryViewController.swift */,
 				DE86FA151BB7154700C313E2 /* GOTabBarController.swift */,
 				DEA50CF01B7B094A00396BDD /* VenueViewController.swift */,
 				DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */,
@@ -410,7 +401,6 @@
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
-				DE6126941B26A3CB0009FB34 /* ApiKeys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,7 +477,6 @@
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
 				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
-				DE6126961B26A4E40009FB34 /* ApiKeys.swift in Sources */,
 				DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */,
 				DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */,
 				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
@@ -498,7 +487,6 @@
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
 				DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */,
-				DEA2DF5E1C195F96007CB294 /* GOUsernameEntryViewController.swift in Sources */,
 				DE283D131B615F040003466D /* LoginViewController.swift in Sources */,
 				DE1F08641B61BD440094ACA0 /* Message.swift in Sources */,
 				DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */,

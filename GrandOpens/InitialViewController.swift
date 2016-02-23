@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import Parse
-//import Onboard
 import CoreLocation
 import Firebase
 

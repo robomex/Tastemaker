@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Parse
 import Firebase
 
 struct ChatMessage {
@@ -36,14 +35,6 @@ class MessageListener {
         }
     }
 }
-
-//private let dateFormat = "yyyyMMddHHmmss"
-//
-//private func dateFormatter() -> NSDateFormatter {
-//    let dateFormatter = NSDateFormatter()
-//    dateFormatter.dateFormat = dateFormat
-//    return dateFormatter
-//}
 
 func saveChatMessage(venueID: String, message: ChatMessage) {
     DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(message.date), "message": message.message, "sender": message.senderID, "senderName": message.senderName, "visitStatus": message.visitStatus])

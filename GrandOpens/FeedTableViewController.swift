@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import Parse
-import ParseUI
 import Instructions
 import ReachabilitySwift
 import Firebase
@@ -47,11 +45,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
         self.navigationController!.navigationBar.translucent = false
-        
-        // Register to be notified when a voted/unvoted callback finished
-        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
-        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
-        defaultNotificationCenter.addObserver(self, selector: Selector("userDidVoteOrUnvoteVenue:"), name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
 
         setupReachability(true)
         startNotifier()
@@ -61,9 +54,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     }
     
     deinit {
-        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
-        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification, object: nil)
-        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserVotedUnvotedVenueNotification, object: nil)
         stopNotifier()
     }
     
@@ -353,11 +343,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     
     // MARK: ()
-    
-    func userDidVoteOrUnvoteVenue(note: NSNotification) {
-        self.tableView.beginUpdates()
-        self.tableView.endUpdates()
-    }
     
     
     // MARK: Reachability

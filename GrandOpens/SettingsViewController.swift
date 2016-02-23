@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Parse
 import SafariServices
 import SCLAlertView_Objective_C
 import Firebase

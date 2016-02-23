@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import ParseUI
-import Parse
 import DZNEmptyDataSet
 import Firebase
 
@@ -20,16 +18,9 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     private var listVenues = [Venue]()
     private var loading: Bool = true
     
-    deinit {
-        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
-        defaultNotificationCenter.removeObserver(self, name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let defaultNotificationCenter = NSNotificationCenter.defaultCenter()
-        defaultNotificationCenter.addObserver(self, selector: "userDidSaveOrUnsaveVenue:", name: GOUtilityUserSavedUnsavedVenueNotification, object: nil)
         self.title = "My List"
         
         self.tableView.emptyDataSetSource = self
@@ -106,10 +97,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     
     // MARK: ()
-    
-    @objc func userDidSaveOrUnsaveVenue(note: NSNotification) {
-        //        self.loadObjects()
-    }
     
     
     // MARK: DZNEmptyDataSet

@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import Parse
-import Bolts
 import TTTAttributedLabel
 import SafariServices
 import Firebase

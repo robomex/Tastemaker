@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import ParseUI
-import Parse
 import Firebase
 import DZNEmptyDataSet
 
@@ -61,13 +59,13 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         layer.masksToBounds = true
         self.headerView!.addSubview(profilePictureBackgroundView)
         
-        let profilePictureImageView: PFImageView = PFImageView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
-        self.headerView!.addSubview(profilePictureImageView)
-        profilePictureImageView.contentMode = UIViewContentMode.ScaleAspectFill
-        layer = profilePictureImageView.layer
-        layer.cornerRadius = 66.0
-        layer.masksToBounds = true
-        profilePictureImageView.alpha = 0.0
+//        let profilePictureImageView: PFImageView = PFImageView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
+//        self.headerView!.addSubview(profilePictureImageView)
+//        profilePictureImageView.contentMode = UIViewContentMode.ScaleAspectFill
+//        layer = profilePictureImageView.layer
+//        layer.cornerRadius = 66.0
+//        layer.masksToBounds = true
+//        profilePictureImageView.alpha = 0.0
         
 //        if GOUtility.userHasProfilePicture(self.user!) {
 //            let imageFile: PFFile! = self.user!.objectForKey(kUserProfilePicKey) as! PFFile
