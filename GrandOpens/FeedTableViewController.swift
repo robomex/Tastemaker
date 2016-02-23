@@ -375,7 +375,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                     print("reachable via cellular - feedTableVC")
                 }
             } else {
-                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "We'll refresh everything automatically when reconnected", image: nil, duration: 4.0, action: nil)
+                let announcement = Announcement(title: "Internet Connection Lost!", subtitle: "We'll refresh automatically when reconnected", image: nil, duration: 4.0, action: nil)
                 ColorList.Shout.background = kRed
                 ColorList.Shout.title = UIColor.whiteColor()
                 ColorList.Shout.subtitle = UIColor.whiteColor()
