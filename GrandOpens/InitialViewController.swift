@@ -21,11 +21,21 @@ class InitialViewController: UIViewController {
         
         if DataService.dataService.BASE_REF.authData != nil {
         
-            // this if clause added since deleting the app and reinstalling resulted in persisted Firebase auth but deleted NSUserDefaults, causing crashes
+            // This if clause added since deleting the app and reinstalling resulted in persisted Firebase auth but deleted NSUserDefaults, causing crashes
             if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
                 DataService.dataService.BASE_REF.unauth()
                 self.performSegueWithIdentifier("toLogin", sender: self)
             }
+            
+            // This check added in case the account is deleted in the database, they will be logged out
+            DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+                
+                if !snapshot.exists() {
+                    DataService.dataService.BASE_REF.unauth()
+                    self.performSegueWithIdentifier("toLogin", sender: self)
+                }
+            })
             
             let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
             if !launchedBefore {
