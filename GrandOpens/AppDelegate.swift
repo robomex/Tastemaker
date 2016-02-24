@@ -111,8 +111,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         tabBarController!.delegate = self
         tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
         
-        locationManager.startMonitoringVisits()
-        print("monitoring")
+        let status = CLLocationManager.authorizationStatus()
+        
+        switch status {
+        case .AuthorizedAlways:
+            locationManager.startMonitoringVisits()
+            print("monitoring - always")
+        case . AuthorizedWhenInUse:
+            locationManager.startMonitoringVisits()
+            print("monitoring - when in use")
+        case .NotDetermined:
+            locationManager.requestAlwaysAuthorization()
+            print("Requested always authorization")
+        case .Denied:
+            print("authorization DENIED")
+        default:
+            print("other case, possibly restricted")
+        }
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
