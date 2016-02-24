@@ -131,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
         navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
     }
-    
+
     
     // MARK: Logout
     
@@ -148,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         let appDomain = NSBundle.mainBundle().bundleIdentifier!
         NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
         
-        // Clear out cached data, view controllers, etc.
+        // Clear out cached data, view controllers, etc. (handle this in settings now to wait for unauth to complete
 //        navController!.popToRootViewControllerAnimated(true)
         
         self.feedTableViewController = nil
