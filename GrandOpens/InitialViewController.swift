@@ -22,7 +22,10 @@ class InitialViewController: UIViewController {
             // This if clause added since deleting the app and reinstalling resulted in persisted Firebase auth but deleted NSUserDefaults, causing crashes
             if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
                 DataService.dataService.BASE_REF.unauth()
-                self.performSegueWithIdentifier("toLogin", sender: self)
+                self.navigationController?.popToRootViewControllerAnimated(true)
+                
+                // want to pop to prevent navigating to login on top of already present vc
+//                self.performSegueWithIdentifier("toLogin", sender: self)
             }
             
             // This check added in case the account is deleted in the database, they will be logged out
@@ -31,7 +34,10 @@ class InitialViewController: UIViewController {
                 
                 if !snapshot.exists() {
                     DataService.dataService.BASE_REF.unauth()
-                    self.performSegueWithIdentifier("toLogin", sender: self)
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                    
+                    // want to pop to prevent navigating to login on top of already present vc
+//                    self.performSegueWithIdentifier("toLogin", sender: self)
                 }
             })
             
