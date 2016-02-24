@@ -44,13 +44,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
 
-        authHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock {
+        authHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
             authData in
             
             if authData == nil {
                 (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
             }
-        }
+        })
     }
     
     override func viewDidDisappear(animated: Bool) {
