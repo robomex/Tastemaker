@@ -262,8 +262,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         let voted: Bool = !button.selected
         venueCellView.setVoteStatus(voted)
         
-        let originalButtonTitle = button.titleLabel!.text
-        
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount++
@@ -328,11 +326,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted blue, visit a place to unlock its chat and voting (P.S. each city has a general chat open to everyone)"
+            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted blue, plus each city has a general chat (also highlighted blue) to talk about whatever"
             coachViews.bodyView.hintLabel.textAlignment = .Left
             coachViews.bodyView.nextLabel.text = "Got it!"
         case 2:
-            coachViews.bodyView.hintLabel.text = "If you check out somewhere great, vote for it so others know what's good"
+            coachViews.bodyView.hintLabel.text = "After you check out somewhere great, vote for it so others know what's good"
             coachViews.bodyView.nextLabel.text = "K!"
             coachViews.bodyView.hintLabel.textAlignment = .Left
         default: break
