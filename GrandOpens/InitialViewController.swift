@@ -38,7 +38,7 @@ class InitialViewController: UIViewController {
             let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
             if !launchedBefore {
 
-                self.view.backgroundColor = kPurple
+                self.view.backgroundColor = UIColor.whiteColor()
                 
                 let permissioningTitle = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
                 permissioningTitle.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/6)
@@ -50,7 +50,7 @@ class InitialViewController: UIViewController {
                 
                 let permissioningDetails = UILabel(frame: CGRectMake(0,0, UIScreen.mainScreen().bounds.width - 30, 80))
                 permissioningDetails.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height * 3 / 10)
-                permissioningDetails.text = "To discover the newest places around tap \"OK\" to share your location and get notifications"
+                permissioningDetails.text = "To discover the newest places around you tap \"Allow\" to get notifications and share your location"
                 permissioningDetails.font = UIFont.systemFontOfSize(17.0)
                 permissioningDetails.textColor = UIColor.whiteColor()
                 permissioningDetails.textAlignment = .Center
@@ -63,18 +63,16 @@ class InitialViewController: UIViewController {
                 permissioningImage.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/2)
                 permissioningImage.contentMode = UIViewContentMode.ScaleAspectFill
                 self.view.addSubview(permissioningImage)
-                
-                let permissioningButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, 35))
-                permissioningButton.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height * 4 / 5)
-                permissioningButton.setTitle("OK", forState: .Normal)
-                permissioningButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+
+                let permissioningButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, 200))
+                permissioningButton.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/2)
                 permissioningButton.backgroundColor = UIColor.clearColor()
-                permissioningButton.layer.borderWidth = 2.0
-                permissioningButton.layer.borderColor = UIColor(white: 1.0, alpha: 0.4).CGColor
-                permissioningButton.layer.cornerRadius = 5.0
-                permissioningButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
                 permissioningButton.addTarget(self, action: "didTapPermissioningButton:", forControlEvents: .TouchUpInside)
                 self.view.addSubview(permissioningButton)
+                
+                UIView.animateWithDuration(0.5, animations: {
+                    self.view.backgroundColor = kPurple
+                })
                 
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
             } else {
@@ -84,6 +82,15 @@ class InitialViewController: UIViewController {
         } else {
             self.performSegueWithIdentifier("toLogin", sender: self)
         }
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        for view in self.view.subviews {
+            view.removeFromSuperview()
+        }
+        self.view.backgroundColor = UIColor.whiteColor()
     }
     
     override func didReceiveMemoryWarning() {
