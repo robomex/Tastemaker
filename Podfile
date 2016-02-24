@@ -8,5 +8,6 @@ pod 'DZNEmptyDataSet'
 pod 'ReachabilitySwift'
 pod 'SwiftyDrop'
 pod 'SCLAlertView-Objective-C'
+pod 'PermissionScope'
 
 use_frameworks!
