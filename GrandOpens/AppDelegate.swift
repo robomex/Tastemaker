@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Set up Grand Open's global UIAppearance
         self.setupAppearance()
         
-        // CoreLocation shit for visit monitoring
+        // CoreLocation for visit monitoring
         locationManager.delegate = self
         
         self.window!.rootViewController = self.navController
@@ -210,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         }
     }
 
-    // TO-DO: come back and fix this shit up so the users are informed of what went wrong
+    // TO-DO: come back and fix this up so the users are informed of what went wrong
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Location Manager failed with the following error: \(error)")

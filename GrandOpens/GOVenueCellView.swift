@@ -79,7 +79,7 @@ class GOVenueCellView: UITableViewCell {
             self.voteButton!.selected = false
         }
         
-        // Venue name label - COME BACK LATER AND FIX THIS SHITTY ARBITRARY SPACING
+        // Venue name label - COME BACK LATER AND FIX ARBITRARY SPACING
         self.venueNameLabel = UILabel(frame: CGRectMake(50.0, 15.0, containerView!.bounds.size.width - 50.0, 26.0))
         containerView!.addSubview(self.venueNameLabel!)
         self.venueNameLabel!.textColor = UIColor.blackColor()
