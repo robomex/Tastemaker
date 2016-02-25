@@ -9,16 +9,10 @@
 import Foundation
 
 
-// MARK: NSNotification
-let GOUtilityUserVotedUnvotedVenueCallbackFinishedNotification  = "com.grandopens.utility.userVotedUnvotedVenueCallbackFinished"
-let GOUtilityUserVotedUnvotedVenueNotification                  = "com.grandopens.utility.userVotedUnvotedVenueNotification"
-let GOUtilityUserSavedUnsavedVenueNotification                  = "com.grandopens.utility.userSavedUnsavedVenueNotification"
-
-
 // MARK: URLs
 let kPrivacyPolicyURL =     "https://grandopens.com/privacy"
 let kTermsOfServiceURL =    "https://grandopens.com/terms"
-let kResetEmailURL =        "https://google.com"
+//let kResetEmailURL =        "https://google.com"
 let BASE_URL =              "https://grandopens.firebaseio.com"
 
 
@@ -31,39 +25,6 @@ let kGray = UIColor(red: 0x4a/255, green: 0x4a/255, blue: 0x4a/255, alpha: 1.0)
 
 // MARK: Timeframes
 let kStandardDaysOfOpeningsCovered = 47
-
-
-// MARK: User Info Keys
-let GOUserVotedUnvotedVenueNotificationUserInfoVotedKey         = "voted"
-let GOUserSavedUnsavedVenueNotificationUserInfoSavedKey         = "saved"
-
-
-// MARK: User Activity Class
-// Class key
-let kUserActivityClassKey                       = "UserActivity"
-
-// Field keys
-let kUserActivityByUserKey                      = "byUser"
-let kUserActivityToUserKey                      = "toUser"
-let kUserActivityTypeKey                        = "type"
-
-// Type values
-let kUserActivityTypeMute                       = "mute"
-
-
-// MARK: Activity Class
-// Class key
-let kVenueActivityClassKey                      = "VenueActivity"
-
-// Field keys
-let kVenueActivityByUserKey                     = "byUser"
-let kVenueActivityToVenueKey                    = "toVenue"
-let kVenueActivityTypeKey                       = "type"
-
-// Type values
-let kVenueActivityTypeVote                      = "vote"
-let kVenueActivityTypeSave                      = "save"
-let kVenueActivityTypeVisit                     = "visit"
 
 
 // MARK: User Class
@@ -90,21 +51,3 @@ let kVenueLongitude                             = "longitude"
 let kVenuePhoneNumber                           = "phoneNumber"
 let kVenueFoodType                              = "foodType"
 let kVenueDescription                           = "description"
-// Remove the below after sorting out Geo in Firebase
-let kVenueLocation                              = "location"
-
-
-// MARK: Cached Venue Attributes
-// keys
-let kVenueAttributesIsVotedByCurrentUserKey     = "isVotedByCurrentUser" //the example has a semicolon outside the trailing " - any reason for that?
-let kVenueAttributesVoteCountKey                = "venueVoteCount"
-let kVenueAttributesVotersKey                   = "voters"
-let kVenueAttributesIsSavedByCurrentUserKey     = "isSavedByCurrentUser"
-let kVenueAttributesIsVisitedByCurrentUserKey   = "isVisitedByCurrentUser"
-
-
-// MARK: Cached User Attributes
-// keys
-let kUserAttributesVenueVoteCountKey            = "userVenueVoteCount"
-let kUserAttributesIsFollowedByCurrentUserKey   = "isFollowedByCurrentUser"
-let kUserAttributesIsMutedByCurrentUserKey      = "isMutedByCurrentUser"
