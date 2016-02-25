@@ -106,14 +106,25 @@
                                     <action selector="didTapSignupButton:" destination="mV3-92-BiT" eventType="touchUpInside" id="HgD-31-Wcq"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Forgot your password?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mfs-06-kBh" customClass="TTTAttributedLabel">
-                                <rect key="frame" x="165" y="380" width="271" height="12"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3MO-qw-kgP">
+                                <rect key="frame" x="277" y="455" width="500" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="didTapEmailResetButton:" destination="mV3-92-BiT" eventType="touchUpInside" id="AxM-0r-hkG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5b-aX-ILA">
+                                <rect key="frame" x="277" y="417" width="46" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="gSI-VH-POA"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="didTapToggleEmailResetButton:" destination="mV3-92-BiT" eventType="touchUpInside" id="r9B-Dz-6fo"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="by signing up you agree to our Terms &amp; Privacy Policy" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-QV-YXK" customClass="TTTAttributedLabel">
-                                <rect key="frame" x="170" y="488" width="261" height="12"/>
+                                <rect key="frame" x="148" y="535" width="306" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -161,24 +172,28 @@
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="7sd-JM-RGL"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="9bb-Ea-R3Z"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="20" id="AVy-KC-qA5"/>
+                            <constraint firstItem="f5b-aX-ILA" firstAttribute="top" secondItem="NyN-75-oTW" secondAttribute="bottom" constant="10" id="AYY-EX-UoD"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="top" secondItem="0D8-yd-EPY" secondAttribute="bottom" constant="10" id="BRV-nF-6ca"/>
+                            <constraint firstItem="f5b-aX-ILA" firstAttribute="height" secondItem="NyN-75-oTW" secondAttribute="height" id="Edm-ue-vmv"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="width" secondItem="5MZ-q9-gxs" secondAttribute="width" id="F2Z-Gd-wcV"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="centerX" secondItem="dXP-cv-ppb" secondAttribute="centerX" id="H5l-XU-a49"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="width" secondItem="yr7-OJ-N1K" secondAttribute="width" id="IPU-9B-nrP"/>
                             <constraint firstItem="dXP-cv-ppb" firstAttribute="leading" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="30" id="LRP-dW-HDS"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="centerX" secondItem="yr7-OJ-N1K" secondAttribute="centerX" id="M5H-bN-xT8"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="NyZ-LM-bBO"/>
+                            <constraint firstItem="3MO-qw-kgP" firstAttribute="height" secondItem="dXP-cv-ppb" secondAttribute="height" id="REO-es-ru5"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="top" secondItem="yr7-OJ-N1K" secondAttribute="bottom" constant="10" id="TFR-c0-zXc"/>
-                            <constraint firstItem="mfs-06-kBh" firstAttribute="centerX" secondItem="NyN-75-oTW" secondAttribute="centerX" id="Wbc-pr-hA1"/>
+                            <constraint firstItem="f5b-aX-ILA" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="a2g-fh-JmL"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="top" secondItem="gFC-QV-YXK" secondAttribute="bottom" constant="15" id="aAb-xF-OTm"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="top" secondItem="yr7-OJ-N1K" secondAttribute="bottom" constant="10" id="acH-o9-Jxk"/>
-                            <constraint firstItem="mfs-06-kBh" firstAttribute="top" secondItem="NyN-75-oTW" secondAttribute="bottom" constant="15" id="cpo-Tw-6GC"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="height" secondItem="dXP-cv-ppb" secondAttribute="height" id="dBC-Sj-CaM"/>
                             <constraint firstItem="dXP-cv-ppb" firstAttribute="top" secondItem="DcV-is-TjW" secondAttribute="bottom" constant="15" id="dmp-xU-bbq"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="g0J-lx-Uco"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="width" secondItem="0D8-yd-EPY" secondAttribute="width" id="ggb-JU-hmB"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="top" secondItem="yz9-0p-ejd" secondAttribute="bottom" constant="535" id="gvO-5t-43V"/>
+                            <constraint firstItem="3MO-qw-kgP" firstAttribute="top" secondItem="dXP-cv-ppb" secondAttribute="bottom" constant="10" id="gzJ-Sf-S17"/>
                             <constraint firstItem="D27-w6-7Uc" firstAttribute="top" secondItem="yz9-0p-ejd" secondAttribute="bottom" constant="120" id="kt7-uA-1pZ"/>
+                            <constraint firstItem="3MO-qw-kgP" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="kyI-8o-SRt"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="top" secondItem="dXP-cv-ppb" secondAttribute="bottom" constant="10" id="lZp-ii-3u0"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="height" secondItem="yr7-OJ-N1K" secondAttribute="height" id="lox-fF-jzq"/>
                             <constraint firstItem="yIK-zF-QY8" firstAttribute="top" secondItem="l6G-Tr-yuV" secondAttribute="bottom" id="lzA-9e-vWp"/>
@@ -190,6 +205,7 @@
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="gFC-QV-YXK" secondAttribute="trailing" constant="20" id="uAc-hL-brA"/>
                             <constraint firstItem="D27-w6-7Uc" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="wYu-lV-wte"/>
                             <constraint firstItem="DcV-is-TjW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="xYY-qi-oxh"/>
+                            <constraint firstItem="3MO-qw-kgP" firstAttribute="width" secondItem="dXP-cv-ppb" secondAttribute="width" id="z0W-Ns-Xyl"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -199,13 +215,14 @@
                     </view>
                     <connections>
                         <outlet property="disclaimerLabel" destination="gFC-QV-YXK" id="JWe-el-vkM"/>
+                        <outlet property="emailResetButton" destination="3MO-qw-kgP" id="MiM-Lc-gkR"/>
                         <outlet property="emailTextField" destination="dXP-cv-ppb" id="qnI-UE-ajG"/>
                         <outlet property="headlineLabel" destination="DcV-is-TjW" id="e9b-gr-iue"/>
                         <outlet property="loginButton" destination="NyN-75-oTW" id="ggC-ef-91a"/>
                         <outlet property="nicknameTextField" destination="0D8-yd-EPY" id="2zv-rt-yUD"/>
                         <outlet property="passwordTextField" destination="yr7-OJ-N1K" id="6ZW-oV-NDS"/>
                         <outlet property="signupButton" destination="5Wz-2V-yiW" id="ldI-PO-Whr"/>
-                        <outlet property="subtitleLabel" destination="mfs-06-kBh" id="RhV-cv-CpA"/>
+                        <outlet property="toggleEmailResetButton" destination="f5b-aX-ILA" id="nCS-AW-VEA"/>
                         <outlet property="toggleSignupButton" destination="l6G-Tr-yuV" id="L1V-oq-QIL"/>
                     </connections>
                 </viewController>

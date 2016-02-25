@@ -15,10 +15,11 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupButton: UIButton!
+    @IBOutlet weak var emailResetButton: UIButton!
     @IBOutlet weak var toggleSignupButton: UIButton!
+    @IBOutlet weak var toggleEmailResetButton: UIButton!
     
     @IBOutlet weak var headlineLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: TTTAttributedLabel!
     @IBOutlet weak var disclaimerLabel: TTTAttributedLabel!
 
     @IBOutlet weak var emailTextField: TextField!
@@ -33,7 +34,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     
     // for tracking keyboard
     private var keyboardShown: Bool?
+    
     private var signupShown: Bool?
+    private var emailResetShown: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,17 +166,23 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         headlineLabel.text = "discover and chat about \nthe newest places"
         headlineLabel.font = UIFont.systemFontOfSize(17.0)
         
-        let emailResetText: NSString = "Forgot your password?"
-        subtitleLabel.delegate = self
-        subtitleLabel.text = emailResetText as String
-        let emailResetLabelLinkAttributes: [NSObject: AnyObject] = [
-            kCTForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.4),
-            NSUnderlineStyleAttributeName: NSNumber(bool: false)
-        ]
-        subtitleLabel.linkAttributes = emailResetLabelLinkAttributes
-        subtitleLabel.inactiveLinkAttributes = nil
-        let emailResetRange: NSRange = emailResetText.rangeOfString("Forgot your password?")
-        subtitleLabel.addLinkToURL(NSURL(string: kResetEmailURL)!, withRange: emailResetRange)
+        emailResetButton.enabled = false
+        emailResetButton.setTitle("Reset Password", forState: .Normal)
+        emailResetButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        emailResetButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.2), forState: .Disabled)
+        emailResetButton.backgroundColor = UIColor.clearColor()
+        emailResetButton.layer.borderWidth = 2.0
+        emailResetButton.layer.borderColor = UIColor(white: 1.0, alpha: loginButtonBorderAlpha).CGColor
+        emailResetButton.layer.cornerRadius = textFieldCornerRadius
+        emailResetButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
+        emailResetButton.hidden = true
+        
+        toggleEmailResetButton.enabled = true
+        toggleEmailResetButton.setTitle("Forgot your password?", forState: .Normal)
+        toggleEmailResetButton.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.4), forState: .Normal)
+        toggleEmailResetButton.backgroundColor = UIColor.clearColor()
+        toggleEmailResetButton.layer.borderColor = UIColor.clearColor().CGColor
+        toggleEmailResetButton.titleLabel?.font = UIFont.systemFontOfSize(12.0)
         
         let disclaimerText: NSString = "By signing up you agree to our Terms & Privacy Policy."
         disclaimerLabel.delegate = self
@@ -200,17 +209,22 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // UITextField functions
     
     func textFieldDidChange(sender: UITextField) {
-        if passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!nicknameTextField.hidden && nicknameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
+        if (!passwordTextField.hidden && passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!nicknameTextField.hidden && nicknameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
             loginButton.enabled = false
             signupButton.enabled = false
+            emailResetButton.enabled = false
         } else {
             loginButton.enabled = true
             signupButton.enabled = true
+            emailResetButton.enabled = true
         }
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if textField == emailTextField {
+        if textField == emailTextField && passwordTextField.hidden {
+            textField.resignFirstResponder()
+            self.didTapEmailResetButton(textField)
+        } else if textField == emailTextField && !passwordTextField.hidden {
             textField.nextField?.becomeFirstResponder()
         } else if textField == passwordTextField && nicknameTextField.hidden {
             textField.resignFirstResponder()
@@ -244,6 +258,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
     }
+    
+    
+    // MARK: didTapLoginButton
     
     @IBAction func didTapLoginButton(sender: AnyObject) {
         let email = emailTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
@@ -293,6 +310,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             })
         }
     }
+    
+    
+    // MARK: didTapSignupButton
     
     // Showing SCLAlertViews in the below function causes issues with the functions watching for keyboard movement
     // Unable to use .becomeFirstResponder for offending field as that causes issues with the keyboard movement functions
@@ -363,35 +383,87 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             })
         }
     }
+    
+    
+    // MARK: didTapToggleSignupButton
 
     @IBAction func didTapToggleSignupButton(sender: UIButton) {
         if signupShown ?? true {
             loginButton.hidden = true
-            subtitleLabel.hidden = true
+            toggleEmailResetButton.hidden = true
             passwordTextField.returnKeyType = .Next
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password (6+ characters)", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             nicknameTextField.hidden = false
             signupButton.hidden = false
-            signupShown = false
             toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
-            // not an issue to just pass in UITextField like this?
             textFieldDidChange(nicknameTextField)
             disclaimerLabel.hidden = false
+            signupShown = false
         } else {
             loginButton.hidden = false
-            subtitleLabel.hidden = false
+            toggleEmailResetButton.hidden = false
             passwordTextField.returnKeyType = .Done
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             nicknameTextField.hidden = true
             signupButton.hidden = true
-            signupShown = true
             toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
             textFieldDidChange(passwordTextField)
             disclaimerLabel.hidden = true
+            signupShown = true
         }
     }
     
-    // Email validation
+    
+    // MARK: Email reset
+    
+    @IBAction func didTapToggleEmailResetButton(sender: AnyObject) {
+        if emailResetShown ?? true {
+            loginButton.hidden = true
+            emailTextField.returnKeyType = .Done
+            toggleSignupButton.hidden = true
+            passwordTextField.hidden = true
+            emailResetButton.hidden = false
+            toggleEmailResetButton.setTitle("Want to log in?", forState: .Normal)
+            textFieldDidChange(emailTextField)
+            emailResetShown = false
+        } else {
+            loginButton.hidden = false
+            emailTextField.returnKeyType = .Next
+            toggleSignupButton.hidden = false
+            passwordTextField.hidden = false
+            textFieldDidChange(passwordTextField)
+            emailResetButton.hidden = true
+            toggleEmailResetButton.setTitle("Forgot your password?", forState: .Normal)
+            emailResetShown = true
+        }
+    }
+    
+    @IBAction func didTapEmailResetButton(sender: AnyObject) {
+        let email = emailTextField.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) ?? ""
+        
+        if email == "" {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter your email address", actionTitle: "OK", viewController: self)
+            return
+        } else if !self.isValidEmail(email) {
+            showSimpleAlertWithTitle("Whoops!", message: "Please enter a valid email address", actionTitle: "OK", viewController: self)
+            return
+        }
+        
+        if email != "" {
+            DataService.dataService.BASE_REF.resetPasswordForUser(email, withCompletionBlock: {
+                error in
+                
+                if error != nil {
+                    showSimpleAlertWithTitle("Whoops!", message: "We ran into an error trying to reset your password", actionTitle: "OK", viewController: self)
+                } else {
+                    showSimpleAlertWithTitle("Sent!", message: "Check the email we just sent for details about resetting your password", actionTitle: "OK", viewController: self)
+                }
+            })
+        }
+    }
+    
+    
+    // MARK: Email validation
     
     func isValidEmail(emailAddress: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
@@ -415,7 +487,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
     // MARK: Animation
+    
     func animateBackgroundGradient() {
         self.fromColors = self.gradient?.colors
         self.gradient!.colors = self.toColors! as? [AnyObject]
