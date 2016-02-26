@@ -93,6 +93,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 self.banned = nil
             }
         })
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewDidAppear(animated: Bool) {

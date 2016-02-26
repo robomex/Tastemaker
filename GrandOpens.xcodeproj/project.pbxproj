@@ -18,6 +18,7 @@
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
 		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
 		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
+		DE53FFB81C7FB8CE00210701 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */; };
 		DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
@@ -72,6 +73,7 @@
 		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
 		DE5068311C5978EC006FFD51 /* OSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCache.h; sourceTree = "<group>"; };
 		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
+		DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueSorter.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				DE61261B1B2505950009FB34 /* Info.plist */,
+				DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */,
 				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
 				DE5068311C5978EC006FFD51 /* OSCache.h */,
 				DE5068321C5978EC006FFD51 /* OSCache.m */,
@@ -399,6 +402,7 @@
 			files = (
 				DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */,
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
+				DE53FFB81C7FB8CE00210701 /* GoogleService-Info.plist in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
 			);

@@ -138,6 +138,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.visitStatus = "noVisits"
             }
         })
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "VenueChatViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewWillDisappear(animated: Bool) {

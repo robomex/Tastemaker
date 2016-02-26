@@ -51,6 +51,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
             }
         })
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "SettingsViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewDidDisappear(animated: Bool) {

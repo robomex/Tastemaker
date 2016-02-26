@@ -52,7 +52,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.window!.rootViewController = self.navController
         self.window!.makeKeyAndVisible()
         
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        // Configure tracker from GoogleService-Info.plist for Google services, i.e. Google Analytics
+        var configureError: NSError?
+        GGLContext.sharedInstance().configureWithError(&configureError)
+        assert(configureError == nil, "Error configuring Google services: \(configureError)")
+        
+        // Optional: Configure GAI options
+        let gai = GAI.sharedInstance()
+        gai.trackUncaughtExceptions = true
         
         return true
     }

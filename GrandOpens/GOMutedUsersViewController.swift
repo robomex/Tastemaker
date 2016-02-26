@@ -59,6 +59,11 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
                 })
             }
         })
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "MutedUsersViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewDidDisappear(animated: Bool) {

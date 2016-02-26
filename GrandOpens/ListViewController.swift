@@ -55,6 +55,11 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                 })
             }
         })
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "UserListViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewDidDisappear(animated: Bool) {

@@ -206,7 +206,17 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         disclaimerLabel.hidden = true
     }
     
-    // UITextField functions
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let tracker = GAI.sharedInstance().defaultTracker
+        tracker.set(kGAIScreenName, value: "LoginViewController")
+        let builder = GAIDictionaryBuilder.createScreenView()
+        tracker.send(builder.build() as [NSObject: AnyObject])
+    }
+    
+    
+    // MARK: UITextField functions
     
     func textFieldDidChange(sender: UITextField) {
         if (!passwordTextField.hidden && passwordTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) || emailTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0 || (!nicknameTextField.hidden && nicknameTextField.text?.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).characters.count == 0) {
@@ -253,10 +263,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         } else {
             return true
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
     }
     
     
