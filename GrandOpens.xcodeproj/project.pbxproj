@@ -105,6 +105,7 @@
 		DEA5EE2A1B9E698900D0F221 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		DEA5EE2C1BA1408600D0F221 /* GOCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOCache.swift; sourceTree = "<group>"; };
 		DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUtility.swift; sourceTree = "<group>"; };
+		DEA846191C8223EE00BB231E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUserProfileViewController.swift; sourceTree = "<group>"; };
 		DEEB76091B3298B600A94305 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DEEB760B1B32990700A94305 /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
@@ -238,6 +239,7 @@
 		DE6126701B2697040009FB34 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DEA846191C8223EE00BB231E /* AdSupport.framework */,
 				DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */,
 				DE1F08611B61BCDE0094ACA0 /* libc++.dylib */,
 				DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */,

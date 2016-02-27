@@ -11,6 +11,7 @@ PODS:
     - GoogleSymbolUtilities (~> 1.0)
     - GoogleUtilities (~> 1.1)
   - GoogleAnalytics (3.14.0)
+  - GoogleIDFASupport (3.14.0)
   - GoogleInterchangeUtilities (1.1.0):
     - GoogleSymbolUtilities (~> 1.0)
   - GoogleNetworkingUtilities (1.0.0):
@@ -33,6 +34,7 @@ DEPENDENCIES:
   - DZNEmptyDataSet
   - Firebase (~> 2.5.0)
   - Google/Analytics
+  - GoogleIDFASupport
   - Instructions (~> 0.3)
   - JSQMessagesViewController (~> 7.2)
   - PermissionScope
@@ -47,6 +49,7 @@ SPEC CHECKSUMS:
   Firebase: 3565ea88b830f28f2c77ecc524622bc71a20d085
   Google: 97618e118111b998cce1d8dd1bd98b82301d72db
   GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
+  GoogleIDFASupport: aaf8c10bd429abb1c15349d5252244f5eda8ead1
   GoogleInterchangeUtilities: d7f7174176fbcf9710f696f1acebad4dbd98ac03
   GoogleNetworkingUtilities: 292992ab31b7b4ba32809a0e8b40e324cdfb2c0c
   GoogleSymbolUtilities: 82ad9f93d3615244b3f4ce440f5ab2515e8b4f56
