@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import CoreLocation
 import Firebase
-
+import Amplitude_iOS
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
@@ -60,6 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Optional: Configure GAI options
         let gai = GAI.sharedInstance()
         gai.trackUncaughtExceptions = true
+        
+        Amplitude.instance().initializeApiKey("6d506a59d008bdec71b5b5a9ec4af932")
         
         return true
     }

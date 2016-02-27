@@ -84,6 +84,7 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods/Amplitude_iOS.framework"
   install_framework "Pods/DZNEmptyDataSet.framework"
   install_framework "Pods/Firebase.framework"
   install_framework "Pods/Instructions.framework"
@@ -96,6 +97,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/TTTAttributedLabel.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods/Amplitude_iOS.framework"
   install_framework "Pods/DZNEmptyDataSet.framework"
   install_framework "Pods/Firebase.framework"
   install_framework "Pods/Instructions.framework"

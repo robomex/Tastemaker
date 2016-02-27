@@ -10,6 +10,7 @@ import UIKit
 import ReachabilitySwift
 import Firebase
 import SCLAlertView_Objective_C
+import Amplitude_iOS
 
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
@@ -158,6 +159,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
+        
+        Amplitude.instance().logEvent("Saved Venue")
     }
     
     func unsaveButtonAction(sender: AnyObject) {
