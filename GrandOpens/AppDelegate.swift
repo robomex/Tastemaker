@@ -60,8 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Optional: Configure GAI options
         let gai = GAI.sharedInstance()
         gai.trackUncaughtExceptions = true
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.allowIDFACollection = true
+        gai.defaultTracker.allowIDFACollection = true
+//        let tracker = GAI.sharedInstance().defaultTracker
+//        tracker.allowIDFACollection = true
         
         // Amplitude initialization
         Amplitude.instance().initializeApiKey("6d506a59d008bdec71b5b5a9ec4af932")
