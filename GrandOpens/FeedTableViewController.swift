@@ -11,6 +11,7 @@ import Instructions
 import ReachabilitySwift
 import Firebase
 import SwiftyDrop
+import Amplitude_iOS
 
 class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
 
@@ -272,12 +273,17 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             voteCount++
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": true, "date": dateFormatter().stringFromDate(NSDate())])
+            
+            Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue ID": venueId])
+            Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1).append("Votes-Venues", value: venueId))
         } else {
             if voteCount > 0 {
                 voteCount--
             }
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])
+            
+            Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": venueId])
         }
         
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
