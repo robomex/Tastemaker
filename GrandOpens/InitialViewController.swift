@@ -10,6 +10,7 @@ import UIKit
 import CoreLocation
 import Firebase
 import PermissionScope
+import Amplitude_iOS
 
 class InitialViewController: UIViewController {
 
@@ -43,6 +44,7 @@ class InitialViewController: UIViewController {
             } else {
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
                     DataService.dataService.BASE_REF.unauth()
+                    Amplitude.instance().setUserId(nil)
                 }
                 
                 // This check added in case the account is deleted in the database, they will be logged out
@@ -52,10 +54,12 @@ class InitialViewController: UIViewController {
                         
                         if !snapshot.exists() {
                             DataService.dataService.BASE_REF.unauth()
+                            Amplitude.instance().setUserId(nil)
                         }
                     })
                 }
                 
+                Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                 let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
                 if !launchedBefore {
                     

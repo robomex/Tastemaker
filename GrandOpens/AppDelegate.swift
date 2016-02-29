@@ -168,6 +168,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         self.feedTableViewController = nil
         self.listViewController = nil
+        
+        // Clear Amplitude userId
+        Amplitude.instance().setUserId(nil)
     }
     
     
