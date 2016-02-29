@@ -210,6 +210,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     let visitDistanceFromVenue = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude).distanceFromLocation(CLLocation(latitude: venue.latitude!, longitude: venue.longitude!))
                     if  visitDistanceFromVenue < 66 {
                         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").childByAutoId().updateChildValues(["startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
+                        
+                        Amplitude.instance().logEvent("Visited Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
+                        Amplitude.instance().identify(AMPIdentify().add("Visits", value: 1).append("Visits-Venues", value: venue.name!))
                     }
                 }
             } else {
