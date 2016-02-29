@@ -11,6 +11,7 @@ import JSQMessagesViewController
 import DZNEmptyDataSet
 import SCLAlertView_Objective_C
 import Firebase
+import Amplitude_iOS
 
 class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
@@ -219,6 +220,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         if let id = venue?.objectId {
             saveChatMessage(id, message: chatMessage)
         }
+        
+        Amplitude.instance().logEvent("Chat", withEventProperties: ["Venue Name": venue!.name!, "Venue Neighborhood": venue!.neighborhood!, "Venue Food Type": venue!.foodType!])
+        Amplitude.instance().identify(AMPIdentify().add("Chats", value: 1))
         
         finishSendingMessage()
     }
