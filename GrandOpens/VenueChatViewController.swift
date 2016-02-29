@@ -16,7 +16,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     var messages: [JSQMessage] = []
     var visitStatuses: [String] = []
-    var venueID: String?
+    var venue: Venue?
     var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
@@ -54,7 +54,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.mutedUsers[data.key] = "muted"
             }
             
-            if let id = self.venueID {
+            if let id = self.venue?.objectId {
                 fetchMessages(id, callback: {
                     messages in
                     
@@ -94,7 +94,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.collectionView?.emptyDataSetDelegate = self
         
         // putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
-        if let id = venueID {
+        if let id = venue?.objectId {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
                 if self.mutedUsers[message.senderID] == nil {
@@ -118,7 +118,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             }
         })
         
-        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
+        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
             snapshot in
 
             if snapshot.exists() {
@@ -152,9 +152,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        messageListener?.stop(venueID!)
+        messageListener?.stop((venue?.objectId)!)
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venueID)").removeObserverWithHandle(visitRefHandle)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -216,7 +216,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         let messageVisitStatus = visitStatus
         let chatMessage = ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date, visitStatus: messageVisitStatus)
-        if let id = venueID {
+        if let id = venue?.objectId {
             saveChatMessage(id, message: chatMessage)
         }
         
@@ -387,7 +387,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let firstMessageTime = dateFormatter().stringFromDate(messages[0].date)
         let oldBottomOffset = (self.collectionView?.contentSize.height)! - (self.collectionView?.contentOffset.y)!
         
-        fetchEarlierMessages(venueID!, firstMessageTime: firstMessageTime, callback: {
+        fetchEarlierMessages((venue?.objectId)!, firstMessageTime: firstMessageTime, callback: {
             messages in
             
             for m in messages {
