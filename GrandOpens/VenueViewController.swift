@@ -160,7 +160,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
         
-        Amplitude.instance().logEvent("Saved Venue")
+        Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
+        Amplitude.instance().identify(AMPIdentify().add("Saves", value: 1).append("Saves-Venues", value: (venue?.name)!))
     }
     
     func unsaveButtonAction(sender: AnyObject) {
@@ -172,6 +173,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         userActivitiesSaveRef?.updateChildValues(["saved": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": false, "date": dateFormatter().stringFromDate(NSDate())])
+        
+        Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
     }
     
     func configureSaveButton() {
