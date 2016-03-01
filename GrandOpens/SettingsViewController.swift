@@ -10,6 +10,7 @@ import UIKit
 import SafariServices
 import SCLAlertView_Objective_C
 import Firebase
+import Amplitude_iOS
 
 class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
     
@@ -179,7 +180,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 print("Cancel")
             }))
             alertController.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
+                Amplitude.instance().logEvent("Logged Out")
+                (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
