@@ -46,7 +46,30 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
+        self.senderId = uid
+        self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+        self.showLoadEarlierMessagesHeader = true
+        
+        self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
+
+        self.inputToolbar?.contentView!.leftBarButtonItem = nil
+        self.edgesForExtendedLayout = UIRectEdge.None
+        self.navigationController!.navigationBar.translucent = false
+        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+
+        // Items for Report function
+        JSQMessagesCollectionViewCell.registerMenuAction(Selector("reportMessage:"))
+        UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: Selector("reportMessage:"))]
+        
+        self.collectionView?.emptyDataSetSource = self
+        self.collectionView?.emptyDataSetDelegate = self
+        
+
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
             snapshot in
             
@@ -60,7 +83,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     messages in
                     
                     for m in messages {
-                        if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                        if self.mutedUsers[m.senderID] == nil {
                             self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
                             self.visitStatuses.append(m.visitStatus)
                             self.userIdList.append(m.senderID)
@@ -74,27 +97,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     }
                 })
             }
-            
-            // Items for Report function
-            JSQMessagesCollectionViewCell.registerMenuAction(Selector("reportMessage:"))
-            UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: Selector("reportMessage:"))]
         })
         
-        self.senderId = uid
-        self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
-        self.showLoadEarlierMessagesHeader = true
-        
-        self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
-
-        self.inputToolbar?.contentView!.leftBarButtonItem = nil
-        self.edgesForExtendedLayout = UIRectEdge.None
-        self.navigationController!.navigationBar.translucent = false
-        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
-
-        self.collectionView?.emptyDataSetSource = self
-        self.collectionView?.emptyDataSetDelegate = self
-        
-        // putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
+        // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
         if let id = venue?.objectId {
             messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                 message in
@@ -107,9 +112,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.userIdList = Array(Set(self.userIdList))
             })
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
+        
         mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
@@ -149,13 +152,20 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(true)
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+        
+        messageListener?.stop((venue?.objectId)!)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
+        
+        self.messages = []
+        self.visitStatuses = []
+        self.mutedUsers = [:]
+        self.userIdList = []
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        messageListener?.stop((venue?.objectId)!)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
+
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
