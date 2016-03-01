@@ -49,6 +49,8 @@ class InitialViewController: UIViewController {
                 
                 // This check added in case the account is deleted in the database, they will be logged out
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") != nil {
+                    
+                    Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
                         
@@ -59,7 +61,6 @@ class InitialViewController: UIViewController {
                     })
                 }
                 
-                Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                 let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("LaunchedBefore")
                 if !launchedBefore {
                     
