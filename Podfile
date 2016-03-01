@@ -10,6 +10,9 @@ pod 'SwiftyDrop'
 pod 'DZNEmptyDataSet'
 pod 'SCLAlertView-Objective-C'
 
+#PUSH
+pod 'Batch', '~> 1.5'
+
 #ONBOARDING
 pod 'Instructions', '~> 0.3'
 pod 'PermissionScope'

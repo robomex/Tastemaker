@@ -11,6 +11,7 @@ import CoreLocation
 import Firebase
 import PermissionScope
 import Amplitude_iOS
+import Batch
 
 class InitialViewController: UIViewController {
 
@@ -137,6 +138,7 @@ class InitialViewController: UIViewController {
             if results[0].status != .Unknown && results[1].status != .Unknown {
                 
                 if results[0].status == .Authorized {
+                    BatchPush.registerForRemoteNotifications()
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Authorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                 } else if results[0].status == .Unauthorized {
@@ -157,6 +159,7 @@ class InitialViewController: UIViewController {
                     Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Disabled"])
                     Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
                 }
+                
                 self.pscope.hide()
                 (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")

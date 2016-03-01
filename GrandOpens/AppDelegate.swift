@@ -11,6 +11,7 @@ import CoreData
 import CoreLocation
 import Firebase
 import Amplitude_iOS
+import Batch
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
@@ -67,9 +68,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Amplitude initialization
         Amplitude.instance().initializeApiKey("6d506a59d008bdec71b5b5a9ec4af932")
         
+        // Batch initialization
+        BatchPush.setupPush()
+        Batch.startWithAPIKey("DEV56D5EEA502B0193D3F8A9A77FB6")
+        
         return true
     }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        BatchPush.dismissNotifications()
+    }
 
+    // Will need this function if remote notifications are ever fetching info
+//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+//        
+//    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
