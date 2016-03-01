@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import Contacts
+import Amplitude_iOS
 
 class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate {
 
@@ -151,6 +152,8 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
                 let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
                 self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+                
+                Amplitude.instance().logEvent("Opened Maps")
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         case 1:
@@ -159,6 +162,8 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             let phoneNumber = stringArray.joinWithSeparator("")
             if let url = NSURL(string: "tel://\(phoneNumber)") {
                 UIApplication.sharedApplication().openURL(url)
+                
+                Amplitude.instance().logEvent("Called Venue")
             }
         default:
             return
