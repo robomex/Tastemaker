@@ -21,8 +21,8 @@ class InitialViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        pscope.addPermission(NotificationsPermission(notificationCategories: nil), message: "Notifications bring you the latest updates")
-        pscope.addPermission(LocationAlwaysPermission(), message: "Your location is used to find the newest places around and confirm venue visits")
+        pscope.addPermission(NotificationsPermission(notificationCategories: nil), message: "Allow to know when someone replies to you + be the first to hear news")
+        pscope.addPermission(LocationAlwaysPermission(), message: "Enable to find the newest places around + unlock voting for places you've been")
         pscope.headerLabel.text = "Let's get set up"
         pscope.bodyLabel.text = "Grand Opens works best with the following permissions"
         pscope.permissionButtonBorderColor = kBlue
@@ -75,7 +75,7 @@ class InitialViewController: UIViewController {
                     
                     let permissioningDetails = UILabel(frame: CGRectMake(0,0, UIScreen.mainScreen().bounds.width - 30, 80))
                     permissioningDetails.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height * 3 / 10)
-                    permissioningDetails.text = "To discover the newest places around you tap \"Allow\" to set up notifications and location settings"
+                    permissioningDetails.text = "To discover the newest places around tap \"Allow\" to set up notifications and location settings"
                     permissioningDetails.font = UIFont.systemFontOfSize(17.0)
                     permissioningDetails.textColor = UIColor.whiteColor()
                     permissioningDetails.textAlignment = .Center
