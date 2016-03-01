@@ -374,6 +374,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             
             let message = messages[indexPath.row]
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
+            
+            Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
+            Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1).append("Reported-UserIDs", value: (message.senderId)))
         }
         
         super.collectionView(collectionView, performAction: action, forItemAtIndexPath: indexPath, withSender: sender)
