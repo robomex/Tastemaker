@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import DZNEmptyDataSet
+import Amplitude_iOS
 
 class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
@@ -251,6 +252,9 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.configureUnmuteButton()
         
         userActivitiesMuteRef?.setValue(true)
+        
+        Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": self.userId, "Muted User Nickname": self.userNickname])
+        Amplitude.instance().identify(AMPIdentify().add("Mutes", value: 1).append("Mutes-UserIDs", value: (self.userId)))
     }
     
     func unmuteButtonAction(sender: AnyObject) {
@@ -261,6 +265,8 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.configureMuteButton()
         
         userActivitiesMuteRef?.removeValue()
+        
+        Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": self.userId, "Unmuted User Nickname": self.userNickname])
     }
     
     func configureMuteButton() {
