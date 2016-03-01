@@ -242,6 +242,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         navigationController?.pushViewController(vc, animated: true)
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        Amplitude.instance().logEvent("Viewed Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     
