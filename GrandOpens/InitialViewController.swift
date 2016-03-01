@@ -157,11 +157,11 @@ class InitialViewController: UIViewController {
                     Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Disabled"])
                     Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
                 }
-                
+                self.pscope.hide()
                 (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
             }
-            }, cancelled: {
+        }, cancelled: {
             results in
                 
             print("cancelled yo")
