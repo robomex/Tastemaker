@@ -312,6 +312,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         snapshot in
                         
                         NSUserDefaults.standardUserDefaults().setValue(snapshot.value["nickname"], forKey: "nickname")
+                        
+                        Amplitude.instance().logEvent("Logged In")
+                        
                         self.navigationController?.popToRootViewControllerAnimated(true)
                     })
                 }
@@ -377,7 +380,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         let publicUser = ["nickname": nickname]
                         DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                         DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
+                        
                         Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                        Amplitude.instance().logEvent("Signed Up")
                         
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)
@@ -465,6 +470,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                 if error != nil {
                     showSimpleAlertWithTitle("Whoops!", message: "We ran into an error trying to reset your password", actionTitle: "OK", viewController: self)
                 } else {
+                    Amplitude.instance().logEvent("Reset Password")
                     showSimpleAlertWithTitle("Sent!", message: "Check the email we just sent for details about resetting your password", actionTitle: "OK", viewController: self)
                 }
             })
