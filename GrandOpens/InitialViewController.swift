@@ -134,6 +134,29 @@ class InitialViewController: UIViewController {
             
             print("got results \(results)")
             if results[0].status != .Unknown && results[1].status != .Unknown {
+                
+                if results[0].status == .Authorized {
+                    Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Authorized"])
+                    Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
+                } else if results[0].status == .Unauthorized {
+                    Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Unauthorized"])
+                    Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Unauthorized"))
+                } else if results[0].status == .Disabled {
+                    Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Disabled"])
+                    Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Disabled"))
+                }
+                
+                if results[1].status == .Authorized {
+                    Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Authorized"])
+                    Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Authorized"))
+                } else if results[1].status == .Unauthorized {
+                    Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Unauthorized"])
+                    Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Unauthorized"))
+                } else if results[1].status == .Disabled {
+                    Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Disabled"])
+                    Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
+                }
+                
                 (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
             }
