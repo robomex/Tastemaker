@@ -495,6 +495,12 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         let safariVC = SFSafariViewController(URL: url)
         safariVC.delegate = self
         self.presentViewController(safariVC, animated: true, completion: nil)
+        
+        if url == NSURL(string: kTermsOfServiceURL) {
+            Amplitude.instance().logEvent("Viewed Terms", withEventProperties: ["Viewed From": "Sign Up"])
+        } else if url == NSURL(string: kPrivacyPolicyURL) {
+            Amplitude.instance().logEvent("Viewed Privacy", withEventProperties: ["Viewed From": "Sign Up"])
+        }
     }
     
     // SFSafariViewControllerDelegate

@@ -167,10 +167,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let safariVC = SFSafariViewController(URL: NSURL(string: kPrivacyPolicyURL)!)
                 safariVC.delegate = self
                 self.presentViewController(safariVC, animated: true, completion: nil)
+                
+                Amplitude.instance().logEvent("Viewed Privacy", withEventProperties: ["Viewed From": "Settings"])
             case 1:
                 let safariVC = SFSafariViewController(URL: NSURL(string: kTermsOfServiceURL)!)
                 safariVC.delegate = self
                 self.presentViewController(safariVC, animated: true, completion: nil)
+                
+                Amplitude.instance().logEvent("Viewed Terms", withEventProperties: ["Viewed From": "Settings"])
             default:
                 return
             }
