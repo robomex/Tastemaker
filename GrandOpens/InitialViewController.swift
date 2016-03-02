@@ -52,6 +52,11 @@ class InitialViewController: UIViewController {
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") != nil {
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                    
+                    let editor = BatchUser.editor()
+                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
+                    editor.save()
+                    
                     DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
                         

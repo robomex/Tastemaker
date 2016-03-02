@@ -11,6 +11,7 @@ import TTTAttributedLabel
 import SafariServices
 import Firebase
 import Amplitude_iOS
+import Batch
 
 class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
@@ -307,7 +308,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
                     NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
+                    
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                    
+                    let editor = BatchUser.editor()
+                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
+                    editor.save()
+                    
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
                         snapshot in
                         
@@ -383,6 +390,10 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         
                         Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                         Amplitude.instance().logEvent("Signed Up")
+                        
+                        let editor = BatchUser.editor()
+                        editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
+                        editor.save()
                         
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)
