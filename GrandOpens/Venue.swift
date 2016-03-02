@@ -140,5 +140,5 @@ func serializeVenue(venue: Venue) -> Dictionary <String, AnyObject> {
 }
 
 func deserializeVenue(dictionary: Dictionary <String, AnyObject>) -> Venue {
-    return Venue(objectId: dictionary[objectIdKey] as! String, name: dictionary[nameKey] as! String, openingDate: dictionary[openingDateKey] as! String, address: dictionary[addressKey] as! String, latitude: dictionary[latitudeKey] as! Double, longitude: dictionary[longitudeKey] as! Double, neighborhood: dictionary[neighborhoodKey] as! String, phoneNumber: dictionary[phoneNumberKey] as! String, foodType: dictionary[foodTypeKey] as! String, description: dictionary[descriptionKey] as! String)
+    return Venue(objectId: (dictionary[objectIdKey] as! String), name: (dictionary[nameKey] as! String), openingDate: (dictionary[openingDateKey] as! String), address: (dictionary[addressKey] as! String), latitude: (dictionary[latitudeKey] as! Double), longitude: (dictionary[longitudeKey] as! Double), neighborhood: (dictionary[neighborhoodKey] as! String), phoneNumber: (dictionary[phoneNumberKey] as! String), foodType: (dictionary[foodTypeKey] as! String), description: (dictionary[descriptionKey] as! String))
 }

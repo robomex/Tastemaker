@@ -55,7 +55,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         let profilePictureBackgroundView = UIView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
         profilePictureBackgroundView.backgroundColor = UIColor.lightGrayColor()
         profilePictureBackgroundView.alpha = 0.0
-        var layer: CALayer = profilePictureBackgroundView.layer
+        let layer: CALayer = profilePictureBackgroundView.layer
         layer.cornerRadius = 66.0
         layer.masksToBounds = true
         self.headerView!.addSubview(profilePictureBackgroundView)

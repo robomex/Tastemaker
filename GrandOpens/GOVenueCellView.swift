@@ -110,10 +110,10 @@ class GOVenueCellView: UITableViewCell {
     
     var venue: Venue? {
         didSet{
-            var constrainWidth: CGFloat = containerView!.bounds.size.width
+//            var constrainWidth: CGFloat = containerView!.bounds.size.width
             
             if self.buttons.contains(GOVenueCellButtons.Vote) {
-                constrainWidth = self.voteButton!.frame.origin.x
+//                constrainWidth = self.voteButton!.frame.origin.x
                 self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
