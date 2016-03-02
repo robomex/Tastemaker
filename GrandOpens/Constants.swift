@@ -12,7 +12,6 @@ import Foundation
 // MARK: URLs
 let kPrivacyPolicyURL =     "https://grandopens.com/privacy"
 let kTermsOfServiceURL =    "https://grandopens.com/terms"
-//let kResetEmailURL =        "https://google.com"
 let BASE_URL =              "https://grandopens.firebaseio.com"
 
 
