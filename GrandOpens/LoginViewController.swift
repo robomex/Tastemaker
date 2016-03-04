@@ -306,8 +306,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     showSimpleAlertWithTitle("Whoops!", message: "Please check your login email and password", actionTitle: "OK", viewController: self)
                 } else {
                     NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
-                    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
-                    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     
