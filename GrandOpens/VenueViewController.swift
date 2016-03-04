@@ -9,7 +9,6 @@
 import UIKit
 import ReachabilitySwift
 import Firebase
-import SCLAlertView_Objective_C
 import Amplitude_iOS
 
 class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
