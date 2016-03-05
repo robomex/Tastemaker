@@ -149,6 +149,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         DataService.dataService.CURRENT_USER_PUBLIC_REF.updateChildValues(["nickname": self.updatedNickname!])
                         NSUserDefaults.standardUserDefaults().setValue(nicknameTextField.text, forKey: "nickname")
                         
+                        self.nickname = self.updatedNickname
+                        self.settingsTableView.reloadData()
+                        
                         Amplitude.instance().logEvent("Changed Nickname")
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter
