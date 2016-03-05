@@ -258,7 +258,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             return newLength <= 20
         } else if textField == emailTextField {
             let newLength = text.utf16.count + string.utf16.count - range.length
-            return newLength <= 30
+            return newLength <= 40
         } else if textField == passwordTextField {
             let newLength = text.utf16.count + string.utf16.count - range.length
             return newLength <= 20
