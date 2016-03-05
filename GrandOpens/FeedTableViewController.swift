@@ -197,7 +197,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                     venueCell!.setVisitStatus(false)
                 }
                 
-                if indexPath.row == (self.tableView.indexPathsForVisibleRows?.count)! - 1 {
+                if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
                     UIView.animateWithDuration(0.1, animations: {
                         self.tableView.alpha = 1.0
                         venueCell!.containerView?.alpha = 1.0
