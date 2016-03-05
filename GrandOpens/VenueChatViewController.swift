@@ -237,6 +237,14 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         finishSendingMessage()
     }
     
+    
+    // MARK: Limit input length
+    
+    override func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        return textView.text.characters.count + (text.characters.count - range.length) <= 300
+    }
+    
+    
     // MARK: View nicknames above bubbles
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
