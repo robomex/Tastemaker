@@ -121,8 +121,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 self.mutedUsers[data.key] = "muted"
             }
         })
-        
-        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
+
+        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
             snapshot in
 
             if snapshot.exists() {
