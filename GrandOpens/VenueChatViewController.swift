@@ -149,8 +149,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(true)
+    override func viewDidDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         
         messageListener?.stop((venue?.objectId)!)
@@ -161,11 +161,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.visitStatuses = []
         self.mutedUsers = [:]
         self.userIdList = []
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
-
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
