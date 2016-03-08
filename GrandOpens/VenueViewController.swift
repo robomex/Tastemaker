@@ -25,6 +25,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
+    var orderedViewControllers = [UIViewController]()
     
     var banned: Bool?
     
@@ -38,6 +39,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         delegate = self
         chatVC.venue = venue
         detailsVC.venue = venue
+        orderedViewControllers = [self.chatVC, self.detailsVC]
         setViewControllers([chatVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
         
         let segmentedControlWidth = 140 as CGFloat
@@ -115,19 +117,41 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     // MARK: UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-        
-        switch viewController {
-        case detailsVC: return chatVC
-        default: return nil
+
+        guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
+            return nil
         }
+        
+        let previousIndex = viewControllerIndex - 1
+        
+        guard previousIndex >= 0 else {
+            return nil
+        }
+        
+        guard orderedViewControllers.count > previousIndex else {
+            return nil
+        }
+        
+        return orderedViewControllers[previousIndex]
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
         
-        switch viewController {
-        case chatVC: return detailsVC
-        default: return nil
+        guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
+            return nil
         }
+        
+        let nextIndex = viewControllerIndex + 1
+        
+        guard orderedViewControllers.count != nextIndex else {
+            return nil
+        }
+        
+        guard orderedViewControllers.count > nextIndex else {
+            return nil
+        }
+        
+        return orderedViewControllers[nextIndex]
     }
     
     
