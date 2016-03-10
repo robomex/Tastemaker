@@ -11,7 +11,7 @@ import CoreLocation
 import Firebase
 import PermissionScope
 import Amplitude_iOS
-import Batch
+//import Batch
 
 class InitialViewController: UIViewController {
 
@@ -53,9 +53,9 @@ class InitialViewController: UIViewController {
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     
-                    let editor = BatchUser.editor()
-                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
-                    editor.save()
+//                    let editor = BatchUser.editor()
+//                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
+//                    editor.save()
                     
                     DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
@@ -143,7 +143,8 @@ class InitialViewController: UIViewController {
             if results[0].status != .Unknown && results[1].status != .Unknown {
                 
                 if results[0].status == .Authorized {
-                    BatchPush.registerForRemoteNotifications()
+                    UIApplication.sharedApplication().registerForRemoteNotifications()
+//                    BatchPush.registerForRemoteNotifications()
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Authorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                 } else if results[0].status == .Unauthorized {

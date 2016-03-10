@@ -11,7 +11,7 @@ import CoreData
 import CoreLocation
 import Firebase
 import Amplitude_iOS
-import Batch
+//import Batch
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
@@ -66,14 +66,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         Amplitude.instance().initializeApiKey("6d506a59d008bdec71b5b5a9ec4af932")
         
         // Batch initialization
-        BatchPush.setupPush()
-        Batch.startWithAPIKey("DEV56D5EEA502B0193D3F8A9A77FB6")
+//        BatchPush.setupPush()
+//        Batch.startWithAPIKey("DEV56D5EEA502B0193D3F8A9A77FB6")
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            UIApplication.sharedApplication().registerForRemoteNotifications()
+        }
         
         return true
     }
     
+    
+    // MARK: Push
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+
+            DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").updateChildValues(["token": deviceToken.hexString, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        }
+    }
+    
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        BatchPush.dismissNotifications()
+//        BatchPush.dismissNotifications()
     }
 
     // Will need this function if remote notifications are ever fetching info
