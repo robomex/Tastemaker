@@ -69,10 +69,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 //        BatchPush.setupPush()
 //        Batch.startWithAPIKey("DEV56D5EEA502B0193D3F8A9A77FB6")
         
+        // Update/register device's push token
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             UIApplication.sharedApplication().registerForRemoteNotifications()
         }
         
+        // If opening from push notification, navigate to appropriate venue
+//        if let payload = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary, venue = payload["venue"] as? String {
+//            
+//            DataService.dataService.VENUES_REF.queryEqualToValue(venue).observeSingleEventOfType(.Value, withBlock: {
+//                snapshot in
+//                
+//                let targetVenue = snapshotToVenue(snapshot)
+//                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+//                vc.venue = targetVenue
+//                vc.venueID = targetVenue.objectId
+//                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+//                let venueName: String = targetVenue.name!
+//                vc.title = venueName
+//                vc.hidesBottomBarWhenPushed = true
+//                self.presentTabBarController()
+//                self.navController?.view.backgroundColor = UIColor.whiteColor()
+//                self.navController?.pushViewController(vc, animated: false)
+//            })
+//        }
+    
         return true
     }
     
@@ -88,14 +109,62 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         }
     }
     
+    // Use to respond to notifications when app is running in the foreground, not background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
 //        BatchPush.dismissNotifications()
     }
 
-    // Will need this function if remote notifications are ever fetching info
-//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-//        
-//    }
+    // Use to respond to notifications when app is running in the foreground OR background
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        if //!userInfo.isEmpty
+         let venue = userInfo["venue"] {
+
+//            let payload = userInfo
+//            let venue = payload["venue"] as? String
+
+            
+            DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+
+                let targetVenue = snapshotToVenue(snapshot)
+                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                vc.venue = targetVenue
+                vc.venueID = targetVenue.objectId
+                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+                let venueName: String = targetVenue.name!
+                vc.title = venueName
+                vc.hidesBottomBarWhenPushed = true
+                let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+//                self.initialViewController = self.storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
+//                self.navController = UINavigationController(rootViewController: self.initialViewController!)
+//                self.presentTabBarController(false)
+//                self.navController?.popToRootViewControllerAnimated(false)
+//                self.presentTabBarController(false, venueViewController: nil)
+//                self.tabBarController?.navController?.popToRootViewControllerAnimated(false)
+                
+                
+//                self.tabBarController?.navController?.setNavigationBarHidden(false, animated: false)
+//                self.tabBarController?.navController?.view.backgroundColor = UIColor.whiteColor()
+//                self.tabBarController?.navController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+//                self.tabBarController?.navController?.pushViewController(vc, animated: false)
+                
+                self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+//                self.feedTableViewController?.navigationController?.view.backgroundColor = UIColor.whiteColor()
+//                self.feedTableViewController?.navigationController?.setViewControllers([self.feedTableViewController!, vc], animated: false)
+                self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
+                
+//                self.navController?.setNavigationBarHidden(false, animated: false)
+//                self.navController?.view.backgroundColor = UIColor.whiteColor()
+//                self.navController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+//                self.feedTableViewController?.tabBarController!.tabBar.hidden = false
+//                self.navController!.setViewControllers([self.feedTableViewController!, vc], animated: true)
+//                self.navController!.pushViewController(vc, animated: true)
+                print(self.navController!.viewControllers)
+            })
+        }
+    }
     
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
