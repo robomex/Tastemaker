@@ -45,7 +45,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         self.coachMarksController.allowOverlayTap = true
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
-        self.navigationController!.navigationBar.translucent = false
 
         setupReachability(true)
         startNotifier()
@@ -60,6 +59,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.navigationController!.navigationBar.translucent = false
         
         self.tableView.alpha = 0.0
 

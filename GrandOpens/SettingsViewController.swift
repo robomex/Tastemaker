@@ -34,12 +34,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         settingsTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "settingsCell")
         settingsTableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         self.view.addSubview(settingsTableView)
-        
-        self.navigationController!.navigationBar.translucent = false
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.navigationController!.navigationBar.translucent = false
         
         self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()

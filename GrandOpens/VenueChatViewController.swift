@@ -54,7 +54,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 
         self.inputToolbar?.contentView!.leftBarButtonItem = nil
         self.edgesForExtendedLayout = UIRectEdge.None
-        self.navigationController!.navigationBar.translucent = false
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
 
         // Items for Report function
@@ -68,6 +67,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController!.navigationBar.translucent = false
         
         // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
