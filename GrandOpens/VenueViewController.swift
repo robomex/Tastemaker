@@ -23,6 +23,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     private var userActivitiesSaveRef: Firebase?
     private var venueActivitiesSaverRef: Firebase?
     
+    private var userActivitiesSilenceHandle = UInt?()
+    private var userActivitiesSilenceRef: Firebase?
+    
+    private var saveButton = UIBarButtonItem()
+    private var silenceButton = UIBarButtonItem()
+    
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
     var orderedViewControllers = [UIViewController]()
@@ -53,12 +59,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         segmentedControl.layer.cornerRadius = 5
         self.view.addSubview(segmentedControl)
         
-        // Save and unsave setup, check if currentUser saved this venue
+        // Save/unsave and silence/unsilence setup, check if currentUser saved/silenced this venue
         
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+        self.navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: loadingActivityIndicatorView), UIBarButtonItem(customView: loadingActivityIndicatorView)], animated: true)
+
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
@@ -89,12 +95,28 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 self.configureSaveButton()
             }
         })
+        
+        userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/silences/\(venueID)")
+        userActivitiesSilenceHandle = userActivitiesSilenceRef!.observeEventType(.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                if snapshot.value["silenced"] as! Bool == true {
+                    self.configureUnsilenceButton()
+                } else {
+                    self.configureSilenceButton()
+                }
+            } else {
+                self.configureSilenceButton()
+            }
+        })
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
         userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
+        userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,10 +196,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     // MARK: Save actions
     
     func saveButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+   
         self.configureUnsaveButton()
         
         userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
@@ -188,10 +207,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func unsaveButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+
         self.configureSaveButton()
         
         userActivitiesSaveRef?.updateChildValues(["saved": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
@@ -201,10 +217,41 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func configureSaveButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
     
     func configureUnsaveButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+    }
+    
+    
+    // MARK: Silence actions
+    
+    func silenceButtonAction(sender: AnyObject) {
+        
+        self.configureUnsilenceButton()
+        userActivitiesSilenceRef?.updateChildValues(["silenced": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        
+        // ADD AMPLITUDE TRACKING
+    }
+    
+    func unsilenceButtonAction(sender: AnyObject) {
+
+        self.configureSilenceButton()
+        userActivitiesSilenceRef?.updateChildValues(["silenced": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        
+        // ADD AMPLITUDE TRACKING
+    }
+    
+    func configureSilenceButton() {
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: "silenceButtonAction:")
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+    }
+    
+    func configureUnsilenceButton() {
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: "unsilenceButtonAction:")
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
 }
