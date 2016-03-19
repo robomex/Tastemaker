@@ -26,6 +26,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     private var userActivitiesSilenceHandle = UInt?()
     private var userActivitiesSilenceRef: Firebase?
     
+    private var onlineStatusHandle = UInt?()
+    private var onlineStatusRef: Firebase?
+    
     private var saveButton = UIBarButtonItem()
     private var silenceButton = UIBarButtonItem()
     
@@ -110,6 +113,9 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 self.configureSilenceButton()
             }
         })
+
+        onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
+        onlineStatusRef?.setValue(["\(self.venueID)": true])
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -117,6 +123,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         
         userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
         userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
+
+        onlineStatusRef!.removeValue()
     }
 
     override func didReceiveMemoryWarning() {

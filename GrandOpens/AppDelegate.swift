@@ -93,6 +93,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 //                self.navController?.pushViewController(vc, animated: false)
 //            })
 //        }
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/").removeValue()
+        }
     
         return true
     }
@@ -139,22 +145,60 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         }
     }
     
+    
+    // MARK: App state changes, i.e. inactive, background, etc.
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+        
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    while let venueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
+                        onlineStatusRef.childByAppendingPath("\(venueOnlineStatuses.key)").setValue(false)
+                    }
+                }
+            })
+        }
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    while let dormantVenueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
+                        onlineStatusRef.childByAppendingPath("\(dormantVenueOnlineStatuses.key)").setValue(true)
+                    }
+                }
+            })
+        }
     }
 
     func applicationWillTerminate(application: UIApplication) {
