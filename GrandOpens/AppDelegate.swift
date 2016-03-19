@@ -123,25 +123,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     // Use to respond to notifications when app is running in the foreground OR background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         
-        if let venue = userInfo["venue"] {
-            
-            DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
-                snapshot in
-
-                let targetVenue = snapshotToVenue(snapshot)
-                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-                vc.venue = targetVenue
-                vc.venueID = targetVenue.objectId
-                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
-                let venueName: String = targetVenue.name!
-                vc.title = venueName
-                vc.hidesBottomBarWhenPushed = true
-                let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+        let state = application.applicationState
+        if state == UIApplicationState.Inactive || state == UIApplicationState.Background {
+            if let venue = userInfo["venue"] {
                 
-                self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
-                self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
-            })
+                DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                    snapshot in
+
+                    let targetVenue = snapshotToVenue(snapshot)
+                    let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                    vc.venue = targetVenue
+                    vc.venueID = targetVenue.objectId
+                    // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+                    let venueName: String = targetVenue.name!
+                    vc.title = venueName
+                    vc.hidesBottomBarWhenPushed = true
+                    let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+                    
+                    self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+                    self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+                    self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
+                })
+            }
         }
     }
     
