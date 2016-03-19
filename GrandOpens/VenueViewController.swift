@@ -29,6 +29,8 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     private var onlineStatusHandle = UInt?()
     private var onlineStatusRef: Firebase?
     
+    private var seenNotificationRef: Firebase?
+    
     private var saveButton = UIBarButtonItem()
     private var silenceButton = UIBarButtonItem()
     
@@ -113,7 +115,23 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 self.configureSilenceButton()
             }
         })
-
+        
+        seenNotificationRef = DataService.dataService.BASE_REF.childByAppendingPath("notifications/\(uid)/\(venueID)")
+        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                let enumerator = snapshot.children
+                while let seenNotifications = enumerator.nextObject() as? FDataSnapshot {
+                    self.seenNotificationRef?.childByAppendingPath("\(seenNotifications.key)/seen").setValue(true)
+                }
+            }
+        })
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
         onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
         onlineStatusRef?.setValue(["\(self.venueID)": true])
     }
