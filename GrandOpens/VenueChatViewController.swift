@@ -357,6 +357,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
+        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         let message = self.messages[indexPath.item]
         let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
         vc.userId = message.senderId
