@@ -71,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // Update/register device's push token
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
-            UIApplication.sharedApplication().registerForRemoteNotifications()
+            registerForPushNotifications(application)
         }
         
         // If opening from push notification, navigate to appropriate venue
@@ -105,6 +105,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     
     // MARK: Push
+    
+    func registerForPushNotifications(application: UIApplication) {
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+        application.registerUserNotificationSettings(notificationSettings)
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            if notificationSettings.types != .None {
+                application.registerForRemoteNotifications()
+            } else if notificationSettings.types == .None {
+                DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").removeValue()
+            }
+        }
+    }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         
