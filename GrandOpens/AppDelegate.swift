@@ -11,6 +11,7 @@ import CoreData
 import CoreLocation
 import Firebase
 import Amplitude_iOS
+import SwiftyDrop
 //import Batch
 
 @UIApplicationMain
@@ -135,7 +136,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // Use to respond to notifications when app is running in the foreground, not background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-//        BatchPush.dismissNotifications()
+        
+//        let state = application.applicationState
+//        if state == UIApplicationState.Active {
+//            if let message = userInfo["message"] {
+//                Drop.down(message as! String, state: .Color(kPurple), duration: 5.0, action: nil)
+//            }
+            //            if let venue = userInfo["venue"] {
+            //
+            //                DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+            //                    snapshot in
+            //
+            //                    let targetVenue = snapshotToVenue(snapshot)
+            //                    let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+            //                    vc.venue = targetVenue
+            //                    vc.venueID = targetVenue.objectId
+            //                    // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+            //                    let venueName: String = targetVenue.name!
+            //                    vc.title = venueName
+            //                    vc.hidesBottomBarWhenPushed = true
+            //                    let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+            //
+            //                    self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+            //                    self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+            //                    self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+            //                })
+            //            }
+//        }
     }
 
     // Use to respond to notifications when app is running in the foreground OR background
@@ -164,6 +191,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                 })
             }
         }
+        else if state == UIApplicationState.Active {
+            let aps = userInfo["aps"] as! [String: AnyObject]
+            if let message = aps["alert"] {
+                Drop.down(message as! String, state: .Color(kPurple), duration: 5.0) {
+                    
+                    if let venue = userInfo["venue"] {
+                        
+                        DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                            snapshot in
+                            
+                            let targetVenue = snapshotToVenue(snapshot)
+                            let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                            vc.venue = targetVenue
+                            vc.venueID = targetVenue.objectId
+                            // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+                            let venueName: String = targetVenue.name!
+                            vc.title = venueName
+                            vc.hidesBottomBarWhenPushed = true
+                            let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+                            
+                            self.tabBarController?.selectedIndex = 0
+                            self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+
+                            self.listViewController?.navigationController?.popToRootViewControllerAnimated(false)
+                            self.settingsViewController?.navigationController?.popToRootViewControllerAnimated(false)
+                            
+//                            self.feedTableViewController?.navigationController?.setViewControllers([vc], animated: false)
+//                            self.tabBarController!.navigationController?.pushViewController(self.feedTableViewController!, animated: false)
+                            self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+                            }
+                        })
+                    }
+                }
+            }
+        }
+        completionHandler(.NoData)
     }
     
     
