@@ -57,8 +57,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
 
         // Items for Report function
-        JSQMessagesCollectionViewCell.registerMenuAction(Selector("reportMessage:"))
-        UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: Selector("reportMessage:"))]
+        JSQMessagesCollectionViewCell.registerMenuAction(#selector(VenueChatViewController.reportMessage(_:)))
+        UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: #selector(VenueChatViewController.reportMessage(_:)))]
         
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
@@ -133,7 +133,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 
                 let enumerator = snapshot.children
                 while let data = enumerator.nextObject() as? FDataSnapshot {
-                    if let date = dateFormatter().dateFromString(data.value["startedAt"] as! String) {
+                    if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
                         if date.timeIntervalSinceNow > (-3*60*60) {
                             self.visitStatus = "thereNow"
                         } else {
@@ -307,7 +307,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.setupAvatarColor(id, name: name, incoming: incoming)
     }
     
-    func setupAvatarColor(id: String, var name: String, incoming: Bool) {
+    func setupAvatarColor(id: String, name: String, incoming: Bool) {
         let diameter = incoming ? UInt((collectionView?.collectionViewLayout.incomingAvatarViewSize.width)!) : UInt((collectionView?.collectionViewLayout.outgoingAvatarViewSize.width)!)
         
         let rgbValue = id.hash
@@ -316,11 +316,13 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let b = CGFloat(Float(rgbValue & 0xFF)/255.0)
         let color = UIColor(red: r, green: g, blue: b, alpha: 0.5)
         
-        if name == "" {
-            name = "?"
+        let initials: String?
+        if name != "" {
+            initials = name.substringToIndex(name.startIndex.advancedBy(1))
+        } else {
+            initials = "?"
         }
         
-        let initials: String? = name.substringToIndex(name.startIndex.advancedBy(1))
         let userImage = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(initials, backgroundColor: color, textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(13), diameter: diameter)
         
         avatars[id] = userImage
@@ -376,9 +378,9 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
         
         let message = self.messages[indexPath.row]
-        if action == Selector("reportMessage:") && message.senderId == self.uid {
+        if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId == self.uid {
             return false
-        } else if action == Selector("reportMessage:") {
+        } else if action == #selector(VenueChatViewController.reportMessage(_:)) {
             return true
         }
         
@@ -387,16 +389,20 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
         
-        if action == Selector("reportMessage:") {
-            
-            let message = messages[indexPath.row]
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
-            
-            Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
-            Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1).append("Reported-UserIDs", value: (message.senderId)))
+        if action == #selector(VenueChatViewController.reportMessage(_:)) {
+            self.reportMessage(indexPath)
         }
         
         super.collectionView(collectionView, performAction: action, forItemAtIndexPath: indexPath, withSender: sender)
+    }
+    
+    func reportMessage(indexPath: NSIndexPath) {
+        
+        let message = messages[indexPath.row]
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
+        
+        Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
+        Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1).append("Reported-UserIDs", value: (message.senderId)))
     }
     
     

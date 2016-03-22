@@ -180,7 +180,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 snapshot in
                 
                 if snapshot.exists() {
-                    if snapshot.value["voted"] as! Bool == true {
+                    if snapshot.value.objectForKey("voted") as! Bool == true {
                         venueCell!.setVoteStatus(true)
                     } else {
                         venueCell!.setVoteStatus(false)
@@ -273,7 +273,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
-            voteCount++
+            voteCount += 1
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": true, "date": dateFormatter().stringFromDate(NSDate())])
             
@@ -281,7 +281,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1).append("Votes-Venues", value: venueId))
         } else {
             if voteCount > 0 {
-                voteCount--
+                voteCount -= 1
             }
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])

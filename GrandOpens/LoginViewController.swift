@@ -58,11 +58,11 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         self.passwordTextField.nextField = self.nicknameTextField
         
         // move view with keyboard
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
         
         // look for taps
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
         tap.delegate = self
     }
@@ -111,7 +111,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         emailTextField.attributedPlaceholder = NSAttributedString(string: "email", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         emailTextField.textColor = UIColor.whiteColor()
         emailTextField.tintColor = UIColor.whiteColor()
-        emailTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        emailTextField.addTarget(self, action: #selector(LoginViewController.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
         emailTextField.delegate = self
         
         passwordTextField.layer.cornerRadius = textFieldCornerRadius
@@ -119,7 +119,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         passwordTextField.textColor = UIColor.whiteColor()
         passwordTextField.tintColor = UIColor.whiteColor()
-        passwordTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        passwordTextField.addTarget(self, action: #selector(LoginViewController.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
         passwordTextField.returnKeyType = .Done
         passwordTextField.delegate = self
         
@@ -128,7 +128,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         nicknameTextField.attributedPlaceholder = NSAttributedString(string: "nickname", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         nicknameTextField.textColor = UIColor.whiteColor()
         nicknameTextField.tintColor = UIColor.whiteColor()
-        nicknameTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        nicknameTextField.addTarget(self, action: #selector(LoginViewController.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
         nicknameTextField.delegate = self
         nicknameTextField.hidden = true
 

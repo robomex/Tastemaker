@@ -99,7 +99,7 @@ class InitialViewController: UIViewController {
                     let permissioningButton = UIButton(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 60, 200))
                     permissioningButton.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/2)
                     permissioningButton.backgroundColor = UIColor.clearColor()
-                    permissioningButton.addTarget(self, action: "didTapPermissioningButton:", forControlEvents: .TouchUpInside)
+                    permissioningButton.addTarget(self, action: #selector(InitialViewController.didTapPermissioningButton(_:)), forControlEvents: .TouchUpInside)
                     self.view.addSubview(permissioningButton)
                     
                     UIView.animateWithDuration(0.5, animations: {

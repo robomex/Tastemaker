@@ -58,7 +58,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         segmentedControl = UISegmentedControl(items: ["Chat", "Details"])
         segmentedControl.frame = CGRectMake((screenWidth / 2) - (segmentedControlWidth / 2), 10, segmentedControlWidth, 25)
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.addTarget(self, action: "venueSegmentedControlAction:", forControlEvents: .ValueChanged)
+        segmentedControl.addTarget(self, action: #selector(VenueViewController.venueSegmentedControlAction(_:)), forControlEvents: .ValueChanged)
         segmentedControl.backgroundColor = UIColor.whiteColor()
         segmentedControl.tintColor = kPurple
         segmentedControl.layer.cornerRadius = 5
@@ -91,7 +91,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             snapshot in
             
             if snapshot.exists() {
-                if snapshot.value["saved"] as! Bool == true {
+                if snapshot.value.objectForKey("saved") as! Bool == true {
                     self.configureUnsaveButton()
                 } else {
                     self.configureSaveButton()
@@ -106,7 +106,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             snapshot in
             
             if snapshot.exists() {
-                if snapshot.value["silenced"] as! Bool == true {
+                if snapshot.value.objectForKey("silenced") as! Bool == true {
                     self.configureUnsilenceButton()
                 } else {
                     self.configureSilenceButton()
@@ -243,12 +243,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func configureSaveButton() {
-        self.saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.saveButtonAction(_:)))
         self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
     
     func configureUnsaveButton() {
-        self.saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.unsaveButtonAction(_:)))
         self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
     
@@ -272,12 +272,12 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func configureSilenceButton() {
-        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: "silenceButtonAction:")
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: #selector(VenueViewController.silenceButtonAction(_:)))
         self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
     
     func configureUnsilenceButton() {
-        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: "unsilenceButtonAction:")
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: #selector(VenueViewController.unsilenceButtonAction(_:)))
         self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
 }

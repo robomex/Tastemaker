@@ -36,7 +36,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
             snapshot in
             
             if snapshot.exists() {
-                if let nickname = snapshot.value["nickname"] as? String {
+                if let nickname = snapshot.value.objectForKey("nickname") as? String {
                     
                     self.userNickname = nickname
                     self.title = nickname
@@ -270,11 +270,11 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     }
     
     func configureMuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: "muteButtonAction:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(GOUserProfileViewController.muteButtonAction(_:)))
     }
     
     func configureUnmuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: "unmuteButtonAction:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(GOUserProfileViewController.unmuteButtonAction(_:)))
     }
     
     
