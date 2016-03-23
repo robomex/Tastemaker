@@ -214,15 +214,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                             self.tabBarController?.selectedIndex = 0
                             self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
 
-                            self.listViewController?.navigationController?.popToRootViewControllerAnimated(false)
-                            self.settingsViewController?.navigationController?.popToRootViewControllerAnimated(false)
+//                        self.listViewController?.navigationController?.popToRootViewControllerAnimated(false)
+//                            self.settingsViewController?.navigationController?.popToRootViewControllerAnimated(false)
                             
 //                            self.feedTableViewController?.navigationController?.setViewControllers([vc], animated: false)
 //                            self.tabBarController!.navigationController?.pushViewController(self.feedTableViewController!, animated: false)
                             self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-                            dispatch_async(dispatch_get_main_queue()) {
-                                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
-                            }
+//                            self.tabBarController?.viewControllers![0].navigationController?.pushViewController(vc, animated: false)
+//                            self.tabBarController?.navigationController?.topViewController?.navigationController?.pushViewController(vc, animated: false)
+//                            dispatch_async(dispatch_get_main_queue()) {
+//                            var feedNav = self.tabBarController?.viewControllers![0] as! UINavigationController
+//                            if feedNav.topViewController is FeedTableViewController {
+//                                feedNav.navigationController?.pushViewController(vc, animated: true)
+//                                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+//                            }
+//                            let feedNav = self.tabBarController?.viewControllers![0] as! UINavigationController
+//                            feedNav.topViewController?.navigationController?.setViewControllers([vc], animated: false)
+//                            self.tabBarController?.viewControllers![0] = feedNav
+                            self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+//                            }
                         })
                     }
                 }
