@@ -75,26 +75,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
             registerForPushNotifications(application)
         }
         
-        // If opening from push notification, navigate to appropriate venue
-//        if let payload = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary, venue = payload["venue"] as? String {
-//            
-//            DataService.dataService.VENUES_REF.queryEqualToValue(venue).observeSingleEventOfType(.Value, withBlock: {
-//                snapshot in
-//                
-//                let targetVenue = snapshotToVenue(snapshot)
-//                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-//                vc.venue = targetVenue
-//                vc.venueID = targetVenue.objectId
-//                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
-//                let venueName: String = targetVenue.name!
-//                vc.title = venueName
-//                vc.hidesBottomBarWhenPushed = true
-//                self.presentTabBarController()
-//                self.navController?.view.backgroundColor = UIColor.whiteColor()
-//                self.navController?.pushViewController(vc, animated: false)
-//            })
-//        }
-        
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
             
@@ -136,33 +116,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // Use to respond to notifications when app is running in the foreground, not background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        
-//        let state = application.applicationState
-//        if state == UIApplicationState.Active {
-//            if let message = userInfo["message"] {
-//                Drop.down(message as! String, state: .Color(kPurple), duration: 5.0, action: nil)
-//            }
-            //            if let venue = userInfo["venue"] {
-            //
-            //                DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
-            //                    snapshot in
-            //
-            //                    let targetVenue = snapshotToVenue(snapshot)
-            //                    let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-            //                    vc.venue = targetVenue
-            //                    vc.venueID = targetVenue.objectId
-            //                    // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
-            //                    let venueName: String = targetVenue.name!
-            //                    vc.title = venueName
-            //                    vc.hidesBottomBarWhenPushed = true
-            //                    let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
-            //
-            //                    self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
-            //                    self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-            //                    self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
-            //                })
-            //            }
-//        }
+
     }
 
     // Use to respond to notifications when app is running in the foreground OR background
@@ -190,8 +144,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
                 })
             }
-        }
-        else if state == UIApplicationState.Active {
+        } else if state == UIApplicationState.Active {
             let aps = userInfo["aps"] as! [String: AnyObject]
             if let message = aps["alert"] {
                 Drop.down(message as! String, state: .Color(kPurple), duration: 5.0) {
@@ -214,25 +167,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                             self.tabBarController?.selectedIndex = 0
                             self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
 
-//                        self.listViewController?.navigationController?.popToRootViewControllerAnimated(false)
-//                            self.settingsViewController?.navigationController?.popToRootViewControllerAnimated(false)
-                            
-//                            self.feedTableViewController?.navigationController?.setViewControllers([vc], animated: false)
-//                            self.tabBarController!.navigationController?.pushViewController(self.feedTableViewController!, animated: false)
                             self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-//                            self.tabBarController?.viewControllers![0].navigationController?.pushViewController(vc, animated: false)
-//                            self.tabBarController?.navigationController?.topViewController?.navigationController?.pushViewController(vc, animated: false)
-//                            dispatch_async(dispatch_get_main_queue()) {
-//                            var feedNav = self.tabBarController?.viewControllers![0] as! UINavigationController
-//                            if feedNav.topViewController is FeedTableViewController {
-//                                feedNav.navigationController?.pushViewController(vc, animated: true)
-//                                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
-//                            }
-//                            let feedNav = self.tabBarController?.viewControllers![0] as! UINavigationController
-//                            feedNav.topViewController?.navigationController?.setViewControllers([vc], animated: false)
-//                            self.tabBarController?.viewControllers![0] = feedNav
                             self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
-//                            }
                         })
                     }
                 }
