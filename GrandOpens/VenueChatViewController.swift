@@ -67,7 +67,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func viewWillAppear(animated: Bool) {
-        // Using super.viewWillAppear causes self.messages array index out of range on line 171, let data = self.messages[indexPath.row] - perhaps since JSQMessagesVC is embedded in a UIPageVC
+        // Using super.viewWillAppear causes self.messages array index out of range on line 171 (for example when backing out to chat from the GOUserProfileVC), let data = self.messages[indexPath.row] - perhaps since JSQMessagesVC is embedded in a UIPageVC
 //        super.viewWillAppear(animated)
         
         self.navigationController!.navigationBar.translucent = false
