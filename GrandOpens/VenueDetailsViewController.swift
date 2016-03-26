@@ -15,7 +15,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
 
     var venue: Venue?
     let regionRadius: CLLocationDistance = 500
-    var mapView: MKMapView!
+    var mapView = MKMapView()
     var mapItem: MKMapItem? = nil
     
     override func viewDidLoad() {
@@ -60,7 +60,6 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         // Map
         
-        let mapView = MKMapView()
         mapView.mapType = .Standard
         mapView.delegate = self
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
@@ -81,17 +80,17 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 self.mapItem = MKMapItem(placemark: mapPlacemark)
                 
                 let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
-                mapView.setRegion(coordinateRegion, animated: false)
+                self.mapView.setRegion(coordinateRegion, animated: false)
                 
                 // Show user location on map if location services are .AuthorizedAlways
                 if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
-                    mapView.showsUserLocation = true
+                    self.mapView.showsUserLocation = true
                 }
                 
                 // Add annotation pin
                 let venuePin = MKPointAnnotation()
                 venuePin.coordinate = venueLocation.coordinate
-                mapView.addAnnotation(venuePin)
+                self.mapView.addAnnotation(venuePin)
             }
         })
         self.view.addSubview(mapView)
