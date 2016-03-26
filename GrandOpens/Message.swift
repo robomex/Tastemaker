@@ -41,11 +41,11 @@ func saveChatMessage(venueID: String, message: ChatMessage) {
 }
 
 private func snapshotToChatMessage(snapshot: FDataSnapshot) -> ChatMessage {
-    let date = dateFormatter().dateFromString(snapshot.value["date"] as! String)
-    let sender = snapshot.value["sender"] as? String
-    let text = snapshot.value["message"] as? String
-    let senderName = snapshot.value["senderName"] as? String
-    let visitStatus = snapshot.value["visitStatus"] as? String
+    let date = dateFormatter().dateFromString(snapshot.value.objectForKey("date") as! String)
+    let sender = snapshot.value.objectForKey("sender") as? String
+    let text = snapshot.value.objectForKey("message") as? String
+    let senderName = snapshot.value.objectForKey("senderName") as? String
+    let visitStatus = snapshot.value.objectForKey("visitStatus") as? String
     return ChatMessage(message: text!, senderID: sender!, senderName: senderName!, date: date!, visitStatus: visitStatus!)
 }
 

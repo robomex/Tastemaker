@@ -34,7 +34,4 @@ class GOTabBarController: UITabBarController, UINavigationControllerDelegate {
     override func setViewControllers(viewControllers: [UIViewController]?, animated: Bool) {
         super.setViewControllers(viewControllers, animated: animated)
     }
-    
-    
-    // MARK: 
 }

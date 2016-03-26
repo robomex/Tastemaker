@@ -23,6 +23,17 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     private var userActivitiesSaveRef: Firebase?
     private var venueActivitiesSaverRef: Firebase?
     
+    private var userActivitiesSilenceHandle = UInt?()
+    private var userActivitiesSilenceRef: Firebase?
+    
+    private var onlineStatusHandle = UInt?()
+    private var onlineStatusRef: Firebase?
+    
+    private var seenNotificationRef: Firebase?
+    
+    private var saveButton = UIBarButtonItem()
+    private var silenceButton = UIBarButtonItem()
+    
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
     var orderedViewControllers = [UIViewController]()
@@ -47,18 +58,18 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         segmentedControl = UISegmentedControl(items: ["Chat", "Details"])
         segmentedControl.frame = CGRectMake((screenWidth / 2) - (segmentedControlWidth / 2), 10, segmentedControlWidth, 25)
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.addTarget(self, action: "venueSegmentedControlAction:", forControlEvents: .ValueChanged)
+        segmentedControl.addTarget(self, action: #selector(VenueViewController.venueSegmentedControlAction(_:)), forControlEvents: .ValueChanged)
         segmentedControl.backgroundColor = UIColor.whiteColor()
         segmentedControl.tintColor = kPurple
         segmentedControl.layer.cornerRadius = 5
         self.view.addSubview(segmentedControl)
         
-        // Save and unsave setup, check if currentUser saved this venue
+        // Save/unsave and silence/unsilence setup, check if currentUser saved/silenced this venue
         
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+        self.navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: loadingActivityIndicatorView), UIBarButtonItem(customView: loadingActivityIndicatorView)], animated: true)
+
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
@@ -80,7 +91,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
             snapshot in
             
             if snapshot.exists() {
-                if snapshot.value["saved"] as! Bool == true {
+                if snapshot.value.objectForKey("saved") as! Bool == true {
                     self.configureUnsaveButton()
                 } else {
                     self.configureSaveButton()
@@ -89,12 +100,49 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
                 self.configureSaveButton()
             }
         })
+        
+        userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/silences/\(venueID)")
+        userActivitiesSilenceHandle = userActivitiesSilenceRef!.observeEventType(.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                if snapshot.value.objectForKey("silenced") as! Bool == true {
+                    self.configureUnsilenceButton()
+                } else {
+                    self.configureSilenceButton()
+                }
+            } else {
+                self.configureSilenceButton()
+            }
+        })
+        
+        seenNotificationRef = DataService.dataService.BASE_REF.childByAppendingPath("notifications/\(uid)/\(venueID)")
+        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(FEventType.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                let enumerator = snapshot.children
+                while let seenNotifications = enumerator.nextObject() as? FDataSnapshot {
+                    self.seenNotificationRef?.childByAppendingPath("\(seenNotifications.key)/seen").setValue(true)
+                }
+            }
+        })
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
+        onlineStatusRef?.setValue(["\(self.venueID)": true])
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
         userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
+        userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
+
+        onlineStatusRef!.removeValue()
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,10 +222,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     // MARK: Save actions
     
     func saveButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+   
         self.configureUnsaveButton()
         
         userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
@@ -188,10 +233,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func unsaveButtonAction(sender: AnyObject) {
-        let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
-        loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
+
         self.configureSaveButton()
         
         userActivitiesSaveRef?.updateChildValues(["saved": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
@@ -201,10 +243,41 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     }
     
     func configureSaveButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("saveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.saveButtonAction(_:)))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
     
     func configureUnsaveButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("unsaveButtonAction:"))
+        self.saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.unsaveButtonAction(_:)))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+    }
+    
+    
+    // MARK: Silence actions
+    
+    func silenceButtonAction(sender: AnyObject) {
+        
+        self.configureUnsilenceButton()
+        userActivitiesSilenceRef?.updateChildValues(["silenced": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        
+        // ADD AMPLITUDE TRACKING
+    }
+    
+    func unsilenceButtonAction(sender: AnyObject) {
+
+        self.configureSilenceButton()
+        userActivitiesSilenceRef?.updateChildValues(["silenced": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        
+        // ADD AMPLITUDE TRACKING
+    }
+    
+    func configureSilenceButton() {
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: #selector(VenueViewController.silenceButtonAction(_:)))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+    }
+    
+    func configureUnsilenceButton() {
+        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: #selector(VenueViewController.unsilenceButtonAction(_:)))
+        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
 }

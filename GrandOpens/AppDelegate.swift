@@ -11,6 +11,7 @@ import CoreData
 import CoreLocation
 import Firebase
 import Amplitude_iOS
+import SwiftyDrop
 //import Batch
 
 @UIApplicationMain
@@ -71,34 +72,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // Update/register device's push token
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
-            UIApplication.sharedApplication().registerForRemoteNotifications()
+            registerForPushNotifications(application)
         }
         
-        // If opening from push notification, navigate to appropriate venue
-//        if let payload = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary, venue = payload["venue"] as? String {
-//            
-//            DataService.dataService.VENUES_REF.queryEqualToValue(venue).observeSingleEventOfType(.Value, withBlock: {
-//                snapshot in
-//                
-//                let targetVenue = snapshotToVenue(snapshot)
-//                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-//                vc.venue = targetVenue
-//                vc.venueID = targetVenue.objectId
-//                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
-//                let venueName: String = targetVenue.name!
-//                vc.title = venueName
-//                vc.hidesBottomBarWhenPushed = true
-//                self.presentTabBarController()
-//                self.navController?.view.backgroundColor = UIColor.whiteColor()
-//                self.navController?.pushViewController(vc, animated: false)
-//            })
-//        }
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/").removeValue()
+        }
     
         return true
     }
     
     
     // MARK: Push
+    
+    func registerForPushNotifications(application: UIApplication) {
+        let notificationSettings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+        application.registerUserNotificationSettings(notificationSettings)
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            if notificationSettings.types != .None {
+                application.registerForRemoteNotifications()
+            } else if notificationSettings.types == .None {
+                DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").removeValue()
+            }
+        }
+    }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         
@@ -111,50 +116,121 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // Use to respond to notifications when app is running in the foreground, not background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-//        BatchPush.dismissNotifications()
+
     }
 
     // Use to respond to notifications when app is running in the foreground OR background
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         
-        if let venue = userInfo["venue"] {
-            
-            DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
-                snapshot in
-
-                let targetVenue = snapshotToVenue(snapshot)
-                let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-                vc.venue = targetVenue
-                vc.venueID = targetVenue.objectId
-                // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
-                let venueName: String = targetVenue.name!
-                vc.title = venueName
-                vc.hidesBottomBarWhenPushed = true
-                let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+        let state = application.applicationState
+        if state == UIApplicationState.Inactive || state == UIApplicationState.Background {
+            if let venue = userInfo["venue"] {
                 
-                self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
-                self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-                self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
-            })
+                DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                    snapshot in
+
+                    let targetVenue = snapshotToVenue(snapshot)
+                    let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                    vc.venue = targetVenue
+                    vc.venueID = targetVenue.objectId
+                    // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+                    let venueName: String = targetVenue.name!
+                    vc.title = venueName
+                    vc.hidesBottomBarWhenPushed = true
+                    let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+                    
+                    self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+                    self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+                    self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
+                })
+            }
+        } else if state == UIApplicationState.Active {
+            let aps = userInfo["aps"] as! [String: AnyObject]
+            if let message = aps["alert"] {
+                Drop.down(message as! String, state: .Color(kPurple), duration: 5.0) {
+                    
+                    if let venue = userInfo["venue"] {
+                        
+                        DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                            snapshot in
+                            
+                            let targetVenue = snapshotToVenue(snapshot)
+                            let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                            vc.venue = targetVenue
+                            vc.venueID = targetVenue.objectId
+                            // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
+                            let venueName: String = targetVenue.name!
+                            vc.title = venueName
+                            vc.hidesBottomBarWhenPushed = true
+                            let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+                            
+                            self.tabBarController?.selectedIndex = 0
+                            self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
+
+                            self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+                            self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+                        })
+                    }
+                }
+            }
         }
+        completionHandler(.NoData)
     }
+    
+    
+    // MARK: App state changes, i.e. inactive, background, etc.
     
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+        
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    while let venueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
+                        onlineStatusRef.childByAppendingPath("\(venueOnlineStatuses.key)").setValue(false)
+                    }
+                }
+            })
+        }
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            
+            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    while let dormantVenueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
+                        onlineStatusRef.childByAppendingPath("\(dormantVenueOnlineStatuses.key)").setValue(true)
+                    }
+                }
+            })
+        }
     }
 
     func applicationWillTerminate(application: UIApplication) {

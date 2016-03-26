@@ -114,7 +114,7 @@ class GOVenueCellView: UITableViewCell {
             
             if self.buttons.contains(GOVenueCellButtons.Vote) {
 //                constrainWidth = self.voteButton!.frame.origin.x
-                self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
+                self.voteButton!.addTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
             let venueName: String? = venue?.name
@@ -150,9 +150,9 @@ class GOVenueCellView: UITableViewCell {
     
     func shouldEnableVoteButton(enable: Bool) {
         if enable {
-            self.voteButton!.addTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
+            self.voteButton!.addTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         } else {
-            self.voteButton!.removeTarget(self, action: Selector("didTapVoteButtonAction:"), forControlEvents: UIControlEvents.TouchUpInside)
+            self.voteButton!.removeTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         }
     }
     
@@ -182,7 +182,7 @@ class GOVenueCellView: UITableViewCell {
     }
     
     func didTapVoteButtonAction(button: UIButton) {
-        if delegate != nil && delegate!.respondsToSelector(Selector("venueCellView:didTapVoteButton:venueId:")) {
+        if delegate != nil && delegate!.respondsToSelector(#selector(GOVenueCellViewDelegate.venueCellView(_:didTapVoteButton:venueId:))) {
             delegate!.venueCellView!(self, didTapVoteButton: button, venueId: (venue?.objectId)!)
         }
     }

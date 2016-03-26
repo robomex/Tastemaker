@@ -17,10 +17,12 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     var nickname: String? = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as? String ?? ""
     var updatedNickname: String?
     var authHandle = UInt()
+    var userHandle = UInt()
+    var notificationPeriod = String()
     var settingsTableView: UITableView!
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
-    var myAccountRows = ["Nickname", "Muted Users"]
+    var myAccountRows = ["Nickname", "Muted Users", "Notification Period"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
     override func viewDidLoad() {
@@ -53,6 +55,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             }
         })
         
+        userHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").observeEventType(.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                self.notificationPeriod = snapshot.value as! String
+                self.settingsTableView.reloadData()
+            }
+        })
+        
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "SettingsViewController")
         let builder = GAIDictionaryBuilder.createScreenView()
@@ -63,6 +74,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         super.viewDidDisappear(animated)
         
         DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authHandle)
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").removeObserverWithHandle(self.userHandle)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -74,7 +86,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return 3
         case 1:
             return 2
         case 2:
@@ -96,6 +108,22 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             switch (indexPath.row) {
             case 0:
                 cell.detailTextLabel?.text = nickname
+                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            case 2:
+                switch (self.notificationPeriod) {
+                case "fifteen minutes":
+                    cell.detailTextLabel?.text = "15 Minutes"
+                case "one hour":
+                    cell.detailTextLabel?.text = "1 Hour"
+                case "eight hours":
+                    cell.detailTextLabel?.text = "8 Hours"
+                case "one day":
+                    cell.detailTextLabel?.text = "1 Day"
+                case "three days":
+                    cell.detailTextLabel?.text = "3 Days"
+                default:
+                    cell.detailTextLabel?.text = ""
+                }
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             default:
                 cell.detailTextLabel?.text = ""
@@ -165,6 +193,36 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             } else if indexPath.row == 1 {
                 let vc = GOMutedUsersViewController()
                 navigationController?.pushViewController(vc, animated: true)
+            } else if indexPath.row == 2 {
+                let notificationPeriodMenu = UIAlertController(title: nil, message: "After you post to a venue's chat, receive notifications about new chats", preferredStyle: .ActionSheet)
+                let fifteenMinutesAction = UIAlertAction(title: "For 15 Minutes", style: .Default, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("fifteen minutes")
+                })
+                notificationPeriodMenu.addAction(fifteenMinutesAction)
+                let oneHourAction = UIAlertAction(title: "For 1 Hour", style: .Default, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one hour")
+                })
+                notificationPeriodMenu.addAction(oneHourAction)
+                let eightHoursAction = UIAlertAction(title: "For 8 Hours", style: .Default, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("eight hours")
+                })
+                notificationPeriodMenu.addAction(eightHoursAction)
+                let oneDayAction = UIAlertAction(title: "For 1 Day", style: .Default, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one day")
+                })
+                notificationPeriodMenu.addAction(oneDayAction)
+                let threeDaysAction = UIAlertAction(title: "For 3 Days", style: .Default, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("three days")
+                })
+                notificationPeriodMenu.addAction(threeDaysAction)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                notificationPeriodMenu.addAction(cancelAction)
+                self.presentViewController(notificationPeriodMenu, animated: true, completion: nil)
             }
         } else if indexPath.section == 1 {
             switch (indexPath.row) {

@@ -101,15 +101,15 @@ func openingDateFormatter() -> NSDateFormatter {
 
 func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     let objectId = snapshot.key
-    let name = snapshot.value[kVenueName] as? String
-    let openingDate = snapshot.value[kVenueOpeningDate] as? String
-    let latitude = snapshot.value[kVenueLatitude] as? Double
-    let longitude = snapshot.value[kVenueLongitude] as? Double
-    let address = snapshot.value[kVenueAddress] as? String
-    let neighborhood = snapshot.value[kVenueNeighborhood] as? String
-    let phoneNumber = snapshot.value[kVenuePhoneNumber] as? String
-    let foodType = snapshot.value[kVenueFoodType] as? String
-    let description = snapshot.value[kVenueDescription] as? String
+    let name = snapshot.value.objectForKey(kVenueName) as? String
+    let openingDate = snapshot.value.objectForKey(kVenueOpeningDate) as? String
+    let latitude = snapshot.value.objectForKey(kVenueLatitude) as? Double
+    let longitude = snapshot.value.objectForKey(kVenueLongitude) as? Double
+    let address = snapshot.value.objectForKey(kVenueAddress) as? String
+    let neighborhood = snapshot.value.objectForKey(kVenueNeighborhood) as? String
+    let phoneNumber = snapshot.value.objectForKey(kVenuePhoneNumber) as? String
+    let foodType = snapshot.value.objectForKey(kVenueFoodType) as? String
+    let description = snapshot.value.objectForKey(kVenueDescription) as? String
     return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
 }
 
