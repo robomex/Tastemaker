@@ -15,7 +15,6 @@ import Amplitude_iOS
 
 class InitialViewController: UIViewController {
 
-    let locationManager = CLLocationManager()
     let pscope = PermissionScope()
     var authHandle = UInt()
 

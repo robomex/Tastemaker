@@ -90,6 +90,7 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
             snapshot in
             
+            // Nested if statements for unwrapping
             if snapshot.exists() {
                 if snapshot.value.objectForKey("saved") as! Bool == true {
                     self.configureUnsaveButton()
