@@ -11,9 +11,11 @@ import Instructions
 import ReachabilitySwift
 import Firebase
 import SwiftyDrop
+import MapKit
+import CoreLocation
 import Amplitude_iOS
 
-class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, CoachMarksControllerDataSource {
+class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoachMarksControllerDataSource {
 
     var reusableViews: Set<GOVenueCellView>!
     let coachMarksController = CoachMarksController()
@@ -27,6 +29,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     var banned: Bool?
     var bannedHandle: UInt?
     
+    private var mapViewButton = UIBarButtonItem()
+    private var mapView = MKMapView()
+    private let regionRadius: CLLocationDistance = 5000
+    private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+    private let locationManager = CLLocationManager()
     
     // MARK: Initialization
     
@@ -51,6 +58,13 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
         
         // Prevents additional cells from being drawn for short lists
         self.tableView.tableFooterView = UIView()
+        
+        if CLLocationManager.locationServicesEnabled() && (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+            
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
     }
     
     deinit {
@@ -95,6 +109,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
                 self.banned = nil
             }
         })
+        
+        self.configureMapViewButton()
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
@@ -390,6 +406,68 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, C
     func stopNotifier() {
         reachability?.stopNotifier()
         reachability = nil
+    }
+    
+    
+    // MARK: MapView
+    
+    func mapViewButtonAction(sender: AnyObject) {
+        
+        self.mapView.mapType = .Standard
+        self.mapView.delegate = self
+        self.mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
+        
+        if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+            let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+            if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 20000 {
+                self.mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+            }
+        }
+        
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(self.mapCenter, self.regionRadius * 2.0, self.regionRadius * 2.0)
+        self.mapView.setRegion(coordinateRegion, animated: false)
+        
+        if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
+            self.mapView.showsUserLocation = true
+        }
+        
+        for venue in self.venues {
+            let venueLocation: CLLocation = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
+            let venuePin = MKPointAnnotation()
+            venuePin.coordinate = venueLocation.coordinate
+            self.mapView.addAnnotation(venuePin)
+        }
+        
+        self.view.addSubview(mapView)
+        self.mapView.hidden = false
+        
+        self.configureListViewButton()
+    }
+    
+    func listViewButtonAction(sender: AnyObject) {
+        
+        self.mapView.hidden = true
+        self.mapView = MKMapView()
+        
+        self.configureMapViewButton()
+    }
+    
+    func configureMapViewButton() {
+        self.mapViewButton = UIBarButtonItem(title: "Map", style: .Plain, target: self, action: #selector(FeedTableViewController.mapViewButtonAction(_:)))
+        self.navigationItem.setLeftBarButtonItem(self.mapViewButton, animated: false)
+    }
+    
+    func configureListViewButton() {
+        self.mapViewButton = UIBarButtonItem(title: "List", style: .Plain, target: self, action: #selector(FeedTableViewController.listViewButtonAction(_:)))
+        self.navigationItem.setLeftBarButtonItem(self.mapViewButton, animated: false)
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if manager.location != nil {
+            self.mapCenter = manager.location!.coordinate
+        }
+        self.locationManager.stopUpdatingLocation()
     }
     
     /*
