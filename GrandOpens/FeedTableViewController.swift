@@ -34,6 +34,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     private let regionRadius: CLLocationDistance = 3000
     private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
     private let locationManager = CLLocationManager()
+    private var visits = [String: Bool]()
     
     // MARK: Initialization
     
@@ -210,6 +211,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 
                 if snapshot.exists() {
                     venueCell!.setVisitStatus(true)
+                    self.visits[venue.objectId!] = true
                 } else {
                     venueCell!.setVisitStatus(false)
                 }
@@ -460,10 +462,19 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         if pinView == nil {
             pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.image = UIImage(named: "Pin-Visited")
             pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         } else {
             pinView!.annotation = annotation
+        }
+        
+        let venueAnnotation = annotation as! VenueAnnotation
+        let venue = venueAnnotation.venue
+        if venue.foodType == "Featured" {
+            pinView!.image = UIImage(named: "Pin-Featured")
+        } else if self.visits[venue.objectId!] != nil && self.visits[venue.objectId!] == true {
+            pinView!.image = UIImage(named: "Pin-Visited")
+        } else {
+            pinView!.image = UIImage(named: "Pin-Default")
         }
         
         return pinView
