@@ -174,6 +174,28 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    // MARK: MapKit
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+        if pinView == nil {
+            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = false
+            pinView!.image = UIImage(named: "Pin-Visited")
+        } else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
 
     /*
     // MARK: - Navigation
