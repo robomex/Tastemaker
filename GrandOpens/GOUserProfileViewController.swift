@@ -142,12 +142,6 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
-        
-        // Set a blank text back button here to prevent ellipses from showing as title during nav animation
-        if (navigationController != nil) {
-            let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
-            self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -195,6 +189,13 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
                 })
             }
         })
+        
+        // Set a blank text back button here to prevent ellipses from showing as title during nav animation
+        self.navigationItem.leftBarButtonItem = nil
+        if (navigationController != nil) {
+            let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
+            self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+        }
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "UserProfileViewController")
