@@ -31,7 +31,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     private var mapViewButton = UIBarButtonItem()
     private var mapView = MKMapView()
-    private let regionRadius: CLLocationDistance = 5000
+    private let regionRadius: CLLocationDistance = 3000
     private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
     private let locationManager = CLLocationManager()
     
@@ -65,6 +65,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
+        
+        self.configureMapViewButton()
     }
     
     deinit {
@@ -109,8 +111,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 self.banned = nil
             }
         })
-        
-        self.configureMapViewButton()
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
@@ -260,7 +260,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        Amplitude.instance().logEvent("Viewed Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
+        Amplitude.instance().logEvent("Viewed Venue From List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     
@@ -419,7 +419,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
             let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
-            if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 20000 {
+            if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 15000 {
                 self.mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
             }
         }
@@ -433,15 +433,61 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         for venue in self.venues {
             let venueLocation: CLLocation = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
-            let venuePin = MKPointAnnotation()
-            venuePin.coordinate = venueLocation.coordinate
-            self.mapView.addAnnotation(venuePin)
+            let coordinate = venueLocation.coordinate
+            let title = venue.name
+            // Set all VenueAnnotations to default for now
+            let typeRawValue = 0
+            let type = VenueType(rawValue: typeRawValue)
+            let subtitle = venue.description
+            let annotation = VenueAnnotation(coordinate: coordinate, title: title!, subtitle: subtitle!, type: type!, venue: venue)
+            
+            self.mapView.addAnnotation(annotation)
         }
         
         self.view.addSubview(mapView)
         self.mapView.hidden = false
         
         self.configureListViewButton()
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId)
+        if pinView == nil {
+            pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.image = UIImage(named: "Pin-Visited")
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        } else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        
+        let venueAnnotation = view.annotation as! VenueAnnotation
+        let venue = venueAnnotation.venue
+        vc.venue = venue
+        vc.venueID = venue.objectId
+        if self.banned != nil {
+            vc.banned = self.banned
+        }
+        
+        let venueName: String = venue.name!
+        vc.title = venueName
+        vc.hidesBottomBarWhenPushed = true
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationController?.pushViewController(vc, animated: true)
+        
+        Amplitude.instance().logEvent("Viewed Venue From Map", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     func listViewButtonAction(sender: AnyObject) {

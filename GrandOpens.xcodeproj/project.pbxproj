@@ -29,6 +29,8 @@
 		DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78E0971C62BEE500CD22F3 /* DataService.swift */; };
 		DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */; };
 		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
+		DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */; };
+		DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
 		DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5F1C19FD06007CB294 /* TextField.swift */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
@@ -96,6 +98,8 @@
 		DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
+		DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotation.swift; sourceTree = "<group>"; };
+		DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotationView.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DEA2DF5F1C19FD06007CB294 /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
@@ -289,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				DEEB76091B3298B600A94305 /* User.swift */,
+				DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */,
 				DEEB760B1B32990700A94305 /* Venue.swift */,
 				DE1F08631B61BD440094ACA0 /* Message.swift */,
 			);
@@ -299,6 +304,7 @@
 			isa = PBXGroup;
 			children = (
 				DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */,
+				DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -482,6 +488,7 @@
 				DE283D151B61670E0003466D /* InitialViewController.swift in Sources */,
 				DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */,
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
+				DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */,
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
 				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
@@ -489,6 +496,7 @@
 				DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */,
 				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
 				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
+				DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
 				DE5068331C5978EC006FFD51 /* OSCache.m in Sources */,
