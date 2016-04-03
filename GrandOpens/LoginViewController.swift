@@ -165,7 +165,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         toggleSignupButton.layer.cornerRadius = 0
         toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(17.0)
         
-        headlineLabel.text = "discover and chat about \nthe newest places"
+        headlineLabel.text = "discover and chat about \nthe newest restaurants"
         headlineLabel.font = UIFont.systemFontOfSize(17.0)
         
         emailResetButton.enabled = false

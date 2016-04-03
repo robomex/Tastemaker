@@ -24,7 +24,7 @@ class InitialViewController: UIViewController {
         pscope.addPermission(NotificationsPermission(notificationCategories: nil), message: "Allow to know when someone replies to you + be the first to hear news")
         pscope.addPermission(LocationAlwaysPermission(), message: "Enable to find the newest places around + unlock voting for places you've been")
         pscope.headerLabel.text = "Let's get set up"
-        pscope.bodyLabel.text = "Grand Opens works best with the following permissions"
+        pscope.bodyLabel.text = "Tastemaker works best with the following permissions"
         pscope.permissionButtonBorderColor = kBlue
         pscope.permissionButtonTextColor = kBlue
         pscope.closeButtonTextColor = UIColor.clearColor()
@@ -73,7 +73,7 @@ class InitialViewController: UIViewController {
                     
                     let permissioningTitle = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
                     permissioningTitle.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, UIScreen.mainScreen().bounds.height/6)
-                    permissioningTitle.text = "Welcome to Grand Opens"
+                    permissioningTitle.text = "Welcome to Tastemaker"
                     permissioningTitle.font = UIFont.systemFontOfSize(22.0)
                     permissioningTitle.textColor = UIColor.whiteColor()
                     permissioningTitle.textAlignment = .Center

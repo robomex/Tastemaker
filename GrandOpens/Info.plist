@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Grand Opens</string>
+	<string>Tastemaker</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -25,7 +25,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Grand Opens uses your location to find the newest places around and confirm visits</string>
+	<string>Tastemaker uses your location to find the newest places around and confirm visits</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Muli-Regular.ttf</string>

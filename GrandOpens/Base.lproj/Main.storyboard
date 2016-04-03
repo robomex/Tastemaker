@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -14,7 +14,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="1TJ-Dr-wbt">
             <objects>
-                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" customClass="GOTabBarController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" customClass="GOTabBarController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="au2-CR-bep">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -32,7 +32,7 @@
         <!--InitialViewController-->
         <scene sceneID="X0d-mC-fsR">
             <objects>
-                <viewController storyboardIdentifier="InitialViewController" title="InitialViewController" id="YDE-Yr-KVW" customClass="InitialViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InitialViewController" title="InitialViewController" id="YDE-Yr-KVW" customClass="InitialViewController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Lgj-cC-Vnr"/>
                         <viewControllerLayoutGuide type="bottom" id="QXb-Fk-zHL"/>
@@ -54,7 +54,7 @@
         <!--Login View Controller-->
         <scene sceneID="mJg-ld-nQ3">
             <objects>
-                <viewController id="mV3-92-BiT" customClass="LoginViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="mV3-92-BiT" customClass="LoginViewController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="yz9-0p-ejd"/>
                         <viewControllerLayoutGuide type="bottom" id="yIK-zF-QY8"/>
@@ -63,7 +63,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grand Opens" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D27-w6-7Uc" userLabel="Font Logo">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tastemaker" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D27-w6-7Uc" userLabel="Font Logo">
                                 <rect key="frame" x="159" y="140" width="283" height="66"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="66" id="LPn-1P-aXh"/>
@@ -73,8 +73,8 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="discover and chat about the newest places" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DcV-is-TjW" userLabel="Headline Label">
-                                <rect key="frame" x="162.5" y="208" width="276.5" height="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="discover and chat about the newest restaurants" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DcV-is-TjW" userLabel="Headline Label">
+                                <rect key="frame" x="163" y="208" width="276" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="DcV-is-TjW" secondAttribute="height" multiplier="280:9" id="yWs-k9-Cgu"/>
                                 </constraints>
@@ -129,7 +129,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="email" textAlignment="natural" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dXP-cv-ppb" customClass="TextField" customModule="GrandOpens" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="email" textAlignment="natural" minimumFontSize="14" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="dXP-cv-ppb" customClass="TextField" customModule="Tastemaker" customModuleProvider="target">
                                 <rect key="frame" x="50" y="240" width="500" height="35"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -138,13 +138,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yr7-OJ-N1K" customClass="TextField" customModule="GrandOpens" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yr7-OJ-N1K" customClass="TextField" customModule="Tastemaker" customModuleProvider="target">
                                 <rect key="frame" x="50" y="285" width="500" height="35"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="nickname" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="0D8-yd-EPY" customClass="TextField" customModule="GrandOpens" customModuleProvider="target">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="nickname" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="0D8-yd-EPY" customClass="TextField" customModule="Tastemaker" customModuleProvider="target">
                                 <rect key="frame" x="50" y="330" width="500" height="35"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
@@ -233,7 +233,7 @@
         <!--Settings-->
         <scene sceneID="Ggi-QM-JsS">
             <objects>
-                <viewController storyboardIdentifier="SettingsViewController" id="Q3n-Mz-lF3" customClass="SettingsViewController" customModule="GrandOpens" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsViewController" id="Q3n-Mz-lF3" customClass="SettingsViewController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fpO-bd-ONo"/>
                         <viewControllerLayoutGuide type="bottom" id="qyS-jz-7Ba"/>
