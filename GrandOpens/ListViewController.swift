@@ -30,32 +30,36 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+//        print(self.)
+//        self.navigationController!.navigationBar.translucent = false
+//        self.tableView.alpha = 0.0
+//        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
-        listVenues = []
-        saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            if !snapshot.exists() {
-                self.loading = false
-                self.tableView.alpha = 1.0
-            }
-            
-            let enumerator = snapshot.children
-            self.listVenues = []
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                    snap in
-                    
-                    self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                    self.tableView.reloadData()
+        if self.listVenues.isEmpty {
+            saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if !snapshot.exists() {
                     self.loading = false
-                })
-            }
-        })
-        
+                    self.tableView.alpha = 1.0
+                }
+                
+                let enumerator = snapshot.children
+                self.listVenues = []
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                        snap in
+                        
+                        self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
+                        self.tableView.reloadData()
+                        self.loading = false
+                    })
+                }
+            })
+        }
+            
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "UserListViewController")
         let builder = GAIDictionaryBuilder.createScreenView()
@@ -64,7 +68,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
+//        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

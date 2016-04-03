@@ -76,11 +76,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        print(self.venues)
         
         self.navigationController!.navigationBar.translucent = false
         
-        self.tableView.alpha = 0.0
-
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
@@ -88,20 +87,26 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         let todayString = localDateFormatter().stringFromDate(NSDate())
         let todayDate = localDateFormatter().dateFromString(todayString)
-        venueListener = VenueListener(endDate: todayDate!, callback: {
-            venues in
-            
-            var newList = [Venue]()
-            var newNSUserDefaultsList: [[String:AnyObject]] = []
-            for venue in venues {
-                newList.append(venue)
-                newNSUserDefaultsList.append(serializeVenue(venue))
-            }
+        
+        if self.venues.isEmpty {            
+            self.tableView.alpha = 0.0
 
-            self.venues = newList
-            self.tableView.reloadData()
-            NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-        })
+            venueListener = VenueListener(endDate: todayDate!, callback: {
+                venues in
+                
+                var newList = [Venue]()
+                var newNSUserDefaultsList: [[String:AnyObject]] = []
+                for venue in venues {
+                    newList.append(venue)
+                    newNSUserDefaultsList.append(serializeVenue(venue))
+                }
+
+                self.venues = newList
+                self.tableView.reloadData()
+                NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
+//                print(self.venues)
+            })
+        }
         
         bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
             snapshot in
@@ -131,7 +136,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        venueListener?.stop()
+        print("view did disappear")
+//        venueListener?.stop()
         DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
     }
 
