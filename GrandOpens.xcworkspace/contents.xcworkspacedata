@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:GrandOpens.xcodeproj">
+      location = "group:/Users/robomex/Google Drive/Repositories/GrandOpens/Tastemaker.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

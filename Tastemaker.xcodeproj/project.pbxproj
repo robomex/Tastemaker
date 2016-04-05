@@ -60,7 +60,7 @@
 
 /* Begin PBXFileReference section */
 		4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrandOpens.release.xcconfig"; path = "Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens.release.xcconfig"; sourceTree = "<group>"; };
-		DE1973E61B6D29570056148B /* GrandOpens Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GrandOpens Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE1973E61B6D29570056148B /* Tastemaker.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tastemaker.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE1973E91B6D29570056148B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrandOpens_Tests.swift; sourceTree = "<group>"; };
 		DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
@@ -76,7 +76,7 @@
 		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
 		DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueSorter.swift; sourceTree = "<group>"; };
-		DE6126171B2505950009FB34 /* GrandOpens.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandOpens.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE6126171B2505950009FB34 /* Tastemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tastemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE61261F1B2505950009FB34 /* GrandOpens.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GrandOpens.xcdatamodel; sourceTree = "<group>"; };
@@ -186,8 +186,8 @@
 		DE6126181B2505950009FB34 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DE6126171B2505950009FB34 /* GrandOpens.app */,
-				DE1973E61B6D29570056148B /* GrandOpens Tests.xctest */,
+				DE6126171B2505950009FB34 /* Tastemaker.app */,
+				DE1973E61B6D29570056148B /* Tastemaker.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -312,9 +312,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DE1973E51B6D29570056148B /* GrandOpens Tests */ = {
+		DE1973E51B6D29570056148B /* Tastemaker Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DE1973EE1B6D29570056148B /* Build configuration list for PBXNativeTarget "GrandOpens Tests" */;
+			buildConfigurationList = DE1973EE1B6D29570056148B /* Build configuration list for PBXNativeTarget "Tastemaker Tests" */;
 			buildPhases = (
 				DE1973E21B6D29570056148B /* Sources */,
 				DE1973E31B6D29570056148B /* Frameworks */,
@@ -325,14 +325,14 @@
 			dependencies = (
 				DE1973ED1B6D29570056148B /* PBXTargetDependency */,
 			);
-			name = "GrandOpens Tests";
+			name = "Tastemaker Tests";
 			productName = "GrandOpens Tests";
-			productReference = DE1973E61B6D29570056148B /* GrandOpens Tests.xctest */;
+			productReference = DE1973E61B6D29570056148B /* Tastemaker.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		DE6126161B2505950009FB34 /* GrandOpens */ = {
+		DE6126161B2505950009FB34 /* Tastemaker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DE6126391B2505950009FB34 /* Build configuration list for PBXNativeTarget "GrandOpens" */;
+			buildConfigurationList = DE6126391B2505950009FB34 /* Build configuration list for PBXNativeTarget "Tastemaker" */;
 			buildPhases = (
 				841E1F68AAB2E291ABAB0CB4 /* Check Pods Manifest.lock */,
 				DE6126131B2505950009FB34 /* Sources */,
@@ -345,9 +345,9 @@
 			);
 			dependencies = (
 			);
-			name = GrandOpens;
+			name = Tastemaker;
 			productName = GrandOpens;
-			productReference = DE6126171B2505950009FB34 /* GrandOpens.app */;
+			productReference = DE6126171B2505950009FB34 /* Tastemaker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -375,11 +375,14 @@
 							com.apple.Maps.iOS = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 						};
 					};
 				};
 			};
-			buildConfigurationList = DE6126121B2505950009FB34 /* Build configuration list for PBXProject "GrandOpens" */;
+			buildConfigurationList = DE6126121B2505950009FB34 /* Build configuration list for PBXProject "Tastemaker" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -392,8 +395,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DE6126161B2505950009FB34 /* GrandOpens */,
-				DE1973E51B6D29570056148B /* GrandOpens Tests */,
+				DE6126161B2505950009FB34 /* Tastemaker */,
+				DE1973E51B6D29570056148B /* Tastemaker Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -515,7 +518,7 @@
 /* Begin PBXTargetDependency section */
 		DE1973ED1B6D29570056148B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DE6126161B2505950009FB34 /* GrandOpens */;
+			target = DE6126161B2505950009FB34 /* Tastemaker */;
 			targetProxy = DE1973EC1B6D29570056148B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -556,8 +559,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GrandOpens.app/GrandOpens";
+				PRODUCT_NAME = Tastemaker;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tastemaker.app/Tastemaker";
 			};
 			name = Debug;
 		};
@@ -573,8 +576,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GrandOpens.app/GrandOpens";
+				PRODUCT_NAME = Tastemaker;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tastemaker.app/Tastemaker";
 			};
 			name = Release;
 		};
@@ -677,7 +680,7 @@
 				INFOPLIST_FILE = GrandOpens/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Tastemaker;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -699,7 +702,7 @@
 				INFOPLIST_FILE = GrandOpens/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Tastemaker;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -709,7 +712,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DE1973EE1B6D29570056148B /* Build configuration list for PBXNativeTarget "GrandOpens Tests" */ = {
+		DE1973EE1B6D29570056148B /* Build configuration list for PBXNativeTarget "Tastemaker Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DE1973EF1B6D29570056148B /* Debug */,
@@ -718,7 +721,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DE6126121B2505950009FB34 /* Build configuration list for PBXProject "GrandOpens" */ = {
+		DE6126121B2505950009FB34 /* Build configuration list for PBXProject "Tastemaker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DE6126371B2505950009FB34 /* Debug */,
@@ -727,7 +730,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DE6126391B2505950009FB34 /* Build configuration list for PBXNativeTarget "GrandOpens" */ = {
+		DE6126391B2505950009FB34 /* Build configuration list for PBXNativeTarget "Tastemaker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DE61263A1B2505950009FB34 /* Debug */,
