@@ -23,6 +23,7 @@ PODS:
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - PagingMenuController (0.8.0)
   - PermissionScope (1.0.2)
   - ReachabilitySwift (2.3.3)
   - SCLAlertView-Objective-C (0.8.2)
@@ -37,6 +38,7 @@ DEPENDENCIES:
   - Google/Analytics
   - Instructions (~> 0.3)
   - JSQMessagesViewController (~> 7.2)
+  - PagingMenuController
   - PermissionScope
   - ReachabilitySwift
   - SCLAlertView-Objective-C
@@ -57,12 +59,13 @@ SPEC CHECKSUMS:
   Instructions: 9434fd16d3c53c85b92d3faa33f36983add62369
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  PagingMenuController: 1a9ff8ad0ab9704f215706997c1a624bc951f508
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SCLAlertView-Objective-C: de137408b04f3587551fa98b876b3cbc612cee79
   SwiftyDrop: 54a30c4edd51be9863429c3ad2ad4108eb7b7814
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: e3d6325dfc2130e8af6e3551175ee2d3ed7af434
+PODFILE CHECKSUM: 997673d0331fefd8b5bfed0b487a116f18d36958
 
 COCOAPODS: 1.0.0.beta.4

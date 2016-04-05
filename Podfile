@@ -12,9 +12,10 @@ def pods
 	pod 'SwiftyDrop'
 	pod 'DZNEmptyDataSet'
 	pod 'SCLAlertView-Objective-C'
+	pod 'PagingMenuController'
 
 	#PUSH
-	pod 'Batch', '~> 1.5'
+	#pod 'Batch', '~> 1.5'
 
 	#ONBOARDING
 	pod 'Instructions', '~> 0.3'
@@ -28,6 +29,6 @@ def pods
 	pod 'Amplitude-iOS', '~> 3.5.0'
 end
 
-target 'GrandOpens' do
+target 'Tastemaker' do
 	pods
 end

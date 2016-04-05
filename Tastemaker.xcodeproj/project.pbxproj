@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06379918116B7EFDD70EF660 /* Pods_GrandOpens.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA944B92C46FEEAF125D1DCE /* Pods_GrandOpens.framework */; };
 		DE1973EB1B6D29570056148B /* GrandOpens_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */; };
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
@@ -46,6 +45,7 @@
 		DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */; };
 		DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C711B27FA40004D2D3D /* Social.framework */; };
 		DEEF8C741B27FA46004D2D3D /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C731B27FA46004D2D3D /* Accounts.framework */; };
+		F9F7413D92CE837796E69D31 /* Pods_Tastemaker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD170F84DA824EFBEC870BD /* Pods_Tastemaker.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +60,9 @@
 
 /* Begin PBXFileReference section */
 		4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrandOpens.release.xcconfig"; path = "Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens.release.xcconfig"; sourceTree = "<group>"; };
+		8F85EC34AD6EF10FED9A998A /* Pods-Tastemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tastemaker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker.debug.xcconfig"; sourceTree = "<group>"; };
+		B4D514EDEAC72D8800F41F82 /* Pods-Tastemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tastemaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker.release.xcconfig"; sourceTree = "<group>"; };
+		BFD170F84DA824EFBEC870BD /* Pods_Tastemaker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tastemaker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE1973E61B6D29570056148B /* Tastemaker.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tastemaker.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE1973E91B6D29570056148B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE1973EA1B6D29570056148B /* GrandOpens_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrandOpens_Tests.swift; sourceTree = "<group>"; };
@@ -67,7 +70,6 @@
 		DE1F08611B61BCDE0094ACA0 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		DE1F08631B61BD440094ACA0 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOVenueCellView.swift; sourceTree = "<group>"; };
-		DE283D101B61537E0003466D /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
 		DE283D121B615F040003466D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DE283D161B61A1A30003466D /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -139,7 +141,7 @@
 				DEEF8C741B27FA46004D2D3D /* Accounts.framework in Frameworks */,
 				DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */,
 				DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */,
-				06379918116B7EFDD70EF660 /* Pods_GrandOpens.framework in Frameworks */,
+				F9F7413D92CE837796E69D31 /* Pods_Tastemaker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +153,8 @@
 			children = (
 				F1DD5DC3D0B619F5916D771E /* Pods-GrandOpens.debug.xcconfig */,
 				4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */,
+				8F85EC34AD6EF10FED9A998A /* Pods-Tastemaker.debug.xcconfig */,
+				B4D514EDEAC72D8800F41F82 /* Pods-Tastemaker.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -252,7 +256,6 @@
 				DEEF8C711B27FA40004D2D3D /* Social.framework */,
 				DE6126891B2697C80009FB34 /* libsqlite3.dylib */,
 				DE6126871B2697B30009FB34 /* libz.dylib */,
-				DE283D101B61537E0003466D /* ParseUI.framework */,
 				DE6126851B2697A80009FB34 /* SystemConfiguration.framework */,
 				DE6126831B26979F0009FB34 /* StoreKit.framework */,
 				DE6126811B26979A0009FB34 /* Security.framework */,
@@ -264,6 +267,7 @@
 				DE6126751B2697760009FB34 /* AudioToolbox.framework */,
 				FA22CA936F84D53233B4521D /* Pods.framework */,
 				EA944B92C46FEEAF125D1DCE /* Pods_GrandOpens.framework */,
+				BFD170F84DA824EFBEC870BD /* Pods_Tastemaker.framework */,
 			);
 			name = Frameworks;
 			path = GrandOpens;
@@ -436,7 +440,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		1270A5297F2598D8A8075626 /* Embed Pods Frameworks */ = {
@@ -451,7 +455,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		841E1F68AAB2E291ABAB0CB4 /* Check Pods Manifest.lock */ = {
@@ -667,7 +671,7 @@
 		};
 		DE61263A1B2505950009FB34 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1DD5DC3D0B619F5916D771E /* Pods-GrandOpens.debug.xcconfig */;
+			baseConfigurationReference = 8F85EC34AD6EF10FED9A998A /* Pods-Tastemaker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -689,7 +693,7 @@
 		};
 		DE61263B1B2505950009FB34 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */;
+			baseConfigurationReference = B4D514EDEAC72D8800F41F82 /* Pods-Tastemaker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
