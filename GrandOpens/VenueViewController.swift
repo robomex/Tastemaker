@@ -10,12 +10,12 @@ import UIKit
 import ReachabilitySwift
 import Firebase
 import Amplitude_iOS
+import PagingMenuController
 
-class VenueViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+class VenueViewController: UIViewController, PagingMenuControllerDelegate {
 
     var venueID: String!
     var venue: Venue?
-    var segmentedControl: UISegmentedControl!
     
     private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
@@ -36,7 +36,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     
     let chatVC = VenueChatViewController()
     let detailsVC = VenueDetailsViewController()
-    var orderedViewControllers = [UIViewController]()
     
     var banned: Bool?
     
@@ -46,23 +45,34 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
         // Do any additional setup after loading the view.
         
         view.backgroundColor = UIColor.whiteColor()
-        dataSource = self
-        delegate = self
         chatVC.venue = venue
         detailsVC.venue = venue
-        orderedViewControllers = [self.chatVC, self.detailsVC]
-        setViewControllers([chatVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
+        chatVC.title = "Chat"
+        detailsVC.title = "Details"
         
-        let segmentedControlWidth = 140 as CGFloat
-        let screenWidth = self.view.frame.size.width
-        segmentedControl = UISegmentedControl(items: ["Chat", "Details"])
-        segmentedControl.frame = CGRectMake((screenWidth / 2) - (segmentedControlWidth / 2), 10, segmentedControlWidth, 25)
-        segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.addTarget(self, action: #selector(VenueViewController.venueSegmentedControlAction(_:)), forControlEvents: .ValueChanged)
-        segmentedControl.backgroundColor = UIColor.whiteColor()
-        segmentedControl.tintColor = kPurple
-        segmentedControl.layer.cornerRadius = 5
-        self.view.addSubview(segmentedControl)
+        let viewControllers = [chatVC, detailsVC]
+        
+        let options = PagingMenuOptions()
+        options.menuItemMargin = 5
+        options.backgroundColor = kBlue
+        options.selectedBackgroundColor = kBlue
+        options.textColor = UIColor.whiteColor()
+        options.selectedTextColor = UIColor.whiteColor()
+        options.menuHeight = 30
+        options.animationDuration = 0.3
+        options.menuDisplayMode = .SegmentedControl
+        options.menuItemMode = .Underline(height: 3, color: kPurple, horizontalPadding: 5, verticalPadding: 5)
+        options.menuDisplayMode = .Standard(widthMode: .Flexible, centerItem: true, scrollingMode: .ScrollEnabled)
+        options.font = UIFont.systemFontOfSize(17)
+        options.selectedFont = UIFont.systemFontOfSize(17)
+        
+        let pagingMenuController = PagingMenuController(viewControllers: viewControllers, options: options)
+        pagingMenuController.delegate = self
+        
+        
+        self.addChildViewController(pagingMenuController)
+        self.view.addSubview(pagingMenuController.view)
+        pagingMenuController.didMoveToParentViewController(self)
         
         // Save/unsave and silence/unsilence setup, check if currentUser saved/silenced this venue
         
@@ -149,74 +159,6 @@ class VenueViewController: UIPageViewController, UIPageViewControllerDataSource,
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func venueSegmentedControlAction(sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
-            setViewControllers([chatVC], direction: UIPageViewControllerNavigationDirection.Reverse, animated: true, completion: nil)
-        case 1:
-            setViewControllers([detailsVC], direction: UIPageViewControllerNavigationDirection.Forward, animated: true, completion: nil)
-        default:
-            return
-        }
-    }
-    
-    
-    // MARK: UIPageViewControllerDataSource
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-
-        guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
-            return nil
-        }
-        
-        let previousIndex = viewControllerIndex - 1
-        
-        guard previousIndex >= 0 else {
-            return nil
-        }
-        
-        guard orderedViewControllers.count > previousIndex else {
-            return nil
-        }
-        
-        return orderedViewControllers[previousIndex]
-    }
-    
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        
-        guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
-            return nil
-        }
-        
-        let nextIndex = viewControllerIndex + 1
-        
-        guard orderedViewControllers.count != nextIndex else {
-            return nil
-        }
-        
-        guard orderedViewControllers.count > nextIndex else {
-            return nil
-        }
-        
-        return orderedViewControllers[nextIndex]
-    }
-    
-    
-    // MARK: UIPageViewControllerDelegate
-    
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        
-        if (!completed) {
-            return
-        }
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-            segmentedControl.selectedSegmentIndex = 1
-        } else if segmentedControl.selectedSegmentIndex == 1 {
-            segmentedControl.selectedSegmentIndex = 0
-        }
     }
     
     
