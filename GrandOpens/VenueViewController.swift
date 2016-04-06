@@ -235,4 +235,13 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: #selector(VenueViewController.unsilenceButtonAction(_:)))
         self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
     }
+    
+    
+    // MARK: PagingMenuController
+    
+    func willMoveToPageMenuController(menuController: UIViewController, previousMenuController: UIViewController) {
+        if previousMenuController == chatVC {
+            chatVC.inputToolbar.contentView.textView.resignFirstResponder()
+        }
+    }
 }
