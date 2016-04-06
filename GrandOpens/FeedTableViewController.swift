@@ -33,6 +33,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     private var mapView = MKMapView()
     private let regionRadius: CLLocationDistance = 3000
     private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+    private var mapIsLoaded: Bool = false
     private let locationManager = CLLocationManager()
     private var visits = [String: Bool]()
     
@@ -76,7 +77,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        print(self.venues)
+        print(self.venues.count)
         
         self.navigationController!.navigationBar.translucent = false
         
@@ -421,40 +422,44 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     func mapViewButtonAction(sender: AnyObject) {
         
-        self.mapView.mapType = .Standard
-        self.mapView.delegate = self
-        self.mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height)
-        
-        if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
-            let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
-            if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 15000 {
-                self.mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
-            }
-        }
-        
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(self.mapCenter, self.regionRadius * 2.0, self.regionRadius * 2.0)
-        self.mapView.setRegion(coordinateRegion, animated: false)
-        
-        if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
-            self.mapView.showsUserLocation = true
-        }
-        
-        for venue in self.venues {
-            let venueLocation: CLLocation = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
-            let coordinate = venueLocation.coordinate
-            let title = venue.name
-            // Set all VenueAnnotations to default for now
-            let typeRawValue = 0
-            let type = VenueType(rawValue: typeRawValue)
-            let subtitle = venue.description
-            let annotation = VenueAnnotation(coordinate: coordinate, title: title!, subtitle: subtitle!, type: type!, venue: venue)
+        if !mapIsLoaded {
+            self.mapView.mapType = .Standard
+            self.mapView.delegate = self
+            // Tab bar height = 49, nav bar height = 64, 113 = 49 + 64
+            self.mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
             
-            self.mapView.addAnnotation(annotation)
+            if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+                let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+                if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 15000 {
+                    self.mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+                }
+            }
+            
+            let coordinateRegion = MKCoordinateRegionMakeWithDistance(self.mapCenter, self.regionRadius * 2.0, self.regionRadius * 2.0)
+            self.mapView.setRegion(coordinateRegion, animated: false)
+            
+            if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
+                self.mapView.showsUserLocation = true
+            }
+            
+            for venue in self.venues {
+                let venueLocation: CLLocation = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
+                let coordinate = venueLocation.coordinate
+                let title = venue.name
+                // Set all VenueAnnotations to default for now
+                let typeRawValue = 0
+                let type = VenueType(rawValue: typeRawValue)
+                let subtitle = venue.description
+                let annotation = VenueAnnotation(coordinate: coordinate, title: title!, subtitle: subtitle!, type: type!, venue: venue)
+                
+                self.mapView.addAnnotation(annotation)
+            }
+            
+            self.view.addSubview(mapView)
+            self.mapIsLoaded = true
         }
         
-        self.view.addSubview(mapView)
         self.mapView.hidden = false
-        
         self.configureListViewButton()
     }
     
@@ -510,8 +515,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     func listViewButtonAction(sender: AnyObject) {
         
         self.mapView.hidden = true
-        self.mapView = MKMapView()
-        
         self.configureMapViewButton()
     }
     
