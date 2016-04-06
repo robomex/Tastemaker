@@ -24,6 +24,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var mutedUsers = [String: String]()
     var mutedRefHandle = UInt()
     var visitRefHandle = UInt()
+    var loaded: Bool = false
     
     var visitStatus = "noVisits"
     var currentMessageSendTime = NSDate()
@@ -73,78 +74,81 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.navigationController!.navigationBar.translucent = false
         
         // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            let enumerator = snapshot.children
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.mutedUsers[data.key] = "muted"
-            }
-            
-            if let id = self.venue?.objectId {
-                fetchMessages(id, callback: {
-                    messages in
-                    
-                    for m in messages {
-                        if self.mutedUsers[m.senderID] == nil {
-                            self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
-                            self.visitStatuses.append(m.visitStatus)
-                            self.userIdList.append(m.senderID)
-                        }
-                    }
-                    self.finishReceivingMessageAnimated(false)
-                    self.userIdList = Array(Set(self.userIdList))
-                    
-                    if self.messages.count > 0 {
-                        self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
-                    }
-                })
-            }
-        })
-        
-        // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
-        if let id = venue?.objectId {
-            messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
-                message in
-                if self.mutedUsers[message.senderID] == nil {
-                    self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
-                    self.visitStatuses.append(message.visitStatus)
-                    self.userIdList.append(message.senderID)
-                }
-                self.finishReceivingMessage()
-                self.userIdList = Array(Set(self.userIdList))
-            })
-        }
-        
-        mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            let enumerator = snapshot.children
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                self.mutedUsers[data.key] = "muted"
-            }
-        })
-
-        visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-
-            if snapshot.exists() {
-                self.visitStatus = "visited"
-
+        if !loaded {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
+                snapshot in
+                
                 let enumerator = snapshot.children
                 while let data = enumerator.nextObject() as? FDataSnapshot {
-                    if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
-                        if date.timeIntervalSinceNow > (-3*60*60) {
-                            self.visitStatus = "thereNow"
-                        } else {
-                            self.visitStatus = "visited"
+                    self.mutedUsers[data.key] = "muted"
+                }
+                
+                if let id = self.venue?.objectId {
+                    fetchMessages(id, callback: {
+                        messages in
+                        
+                        for m in messages {
+                            if self.mutedUsers[m.senderID] == nil {
+                                self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                                self.visitStatuses.append(m.visitStatus)
+                                self.userIdList.append(m.senderID)
+                            }
+                        }
+                        self.finishReceivingMessageAnimated(false)
+                        self.userIdList = Array(Set(self.userIdList))
+                        
+                        if self.messages.count > 0 {
+                            self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
+                        }
+                    })
+                }
+            })
+            
+            // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
+            if let id = venue?.objectId {
+                messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
+                    message in
+                    if self.mutedUsers[message.senderID] == nil {
+                        self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                        self.visitStatuses.append(message.visitStatus)
+                        self.userIdList.append(message.senderID)
+                    }
+                    self.finishReceivingMessage()
+                    self.userIdList = Array(Set(self.userIdList))
+                })
+            }
+            
+            mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                let enumerator = snapshot.children
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    self.mutedUsers[data.key] = "muted"
+                }
+            })
+            
+            visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    self.visitStatus = "visited"
+                    
+                    let enumerator = snapshot.children
+                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                        if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
+                            if date.timeIntervalSinceNow > (-3*60*60) {
+                                self.visitStatus = "thereNow"
+                            } else {
+                                self.visitStatus = "visited"
+                            }
                         }
                     }
+                } else {
+                    self.visitStatus = "noVisits"
                 }
-            } else {
-                self.visitStatus = "noVisits"
-            }
-        })
+            })
+            self.loaded = true
+        }
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "VenueChatViewController")
