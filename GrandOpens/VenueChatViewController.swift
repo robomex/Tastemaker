@@ -68,7 +68,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func viewWillAppear(animated: Bool) {
         // Using super.viewWillAppear causes self.messages array index out of range on line 171 (for example when backing out to chat from the GOUserProfileVC), let data = self.messages[indexPath.row] - perhaps since JSQMessagesVC is embedded in a UIPageVC
-//        super.viewWillAppear(animated)
+        super.viewWillAppear(animated)
         
         self.navigationController!.navigationBar.translucent = false
         
@@ -160,10 +160,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
         
-        self.messages = []
-        self.visitStatuses = []
-        self.mutedUsers = [:]
-        self.userIdList = []
+//        self.messages = []
+//        self.visitStatuses = []
+//        self.mutedUsers = [:]
+//        self.userIdList = []
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
