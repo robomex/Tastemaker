@@ -24,7 +24,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Description label
         
         let venueDescriptionLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 80))
-        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 85)
+        venueDescriptionLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 50)
         
         let venueDescription: String = (venue?.description)!
         venueDescriptionLabel.text = venueDescription
@@ -39,7 +39,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Opening date and food type label
         
         let venueFoodTypeAndOpeningDateLabel = UILabel(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width - 20, 40))
-        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 110)
+        venueFoodTypeAndOpeningDateLabel.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 75)
         
         let venueFoodType: String = (venue?.foodType)!
         let venueOpeningDate: String = (venue?.openingDate)!
@@ -63,7 +63,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.mapType = .Standard
         mapView.delegate = self
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
-        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 200)
+        mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 165)
         
         let venueAddress = (venue?.address)!
         let geocoder = CLGeocoder()
@@ -98,10 +98,11 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Address and neighborhood
         
         let addressNeighborhoodPhoneTableView = UITableView()
-        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 285, UIScreen.mainScreen().bounds.width, 88)
+        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 250, UIScreen.mainScreen().bounds.width, 88)
         addressNeighborhoodPhoneTableView.dataSource = self
         addressNeighborhoodPhoneTableView.delegate = self
         addressNeighborhoodPhoneTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        addressNeighborhoodPhoneTableView.scrollEnabled = false
         self.view.addSubview(addressNeighborhoodPhoneTableView)
     }
     
