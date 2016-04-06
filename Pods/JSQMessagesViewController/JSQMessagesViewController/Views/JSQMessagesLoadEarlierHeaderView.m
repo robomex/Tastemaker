@@ -21,8 +21,7 @@
 
 #import "NSBundle+JSQMessages.h"
 
-// HACK
-const CGFloat kJSQMessagesLoadEarlierHeaderViewHeight = 75.0f;
+const CGFloat kJSQMessagesLoadEarlierHeaderViewHeight = 32.0f;
 
 
 @interface JSQMessagesLoadEarlierHeaderView ()
@@ -75,8 +74,6 @@ const CGFloat kJSQMessagesLoadEarlierHeaderViewHeight = 75.0f;
 {
     [super setBackgroundColor:backgroundColor];
     self.loadButton.backgroundColor = backgroundColor;
-    // HACK
-    self.loadButton.contentVerticalAlignment = UIControlContentVerticalAlignmentBottom;
 }
 
 #pragma mark - Actions
