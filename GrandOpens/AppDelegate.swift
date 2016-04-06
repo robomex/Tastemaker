@@ -130,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     snapshot in
 
                     let targetVenue = snapshotToVenue(snapshot)
-                    let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                    let vc = VenueViewController()
                     vc.venue = targetVenue
                     vc.venueID = targetVenue.objectId
                     // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC
@@ -155,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                             snapshot in
                             
                             let targetVenue = snapshotToVenue(snapshot)
-                            let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+                            let vc = VenueViewController()
                             vc.venue = targetVenue
                             vc.venueID = targetVenue.objectId
                             // NEED TO ADD IN BANNED CHECK OR MOVE BANNED CHECK TO CHATVC

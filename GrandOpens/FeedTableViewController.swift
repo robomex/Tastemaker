@@ -251,7 +251,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let vc = VenueViewController()
        
         let venue = venues[indexPath.row]
         vc.venue = venue
@@ -488,7 +488,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
-        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let vc = VenueViewController()
         
         let venueAnnotation = view.annotation as! VenueAnnotation
         let venue = venueAnnotation.venue

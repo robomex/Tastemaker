@@ -89,7 +89,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let vc = VenueViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        let vc = VenueViewController()
         
         let venue = self.listVenues[indexPath.row]
         vc.venue = venue
