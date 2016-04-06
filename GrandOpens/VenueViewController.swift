@@ -45,6 +45,18 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         // Do any additional setup after loading the view.
         
         view.backgroundColor = UIColor.whiteColor()
+        
+        // Remove Navigation Controller shadow image to seamlessly blend with PagingMenuController section
+        for parent in self.navigationController!.navigationBar.subviews {
+            for childView in parent.subviews {
+                if (childView is UIImageView) {
+                    childView.removeFromSuperview()
+                }
+            }
+        }
+        
+        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        
         chatVC.venue = venue
         detailsVC.venue = venue
         chatVC.title = "Chat"
