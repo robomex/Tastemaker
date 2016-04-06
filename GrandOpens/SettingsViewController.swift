@@ -43,7 +43,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         self.navigationController!.navigationBar.translucent = false
         
-        self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        self.navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
 

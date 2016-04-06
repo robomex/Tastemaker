@@ -80,7 +80,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         self.navigationController!.navigationBar.translucent = false
         
-        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false

@@ -39,7 +39,7 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.tabBarController?.tabBar.hidden = true
         
         mutedUsers = []
