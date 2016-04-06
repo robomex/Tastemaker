@@ -153,7 +153,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func viewDidDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewDidDisappear(animated)
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         
         messageListener?.stop((venue?.objectId)!)
