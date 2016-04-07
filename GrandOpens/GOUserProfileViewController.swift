@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import DZNEmptyDataSet
 import Amplitude_iOS
+import JSQMessagesViewController
 
 class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
@@ -21,6 +22,9 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     private var usersSavedListHandle = UInt?()
     private var usersSavedListVenues = [Venue]()
     private var loading: Bool = true
+    private var originalMessages: [JSQMessage] = []
+    private var originalVisitStatuses: [String] = []
+    private var originalUserIdList = [String]()
     
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
@@ -138,10 +142,17 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
 //            }
 //        }
         
-        // Mute and unmute setup, check if this user is muted
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        
+        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+            let chatVC = venueVC.chatVC
+            originalMessages = chatVC.messages
+            originalVisitStatuses = chatVC.visitStatuses
+            originalUserIdList = chatVC.userIdList
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -255,7 +266,23 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
             let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC
-            chatVC.loaded = false
+            chatVC.mutedUsers[self.userId] = "muted"
+            
+            var filteredMessages: [JSQMessage] = []
+            var filteredVisitStatuses: [String] = []
+            var filteredUserIdList = [String]()
+            for (index, message) in chatVC.messages.enumerate() {
+                if chatVC.mutedUsers[message.senderId] == nil {
+                    filteredMessages.append(originalMessages[index])
+                    filteredVisitStatuses.append(originalVisitStatuses[index])
+                    filteredUserIdList.append(message.senderId)
+                }
+            }
+            filteredUserIdList = Array(Set(filteredUserIdList))
+            chatVC.messages = filteredMessages
+            chatVC.visitStatuses = filteredVisitStatuses
+            chatVC.userIdList = filteredUserIdList
+            chatVC.collectionView.reloadData()
         }
         
         Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": self.userId, "Muted User Nickname": self.userNickname])
@@ -268,8 +295,15 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureMuteButton()
-        
         userActivitiesMuteRef?.removeValue()
+        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+            let chatVC = venueVC.chatVC
+            chatVC.mutedUsers[self.userId] = nil
+            chatVC.messages = originalMessages
+            chatVC.visitStatuses = originalVisitStatuses
+            chatVC.userIdList = originalUserIdList
+        }
         
         Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": self.userId, "Unmuted User Nickname": self.userNickname])
     }
