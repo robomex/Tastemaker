@@ -7,12 +7,10 @@
 //
 
 import UIKit
-import CoreData
 import CoreLocation
 import Firebase
 import Amplitude_iOS
 import SwiftyDrop
-//import Batch
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate, CLLocationManagerDelegate {
@@ -65,10 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // Amplitude initialization
         Amplitude.instance().initializeApiKey("6d506a59d008bdec71b5b5a9ec4af932")
-        
-        // Batch initialization
-//        BatchPush.setupPush()
-//        Batch.startWithAPIKey("DEV56D5EEA502B0193D3F8A9A77FB6")
         
         // Update/register device's push token
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
@@ -300,9 +294,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         
         // Stop monitoring visits
         locationManager.stopMonitoringVisits()
-        
-        // Clear cache
-        GOCache.sharedCache.clear()
         
         // Clear NSUserDefaults
         let appDomain = NSBundle.mainBundle().bundleIdentifier!

@@ -9,6 +9,5 @@
 #import "JSQMessagesViewController/JSQMessages.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <DZNEmptyDataSet/UIScrollView+EmptyDataSet.h>
-#import "OSCache.h"
 #import <SCLAlertView_Objective_C/SCLAlertView.h>
 #import <Google/Analytics.h>

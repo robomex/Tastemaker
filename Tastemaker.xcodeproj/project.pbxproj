@@ -16,11 +16,9 @@
 		DE283D151B61670E0003466D /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D141B61670E0003466D /* InitialViewController.swift */; };
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
 		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
-		DE5068331C5978EC006FFD51 /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5068321C5978EC006FFD51 /* OSCache.m */; };
 		DE53FFB81C7FB8CE00210701 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */; };
 		DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
-		DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */; };
 		DE6126251B2505950009FB34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6126231B2505950009FB34 /* Main.storyboard */; };
 		DE6126271B2505950009FB34 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE6126261B2505950009FB34 /* Images.xcassets */; };
 		DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE6126281B2505950009FB34 /* LaunchScreen.xib */; };
@@ -36,7 +34,6 @@
 		DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */; };
 		DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */; };
 		DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2A1B9E698900D0F221 /* Constants.swift */; };
-		DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2C1BA1408600D0F221 /* GOCache.swift */; };
 		DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */; };
 		DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */; };
 		DEEB760A1B3298B600A94305 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76091B3298B600A94305 /* User.swift */; };
@@ -59,7 +56,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrandOpens.release.xcconfig"; path = "Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens.release.xcconfig"; sourceTree = "<group>"; };
 		8F85EC34AD6EF10FED9A998A /* Pods-Tastemaker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tastemaker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker.debug.xcconfig"; sourceTree = "<group>"; };
 		B4D514EDEAC72D8800F41F82 /* Pods-Tastemaker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tastemaker.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tastemaker/Pods-Tastemaker.release.xcconfig"; sourceTree = "<group>"; };
 		BFD170F84DA824EFBEC870BD /* Pods_Tastemaker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tastemaker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,14 +70,11 @@
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DE283D161B61A1A30003466D /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
-		DE5068311C5978EC006FFD51 /* OSCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCache.h; sourceTree = "<group>"; };
-		DE5068321C5978EC006FFD51 /* OSCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
 		DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueSorter.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* Tastemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tastemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE61261C1B2505950009FB34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DE61261F1B2505950009FB34 /* GrandOpens.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GrandOpens.xcdatamodel; sourceTree = "<group>"; };
 		DE6126241B2505950009FB34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DE6126261B2505950009FB34 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		DE6126291B2505950009FB34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -108,7 +101,6 @@
 		DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueChatViewController.swift; sourceTree = "<group>"; };
 		DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueDetailsViewController.swift; sourceTree = "<group>"; };
 		DEA5EE2A1B9E698900D0F221 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		DEA5EE2C1BA1408600D0F221 /* GOCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOCache.swift; sourceTree = "<group>"; };
 		DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUtility.swift; sourceTree = "<group>"; };
 		DEA846191C8223EE00BB231E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUserProfileViewController.swift; sourceTree = "<group>"; };
@@ -119,7 +111,6 @@
 		DEEF8C711B27FA40004D2D3D /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		DEEF8C731B27FA46004D2D3D /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		EA944B92C46FEEAF125D1DCE /* Pods_GrandOpens.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GrandOpens.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F1DD5DC3D0B619F5916D771E /* Pods-GrandOpens.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GrandOpens.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GrandOpens/Pods-GrandOpens.debug.xcconfig"; sourceTree = "<group>"; };
 		FA22CA936F84D53233B4521D /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -151,8 +142,6 @@
 		DBBC92456D07A69B1F961ED3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F1DD5DC3D0B619F5916D771E /* Pods-GrandOpens.debug.xcconfig */,
-				4E7AD1E6BA933985422C3154 /* Pods-GrandOpens.release.xcconfig */,
 				8F85EC34AD6EF10FED9A998A /* Pods-Tastemaker.debug.xcconfig */,
 				B4D514EDEAC72D8800F41F82 /* Pods-Tastemaker.release.xcconfig */,
 			);
@@ -208,7 +197,6 @@
 				DE6126231B2505950009FB34 /* Main.storyboard */,
 				DE6126261B2505950009FB34 /* Images.xcassets */,
 				DE6126281B2505950009FB34 /* LaunchScreen.xib */,
-				DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */,
 				DE61261A1B2505950009FB34 /* Supporting Files */,
 			);
 			path = GrandOpens;
@@ -220,8 +208,6 @@
 				DE61261B1B2505950009FB34 /* Info.plist */,
 				DE53FFB71C7FB8CE00210701 /* GoogleService-Info.plist */,
 				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
-				DE5068311C5978EC006FFD51 /* OSCache.h */,
-				DE5068321C5978EC006FFD51 /* OSCache.m */,
 				DE8300631B5F01E2000B71D7 /* Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -278,7 +264,6 @@
 			children = (
 				DEA5EE2A1B9E698900D0F221 /* Constants.swift */,
 				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
-				DEA5EE2C1BA1408600D0F221 /* GOCache.swift */,
 				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
 				DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */,
 			);
@@ -491,7 +476,6 @@
 				DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */,
 				DEEB760C1B32990700A94305 /* Venue.swift in Sources */,
 				DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */,
-				DE6126201B2505950009FB34 /* GrandOpens.xcdatamodeld in Sources */,
 				DE283D151B61670E0003466D /* InitialViewController.swift in Sources */,
 				DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */,
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
@@ -499,14 +483,12 @@
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
 				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
-				DEA5EE2D1BA1408600D0F221 /* GOCache.swift in Sources */,
 				DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */,
 				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
 				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
 				DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
-				DE5068331C5978EC006FFD51 /* OSCache.m in Sources */,
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
 				DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */,
@@ -744,19 +726,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		DE61261E1B2505950009FB34 /* GrandOpens.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				DE61261F1B2505950009FB34 /* GrandOpens.xcdatamodel */,
-			);
-			currentVersion = DE61261F1B2505950009FB34 /* GrandOpens.xcdatamodel */;
-			path = GrandOpens.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = DE61260F1B2505950009FB34 /* Project object */;
 }
