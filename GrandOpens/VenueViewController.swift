@@ -26,9 +26,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
     private var userActivitiesSilenceHandle = UInt?()
     private var userActivitiesSilenceRef: Firebase?
     
-    private var onlineStatusHandle = UInt?()
     private var onlineStatusRef: Firebase?
-    
     private var seenNotificationRef: Firebase?
     
     private var saveButton = UIBarButtonItem()
@@ -81,7 +79,6 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         let pagingMenuController = PagingMenuController(viewControllers: viewControllers, options: options)
         pagingMenuController.delegate = self
         
-        
         self.addChildViewController(pagingMenuController)
         self.view.addSubview(pagingMenuController.view)
         pagingMenuController.didMoveToParentViewController(self)
@@ -114,40 +111,42 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves/\(venueID)")
-        venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
-        userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            // Nested if statements for unwrapping
-            if snapshot.exists() {
-                if snapshot.value.objectForKey("saved") as! Bool == true {
-                    self.configureUnsaveButton()
+        if self.isMovingToParentViewController() {
+            userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves/\(venueID)")
+            venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
+            userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                // Nested if statements for unwrapping
+                if snapshot.exists() {
+                    if snapshot.value.objectForKey("saved") as! Bool == true {
+                        self.configureUnsaveButton()
+                    } else {
+                        self.configureSaveButton()
+                    }
                 } else {
                     self.configureSaveButton()
                 }
-            } else {
-                self.configureSaveButton()
-            }
-        })
-        
-        userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/silences/\(venueID)")
-        userActivitiesSilenceHandle = userActivitiesSilenceRef!.observeEventType(.Value, withBlock: {
-            snapshot in
+            })
             
-            if snapshot.exists() {
-                if snapshot.value.objectForKey("silenced") as! Bool == true {
-                    self.configureUnsilenceButton()
+            userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/silences/\(venueID)")
+            userActivitiesSilenceHandle = userActivitiesSilenceRef!.observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    if snapshot.value.objectForKey("silenced") as! Bool == true {
+                        self.configureUnsilenceButton()
+                    } else {
+                        self.configureSilenceButton()
+                    }
                 } else {
                     self.configureSilenceButton()
                 }
-            } else {
-                self.configureSilenceButton()
-            }
-        })
+            })
+        }
         
         seenNotificationRef = DataService.dataService.BASE_REF.childByAppendingPath("notifications/\(uid)/\(venueID)")
-        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(FEventType.Value, withBlock: {
+        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
@@ -169,9 +168,14 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
-        userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
-
+        if self.isMovingFromParentViewController() {
+            userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
+            userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
+            chatVC.messageListener!.stop((chatVC.venue?.objectId)!)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(chatVC.uid)/visits/\(chatVC.venue?.objectId)").removeObserverWithHandle(chatVC.visitRefHandle)
+            print("venueVC did disappear")
+        }
+    
         onlineStatusRef!.removeValue()
     }
 
