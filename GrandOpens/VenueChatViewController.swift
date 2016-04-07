@@ -22,7 +22,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String: String]()
-    var mutedRefHandle = UInt()
+    
     var visitRefHandle = UInt()
     var loaded: Bool = false
     
@@ -63,16 +63,15 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
-        
-
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         self.navigationController!.navigationBar.translucent = false
         
         if !loaded {
+
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -114,16 +113,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     self.userIdList = Array(Set(self.userIdList))
                 })
             }
-
-            // I don't think this listener is needed - when would users be muted when looking at the chat?
-//            mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
-//                snapshot in
-//                
-//                let enumerator = snapshot.children
-//                while let data = enumerator.nextObject() as? FDataSnapshot {
-//                    self.mutedUsers[data.key] = "muted"
-//                }
-//            })
             
             visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
@@ -157,16 +146,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
-        
-        messageListener?.stop((venue?.objectId)!)
-        // I don't think this listener is needed - when would users be muted when looking at the chat?
-//        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
-        
-//        self.messages = []
-//        self.visitStatuses = []
-//        self.mutedUsers = [:]
-//        self.userIdList = []
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
@@ -424,7 +403,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             messages in
             
             for m in messages {
-                if self.mutedUsers[m.senderID] == nil { //!GOCache.sharedCache.isUserMutedByCurrentUser(m.senderID) {
+                if self.mutedUsers[m.senderID] == nil {
                     self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
                     self.visitStatuses.insert(m.visitStatus, atIndex: 0)
                     self.userIdList.append(m.senderID)
