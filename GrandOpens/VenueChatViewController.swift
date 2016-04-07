@@ -68,12 +68,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func viewWillAppear(animated: Bool) {
-        // Using super.viewWillAppear causes self.messages array index out of range on line 171 (for example when backing out to chat from the GOUserProfileVC), let data = self.messages[indexPath.row] - perhaps since JSQMessagesVC is embedded in a UIPageVC
         super.viewWillAppear(animated)
         
         self.navigationController!.navigationBar.translucent = false
         
-        // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: Need to keep this in viewDidLoad to prevent the messages from loading multiple times, when moved to viewDidAppear and setting messages to empty, there was an 'array index out of range' error
         if !loaded {
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
@@ -104,7 +102,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 }
             })
             
-            // BEFORE moving removeObservers to viewWillDisappear and setting 4x arrays/dicts (visitStatuses, userIdList, mutedUsers, messages) to nil in viewWillDisappear, previous problems were: putting this in viewWillAppear causes multiple messages on outgoing message, maybe since it's placed in a PageVC?
             if let id = venue?.objectId {
                 messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
                     message in
@@ -117,15 +114,16 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                     self.userIdList = Array(Set(self.userIdList))
                 })
             }
-            
-            mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
-                snapshot in
-                
-                let enumerator = snapshot.children
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    self.mutedUsers[data.key] = "muted"
-                }
-            })
+
+            // I don't think this listener is needed - when would users be muted when looking at the chat?
+//            mutedRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+//                snapshot in
+//                
+//                let enumerator = snapshot.children
+//                while let data = enumerator.nextObject() as? FDataSnapshot {
+//                    self.mutedUsers[data.key] = "muted"
+//                }
+//            })
             
             visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
@@ -161,7 +159,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         
         messageListener?.stop((venue?.objectId)!)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
+        // I don't think this listener is needed - when would users be muted when looking at the chat?
+//        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedRefHandle)
         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue?.objectId!)").removeObserverWithHandle(visitRefHandle)
         
 //        self.messages = []
