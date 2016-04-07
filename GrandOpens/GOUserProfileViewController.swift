@@ -251,8 +251,12 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureUnmuteButton()
-        
         userActivitiesMuteRef?.setValue(true)
+        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+            let chatVC = venueVC.chatVC
+            chatVC.loaded = false
+        }
         
         Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": self.userId, "Muted User Nickname": self.userNickname])
         Amplitude.instance().identify(AMPIdentify().add("Mutes", value: 1).append("Mutes-UserIDs", value: (self.userId)))
