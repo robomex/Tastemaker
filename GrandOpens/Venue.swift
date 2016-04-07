@@ -25,71 +25,40 @@ struct Venue {
 private let openingDateFormat = "yyyy-MM-dd"
 
 class VenueListener {
-//    var currentChildAddedHandle: UInt?
-//    var currentChildChangedHandle: UInt?
-//    var currentChildRemovedHandle: UInt?
+
     var currentHandle: UInt?
     
-    init (//startDate: NSDate,
-        endDate: NSDate, callback: ([Venue]) -> ()) {
-            let handle = DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
-                snapshot in
-                var venues = Array<Venue>()
-                let enumerator = snapshot.children
+    init (endDate: NSDate, callback: ([Venue]) -> ()) {
+        let handle = DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
+            snapshot in
+            var venues = Array<Venue>()
+            let enumerator = snapshot.children
+            
+            while let data = enumerator.nextObject() as? FDataSnapshot {
+                venues.insert(snapshotToVenue(data), atIndex: 0)
+            }
+            
+            DataService.dataService.VENUES_REF.queryOrderedByChild("featured").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: {
+                snap in
                 
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    venues.insert(snapshotToVenue(data), atIndex: 0)
+                let enumerator = snap.children
+                let reversed = enumerator.reverse()
+                for features in reversed {
+                    var featuredVenue: Venue = snapshotToVenue(features as! FDataSnapshot)
+                    featuredVenue.foodType = "Featured"
+                    venues.insert(featuredVenue, atIndex: 3)
                 }
-                
-                DataService.dataService.VENUES_REF.queryOrderedByChild("featured").queryEqualToValue(true).observeSingleEventOfType(.Value, withBlock: {
-                    snap in
-                    
-                    let enumerator = snap.children
-                    let reversed = enumerator.reverse()
-                    for features in reversed {
-                        var featuredVenue: Venue = snapshotToVenue(features as! FDataSnapshot)
-                        featuredVenue.foodType = "Featured"
-                        venues.insert(featuredVenue, atIndex: 3)
-                    }
-                    callback(venues)
-                })
+                callback(venues)
             })
-            self.currentHandle = handle
-//        let childAddedHandle = ref.queryOrderedByChild(kVenueOpeningDate).queryStartingAtValue(dateFormatter().stringFromDate(startDate)).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).observeEventType(FEventType.ChildAdded, withBlock: { snapshot in
-//            let venue = snapshotToVenue(snapshot)
-//            callback(venue)
-//        })
-//        self.currentChildAddedHandle = childAddedHandle
-//        
-//        let childChangedHandle = ref.queryOrderedByChild(kVenueOpeningDate).queryStartingAtValue(dateFormatter().stringFromDate(startDate)).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).observeEventType(FEventType.ChildChanged, withBlock: { snapshot in
-//            let venue = snapshotToVenue(snapshot)
-//            callback(venue)
-//        })
-//        self.currentChildChangedHandle = childChangedHandle
-//        
-//        let childRemovedHandle = ref.queryOrderedByChild(kVenueOpeningDate).queryStartingAtValue(dateFormatter().stringFromDate(startDate)).queryEndingAtValue(dateFormatter().stringFromDate(endDate)).observeEventType(FEventType.ChildRemoved, withBlock: { snapshot in
-//            let venue = snapshotToVenue(snapshot)
-//            callback(venue)
-//        })
-//        self.currentChildRemovedHandle = childRemovedHandle
+        })
+        self.currentHandle = handle
     }
+    
     func stop() {
         if let handle = currentHandle {
             DataService.dataService.VENUES_REF.removeObserverWithHandle(handle)
             currentHandle = nil
         }
-//        if let addHandle = currentChildAddedHandle {
-//            ref.removeObserverWithHandle(addHandle)
-//            currentChildAddedHandle = nil
-//        }
-//        if let changeHandle = currentChildChangedHandle {
-//            ref.removeObserverWithHandle(changeHandle)
-//            currentChildChangedHandle = nil
-//        }
-//        if let removeHandle = currentChildRemovedHandle {
-//            ref.removeObserverWithHandle(removeHandle)
-//            currentChildRemovedHandle = nil
-//        }
     }
 }
 

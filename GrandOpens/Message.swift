@@ -28,6 +28,7 @@ class MessageListener {
         })
         self.currentHandle = handle
     }
+    
     func stop(venueID: String) {
         if let handle = currentHandle {
             DataService.dataService.MESSAGES_REF.childByAppendingPath(venueID).removeObserverWithHandle(handle)
