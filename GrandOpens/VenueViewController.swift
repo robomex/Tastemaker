@@ -102,6 +102,13 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         if self.banned != nil {
             chatVC.inputToolbar?.hidden = true
         }
+        
+        // Set notification to "seen" when app enters foreground from background
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VenueViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -243,5 +250,21 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         if previousMenuController == chatVC {
             chatVC.inputToolbar.contentView.textView.resignFirstResponder()
         }
+    }
+    
+    
+    // MARK: Observer for flagging new messages as seen upon app entering foreground
+    
+    func appDidEnterForeground(notification: NSNotification) {
+        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(.Value, withBlock: {
+            snapshot in
+            
+            if snapshot.exists() {
+                let enumerator = snapshot.children
+                while let seenNotifications = enumerator.nextObject() as? FDataSnapshot {
+                    self.seenNotificationRef?.childByAppendingPath("\(seenNotifications.key)/seen").setValue(true)
+                }
+            }
+        })
     }
 }
