@@ -11,7 +11,6 @@ import TTTAttributedLabel
 import SafariServices
 import Firebase
 import Amplitude_iOS
-//import Batch
 
 class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
     
