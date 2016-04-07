@@ -89,7 +89,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         let todayString = localDateFormatter().stringFromDate(NSDate())
         let todayDate = localDateFormatter().dateFromString(todayString)
         
-        if self.venues.isEmpty {            
+        if self.isMovingToParentViewController() {
             self.tableView.alpha = 0.0
 
             venueListener = VenueListener(endDate: todayDate!, callback: {
@@ -105,19 +105,18 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 self.venues = newList
                 self.tableView.reloadData()
                 NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-//                print(self.venues)
+            })
+            
+            bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    self.banned = true
+                } else {
+                    self.banned = nil
+                }
             })
         }
-        
-        bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            if snapshot.exists() {
-                self.banned = true
-            } else {
-                self.banned = nil
-            }
-        })
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
@@ -137,9 +136,11 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(true)
-        print("view did disappear")
-//        venueListener?.stop()
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        
+        if self.isMovingFromParentViewController() {
+            venueListener?.stop()
+            DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        }
     }
 
     override func didReceiveMemoryWarning() {
