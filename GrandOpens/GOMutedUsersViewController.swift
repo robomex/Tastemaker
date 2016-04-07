@@ -32,8 +32,6 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
         }
         // Next line prevents empty cells from displaying
         self.tableView.tableFooterView = UIView()
-        
-
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -42,23 +40,25 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.tabBarController?.tabBar.hidden = true
         
-        mutedUsers = []
-        mutedUsersHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            let enumerator = snapshot.children
-            self.mutedUsers = []
-            // Unsure why unlike listsVC I gotta call the below reloadData() here to clear users that were just unmuted via the GOUserProfileVC's linked here
-            self.tableView.reloadData()
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                    snap in
-                    
-                    self.mutedUsers.insert(snapshotToUser(snap), atIndex: 0)
-                    self.tableView.reloadData()
-                })
-            }
-        })
+        if self.isMovingToParentViewController() {
+            mutedUsers = []
+            mutedUsersHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                let enumerator = snapshot.children
+                self.mutedUsers = []
+                
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                        snap in
+                        
+                        self.mutedUsers.insert(snapshotToUser(snap), atIndex: 0)
+                        self.tableView.reloadData()
+                    })
+                }
+            })
+        }
+        self.tableView.reloadData()
         
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "MutedUsersViewController")
@@ -68,7 +68,10 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedUsersHandle!)
+        
+        if self.isMovingFromParentViewController() {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedUsersHandle!)
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -141,7 +144,4 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
         let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
         return NSAttributedString(string: description, attributes: attributes)
     }
-    
-    
-    // MARK:-
 }
