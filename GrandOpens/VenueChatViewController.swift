@@ -221,7 +221,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         self.secondToLastMessageSendTime = self.lastMessageSendTime
         self.lastMessageSendTime = self.currentMessageSendTime
         self.currentMessageSendTime = NSDate()
-        if self.secondToLastMessageSendTime.timeIntervalSinceNow > -5 {
+        if self.secondToLastMessageSendTime.timeIntervalSinceNow > -3 {
             showThrottleAlert()
             return
         }
