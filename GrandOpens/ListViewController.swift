@@ -30,14 +30,14 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-//        print(self.)
+        
 //        self.navigationController!.navigationBar.translucent = false
 //        self.tableView.alpha = 0.0
-//        navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(26), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        
         self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
-        if self.listVenues.isEmpty {
+        if self.isMovingToParentViewController() {
             saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -59,7 +59,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                 }
             })
         }
-            
+
         let tracker = GAI.sharedInstance().defaultTracker
         tracker.set(kGAIScreenName, value: "UserListViewController")
         let builder = GAIDictionaryBuilder.createScreenView()
@@ -68,7 +68,10 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-//        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
+        
+        if self.isMovingFromParentViewController() {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
+        }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

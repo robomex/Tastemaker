@@ -173,7 +173,6 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
             userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
             chatVC.messageListener!.stop((chatVC.venue?.objectId)!)
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(chatVC.uid)/visits/\(chatVC.venue?.objectId)").removeObserverWithHandle(chatVC.visitRefHandle)
-            print("venueVC did disappear")
         }
     
         onlineStatusRef!.removeValue()

@@ -77,7 +77,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        print(self.venues.count)
         
         self.navigationController!.navigationBar.translucent = false
         
