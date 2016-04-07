@@ -25,6 +25,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     private var originalMessages: [JSQMessage] = []
     private var originalVisitStatuses: [String] = []
     private var originalUserIdList = [String]()
+    private var isMuted = Bool()
     
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
@@ -166,46 +167,58 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.tableView.alpha = 1.0
         self.tabBarController!.tabBar.hidden = true
         
-        userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
-        userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
-            snapshot in
+        if self.isMovingToParentViewController() {
+            userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
+            userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    self.isMuted = true
+                    self.configureUnmuteButton()
+                } else if super.uid == self.userId {
+                    self.navigationItem.rightBarButtonItem = nil
+                } else {
+                    self.isMuted = false
+                    self.configureMuteButton()
+                }
+            })
             
-            if snapshot.exists() {
-                self.configureUnmuteButton()
-            } else if super.uid == self.userId {
-                self.navigationItem.rightBarButtonItem = nil
-            } else {
-                self.configureMuteButton()
-            }
-        })
-        
-        usersSavedListRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves")
-        usersSavedListHandle = usersSavedListRef?.queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            if !snapshot.exists() {
-                self.loading = false
-            }
-            
-            let enumerator = snapshot.children
-            self.usersSavedListVenues = []
-            self.tableView.reloadData()
-            while let data = enumerator.nextObject() as? FDataSnapshot {
-                DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                    snap in
-                    
-                    self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                    self.tableView.reloadData()
+            usersSavedListRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves")
+            usersSavedListHandle = usersSavedListRef?.queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if !snapshot.exists() {
                     self.loading = false
-                })
-            }
-        })
-        
+                }
+                
+                let enumerator = snapshot.children
+                self.usersSavedListVenues = []
+                self.tableView.reloadData()
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                        snap in
+                        
+                        self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
+                        self.tableView.reloadData()
+                        self.loading = false
+                    })
+                }
+            })
+        }
+
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         self.navigationItem.leftBarButtonItem = nil
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
             self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+        }
+        
+        if super.uid == self.userId {
+            self.navigationItem.rightBarButtonItem = nil
+        } else if self.isMuted {
+            self.configureUnmuteButton()
+        } else if !self.isMuted {
+            self.configureMuteButton()
         }
         
         let tracker = GAI.sharedInstance().defaultTracker
@@ -223,8 +236,10 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
-        usersSavedListRef?.removeObserverWithHandle(usersSavedListHandle!)
+        if self.isMovingFromParentViewController() {
+            userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
+            usersSavedListRef?.removeObserverWithHandle(usersSavedListHandle!)
+        }
     }
 
     
@@ -262,6 +277,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureUnmuteButton()
+        self.isMuted = true
         userActivitiesMuteRef?.setValue(true)
         if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
             let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
@@ -295,6 +311,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
         self.configureMuteButton()
+        self.isMuted = false
         userActivitiesMuteRef?.removeValue()
         if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
             let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
