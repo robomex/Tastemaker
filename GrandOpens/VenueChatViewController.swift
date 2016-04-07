@@ -95,7 +95,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                         self.finishReceivingMessageAnimated(false)
                         self.userIdList = Array(Set(self.userIdList))
                         
-                        if self.messages.count > 0 {
+                        if self.messages.count > 14 {
                             self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
                         }
                     })
