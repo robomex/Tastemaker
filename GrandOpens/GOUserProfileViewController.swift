@@ -33,21 +33,8 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = userNickname
         self.tableView.emptyDataSetDelegate = self
         self.tableView.emptyDataSetSource = self
-        
-        DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
-            snapshot in
-            
-            if snapshot.exists() {
-                if let nickname = snapshot.value.objectForKey("nickname") as? String {
-                    
-                    self.userNickname = nickname
-                    self.title = nickname
-                }
-            }
-        })
         
         self.headerView = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.bounds.size.width, 222.0))
         // Should be clear, this will be the container for our avatar, counts, and whatevz later
@@ -168,6 +155,19 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         self.tabBarController!.tabBar.hidden = true
         
         if self.isMovingToParentViewController() {
+            
+            DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    if let nickname = snapshot.value.objectForKey("nickname") as? String {
+                        
+                        self.userNickname = nickname
+                        self.title = nickname
+                    }
+                }
+            })
+            
             userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
             userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
                 snapshot in
@@ -247,10 +247,9 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel?.text = userNickname
         header.textLabel?.font = UIFont.systemFontOfSize(16)
         header.textLabel?.textColor = UIColor.darkGrayColor()
-        header.textLabel?.text = header.textLabel!.text! + "'s Saved Venues"
+        header.textLabel?.text = userNickname + "'s Saved Venues"
     }
     
    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -262,6 +261,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         super.venues = self.usersSavedListVenues
         let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
         venueCell.containerView?.alpha = 0.0
