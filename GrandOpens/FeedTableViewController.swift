@@ -42,12 +42,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
         self.navigationItem.title = "Chicago"
         self.coachMarksController.datasource = self
         self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
@@ -89,23 +83,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         let todayDate = localDateFormatter().dateFromString(todayString)
         
         if self.isMovingToParentViewController() {
-            self.tableView.alpha = 0.0
-
-            venueListener = VenueListener(endDate: todayDate!, callback: {
-                venues in
-                
-                var newList = [Venue]()
-                var newNSUserDefaultsList: [[String:AnyObject]] = []
-                for venue in venues {
-                    newList.append(venue)
-                    newNSUserDefaultsList.append(serializeVenue(venue))
-                }
-
-                self.venues = newList
-                self.tableView.reloadData()
-                NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-            })
-            
             bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -117,10 +94,35 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             })
         }
         
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
-        let builder = GAIDictionaryBuilder.createScreenView()
-        tracker.send(builder.build() as [NSObject: AnyObject])
+        if self is ListViewController {
+            
+        } else if self is GOUserProfileViewController {
+            
+        } else {
+            if self.isMovingToParentViewController() {
+                self.tableView.alpha = 0.0
+                
+                venueListener = VenueListener(endDate: todayDate!, callback: {
+                    venues in
+                    
+                    var newList = [Venue]()
+                    var newNSUserDefaultsList: [[String:AnyObject]] = []
+                    for venue in venues {
+                        newList.append(venue)
+                        newNSUserDefaultsList.append(serializeVenue(venue))
+                    }
+                    
+                    self.venues = newList
+                    self.tableView.reloadData()
+                    NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
+                })
+            }
+            
+            let tracker = GAI.sharedInstance().defaultTracker
+            tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
+            let builder = GAIDictionaryBuilder.createScreenView()
+            tracker.send(builder.build() as [NSObject: AnyObject])
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -134,11 +136,20 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     }
     
     override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(true)
+        super.viewDidDisappear(animated)
         
         if self.isMovingFromParentViewController() {
-            venueListener?.stop()
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+            
+            if self is ListViewController {
+                
+            } else if self is GOUserProfileViewController {
+                
+            } else {
+                if self.isMovingFromParentViewController() {
+                    venueListener?.stop()
+                }
+            }
         }
     }
 
@@ -241,10 +252,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             return GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
         }
     }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-
-    }
 
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 76.0
@@ -269,7 +276,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        Amplitude.instance().logEvent("Viewed Venue From List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
+        Amplitude.instance().logEvent("Viewed Venue From Home List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     
@@ -312,6 +319,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])
             
             Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": venueId])
+            Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))
         }
         
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
@@ -553,51 +561,4 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         }
         self.locationManager.stopUpdatingLocation()
     }
-    
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return NO if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
-        
-
-    }
-    */
 }
