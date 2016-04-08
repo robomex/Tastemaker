@@ -153,20 +153,9 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         
         self.tableView.alpha = 1.0
         self.tabBarController!.tabBar.hidden = true
+        self.title = self.userNickname
         
         if self.isMovingToParentViewController() {
-            
-            DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(userId).observeSingleEventOfType(FEventType.Value, withBlock: {
-                snapshot in
-                
-                if snapshot.exists() {
-                    if let nickname = snapshot.value.objectForKey("nickname") as? String {
-                        
-                        self.userNickname = nickname
-                        self.title = nickname
-                    }
-                }
-            })
             
             userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
             userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
