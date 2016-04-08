@@ -70,11 +70,16 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").removeObserverWithHandle(self.userHandle)
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
         DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authHandle)
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").removeObserverWithHandle(self.userHandle)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
