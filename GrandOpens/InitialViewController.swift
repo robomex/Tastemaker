@@ -11,7 +11,6 @@ import CoreLocation
 import Firebase
 import PermissionScope
 import Amplitude_iOS
-//import Batch
 
 class InitialViewController: UIViewController {
 
@@ -40,6 +39,11 @@ class InitialViewController: UIViewController {
             authData in
             
             if authData == nil {
+                
+                // Clear NSUserDefaults
+                let appDomain = NSBundle.mainBundle().bundleIdentifier!
+                NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                
                 self.performSegueWithIdentifier("toLogin", sender: self)
             } else {
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
@@ -51,10 +55,6 @@ class InitialViewController: UIViewController {
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") != nil {
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
-                    
-//                    let editor = BatchUser.editor()
-//                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
-//                    editor.save()
                     
                     DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
@@ -143,7 +143,7 @@ class InitialViewController: UIViewController {
                 
                 if results[0].status == .Authorized {
                     UIApplication.sharedApplication().registerForRemoteNotifications()
-//                    BatchPush.registerForRemoteNotifications()
+                    
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Authorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                 } else if results[0].status == .Unauthorized {
@@ -175,16 +175,4 @@ class InitialViewController: UIViewController {
             print("cancelled yo")
         })
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
