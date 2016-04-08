@@ -9,6 +9,7 @@
 import UIKit
 import DZNEmptyDataSet
 import Firebase
+import Amplitude_iOS
 
 class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
@@ -31,13 +32,11 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-//        self.navigationController!.navigationBar.translucent = false
-//        self.tableView.alpha = 0.0
-        
-        self.tabBarController?.tabBar.hidden = false
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
         
         if self.isMovingToParentViewController() {
+            self.tableView.alpha = 0.0
+            
             saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -97,6 +96,9 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         let venue = self.listVenues[indexPath.row]
         vc.venue = venue
         vc.venueID = venue.objectId
+        if self.banned != nil {
+            vc.banned = self.banned
+        }
         
         let venueName: String = venue.name!
         vc.title = venueName
@@ -105,6 +107,8 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         navigationController?.pushViewController(vc, animated: true)
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        Amplitude.instance().logEvent("Viewed Venue From My List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     
@@ -132,16 +136,4 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
             return NSAttributedString(string: description, attributes: attributes)
         }
     }
-    
-    
-    /*
-    // MARK: - Navigation
-    
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
-    }
-    */
-    
 }
