@@ -422,11 +422,26 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     func mapViewButtonAction(sender: AnyObject) {
         
+        // Fix later, lazy new venue check, additional annotation for user location, if location enabled
+        if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
+            if self.venues.count != self.mapView.annotations.count - 1 {
+                self.mapIsLoaded = false
+            }
+        } else {
+            if self.venues.count != self.mapView.annotations.count {
+                self.mapIsLoaded = false
+            }
+        }
+        
+        // Stop tableView from scrolling upon pressing Map button
+        self.tableView.scrollEnabled = false
+        self.tableView.setContentOffset(tableView.contentOffset, animated: false)
+        
         if !mapIsLoaded {
             self.mapView.mapType = .Standard
             self.mapView.delegate = self
-            // Tab bar height = 49, nav bar height = 64, 113 = 49 + 64
-            self.mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
+            // Tab bar height = 49, nav bar height = 64 -> 49 + 64 = 113
+            self.mapView.frame = CGRectMake(0, self.tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
             
             if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
                 let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
@@ -457,6 +472,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             
             self.view.addSubview(mapView)
             self.mapIsLoaded = true
+        } else {
+            self.mapView.frame = CGRectMake(0, self.tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
         }
         
         self.mapView.hidden = false
@@ -515,6 +532,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     func listViewButtonAction(sender: AnyObject) {
         
         self.mapView.hidden = true
+        self.tableView.scrollEnabled = true
         self.configureMapViewButton()
     }
     
