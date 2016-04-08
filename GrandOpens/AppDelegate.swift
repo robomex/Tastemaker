@@ -290,23 +290,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     // MARK: Logout
     
     func logOut() {
-        DataService.dataService.BASE_REF.unauth()
-        
         // Stop monitoring visits
         locationManager.stopMonitoringVisits()
         
-        // Clear NSUserDefaults
-        let appDomain = NSBundle.mainBundle().bundleIdentifier!
-        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
         
-        // Clear out cached data, view controllers, etc. (handle this in settings now to wait for unauth to complete
-//        navController!.popToRootViewControllerAnimated(true)
-        
-        self.feedTableViewController = nil
-        self.listViewController = nil
+        self.feedTableViewController?.feedTableLogoutCleanup()
+        // Check whether listVC has been loaded, if so clean up listVC observers
+        let isLoaded = !(self.listViewController?.loading)!
+        if isLoaded {
+            self.listViewController?.listLogoutCleanup()
+        }
         
         // Clear Amplitude userId
         Amplitude.instance().setUserId(nil)
+        
+        DataService.dataService.BASE_REF.unauth()
     }
     
     

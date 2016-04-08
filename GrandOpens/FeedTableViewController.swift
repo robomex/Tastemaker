@@ -140,17 +140,12 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         if self.isMovingFromParentViewController() {
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
-            
-            if self is ListViewController {
-                
-            } else if self is GOUserProfileViewController {
-                
-            } else {
-                if self.isMovingFromParentViewController() {
-                    venueListener?.stop()
-                }
-            }
         }
+    }
+    
+    func feedTableLogoutCleanup() {
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        venueListener?.stop()
     }
 
     override func didReceiveMemoryWarning() {

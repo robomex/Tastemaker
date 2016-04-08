@@ -17,7 +17,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     private var saveListHandle: UInt?
     private var listVenues = [Venue]()
-    private var loading: Bool = true
+    var loading: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,12 +65,9 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        if self.isMovingFromParentViewController() {
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
-        }
+    func listLogoutCleanup() {
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
