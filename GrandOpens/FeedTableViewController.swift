@@ -35,7 +35,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
     private var mapIsLoaded: Bool = false
     private let locationManager = CLLocationManager()
-    private var visits = [String: Bool]()
+    var visits = [String: Bool]()
     
     // MARK: Initialization
     
@@ -115,6 +115,17 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     self.venues = newList
                     self.tableView.reloadData()
                     NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
+                    
+                    // Need to include visit queries in FeedTableVC and its subclasses, ListVC and UserProfileVC, since the visits always need to be pulled after loading that screen's self.venues
+                    for venue in self.venues {
+                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+                            snapshot in
+                            
+                            if snapshot.exists() {
+                                self.visits[venue.objectId!] = true
+                            }
+                        })
+                    }
                 })
             }
             
@@ -201,6 +212,12 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             venueCell!.tag = indexPath.row
             venueCell!.voteButton!.tag = indexPath.row
 
+            if self.visits[venue.objectId!] == true {
+                venueCell!.setVisitStatus(true)
+            } else {
+                venueCell!.setVisitStatus(false)
+            }
+            
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
 
@@ -217,16 +234,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     }
                 } else {
                     venueCell!.setVoteStatus(false)
-                }
-            })
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-                snapshot in
-                
-                if snapshot.exists() {
-                    venueCell!.setVisitStatus(true)
-                    self.visits[venue.objectId!] = true
-                } else {
-                    venueCell!.setVisitStatus(false)
                 }
                 
                 if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {

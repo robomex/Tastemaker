@@ -53,7 +53,18 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                         
                         self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
                         self.tableView.reloadData()
-                        self.loading = false
+                        
+                        for venue in self.listVenues {
+                            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+                                snapshot in
+                                
+                                if snapshot.exists() {
+                                    self.visits[venue.objectId!] = true
+                                }
+                                self.loading = false
+                                self.tableView.reloadData()
+                            })
+                        }
                     })
                 }
             })
