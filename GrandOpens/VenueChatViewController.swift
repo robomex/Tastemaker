@@ -449,7 +449,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
-        let description = "It's quiet around here. \nGo check this place out \nand be first to join the chat!"
+        let description = "It's quiet around here.\nKick things off with what\nyou want to try or what was good!"
         let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
         return NSAttributedString(string: description, attributes: attributes)
     }
