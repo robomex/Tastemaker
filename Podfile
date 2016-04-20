@@ -18,7 +18,7 @@ def pods
 	#pod 'Batch', '~> 1.5'
 
 	#ONBOARDING
-	pod 'Instructions', '~> 0.3'
+	pod 'Instructions', '~> 0.4'
 	pod 'PermissionScope'
 
 	#NETWORKING
