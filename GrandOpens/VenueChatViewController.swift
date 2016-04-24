@@ -502,7 +502,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "You'll get notifications about replies sent within an hour of your message - you can change the Notification Period in Settings"
+            coachViews.bodyView.hintLabel.text = "You'll get notifications about replies sent within eight hours of the last message you sent - you can change the Notification Period in Settings"
             coachViews.bodyView.nextLabel.text = "OK!"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
