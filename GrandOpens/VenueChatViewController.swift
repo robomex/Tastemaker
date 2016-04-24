@@ -12,8 +12,9 @@ import DZNEmptyDataSet
 import SCLAlertView_Objective_C
 import Firebase
 import Amplitude_iOS
+import Instructions
 
-class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, CoachMarksControllerDataSource {
     
     var messages: [JSQMessage] = []
     var visitStatuses: [String] = []
@@ -30,6 +31,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var currentMessageSendTime = NSDate()
     var lastMessageSendTime = NSDate()
     var secondToLastMessageSendTime = NSDate()
+    
+    let coachMarksController = CoachMarksController()
     
     // Used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
@@ -60,6 +63,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         // Items for Report function
         JSQMessagesCollectionViewCell.registerMenuAction(#selector(VenueChatViewController.reportMessage(_:)))
         UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: #selector(VenueChatViewController.reportMessage(_:)))]
+        
+        self.coachMarksController.dataSource = self
+        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        self.coachMarksController.allowOverlayTap = true
         
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
@@ -209,6 +216,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let chatMessage = ChatMessage(message: text, senderID: senderId, senderName: senderDisplayName, date: date, visitStatus: messageVisitStatus)
         if let id = venue?.objectId {
             saveChatMessage(id, message: chatMessage)
+        }
+        
+        let hasSeenSilenceInstrucitons = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenSilenceInstructions")
+        if !hasSeenSilenceInstrucitons {
+            self.coachMarksController.startOn(self)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenSilenceInstructions")
         }
         
         Amplitude.instance().logEvent("Chat", withEventProperties: ["Venue Name": venue!.name!, "Venue Neighborhood": venue!.neighborhood!, "Venue Food Type": venue!.foodType!])
@@ -452,5 +465,51 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let description = "It's quiet around here.\nKick things off with what\nyou want to try or what was good!"
         let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
         return NSAttributedString(string: description, attributes: attributes)
+    }
+    
+    // MARK: CoachMarksControllerDataSource
+    
+    func numberOfCoachMarksForCoachMarksController(coachMarksController: CoachMarksController) -> Int {
+        return 2
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
+        switch(index) {
+        case 0:
+            var silenceCoachMark = coachMarksController.coachMarkForView(self.parentViewController?.parentViewController?.navigationItem.rightBarButtonItems![1].valueForKey("view") as? UIView)
+            silenceCoachMark.horizontalMargin = 5
+            return silenceCoachMark
+        case 1:
+            var chatAreaCoachMark = coachMarksController.coachMarkForView(self.view) { (frame: CGRect) -> UIBezierPath in
+                
+                return UIBezierPath(roundedRect: CGRectInset(frame, 25, 25), cornerRadius: 20)
+            }
+            chatAreaCoachMark.arrowOrientation = .Bottom
+            return chatAreaCoachMark
+        default:
+            return coachMarksController.coachMarkForView()
+        }
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarkViewsForIndex index: Int, coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
+        
+        let coachViews = coachMarksController.defaultCoachViewsWithArrow(true, arrowOrientation: coachMark.arrowOrientation)
+        
+        switch(index) {
+        case 0:
+            coachViews.bodyView.hintLabel.text = "You'll get notifications when someone replies to your chats - you can silence notifications for this venue by tapping the bell icon"
+            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        case 1:
+            coachViews.bodyView.hintLabel.text = "You'll get notifications about replies sent within an hour of your message - you can change the Notification Period in Settings"
+            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        default:
+            break
+        }
+        
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
 }
