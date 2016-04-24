@@ -308,10 +308,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     
-//                    let editor = BatchUser.editor()
-//                    editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
-//                    editor.save()
-                    
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
                         snapshot in
                         
@@ -380,17 +376,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
                         err, authData in
                         
-                        let user = ["provider": authData.provider!, "email": email, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate())]
+                        let user = ["provider": authData.provider!, "email": email, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
                         let publicUser = ["nickname": nickname]
                         DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                         DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                         
                         Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                         Amplitude.instance().logEvent("Signed Up")
-                        
-//                        let editor = BatchUser.editor()
-//                        editor.setIdentifier((NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String))
-//                        editor.save()
                         
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)
