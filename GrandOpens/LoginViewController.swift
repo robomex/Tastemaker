@@ -393,6 +393,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
                 }
             })
         }
