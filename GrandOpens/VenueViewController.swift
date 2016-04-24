@@ -11,8 +11,9 @@ import ReachabilitySwift
 import Firebase
 import Amplitude_iOS
 import PagingMenuController
+import Instructions
 
-class VenueViewController: UIViewController, PagingMenuControllerDelegate {
+class VenueViewController: UIViewController, PagingMenuControllerDelegate, CoachMarksControllerDataSource {
 
     var venueID: String!
     var venue: Venue?
@@ -36,6 +37,8 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
     let detailsVC = VenueDetailsViewController()
     
     var banned: Bool?
+    
+    let coachMarksController = CoachMarksController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,6 +105,10 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         
         // Set notification to "seen" when app enters foreground from background
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VenueViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        
+        self.coachMarksController.dataSource = self
+        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        self.coachMarksController.allowOverlayTap = true
     }
     
     deinit {
@@ -163,6 +170,12 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
         
         onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
         onlineStatusRef?.setValue(["\(self.venueID)": true])
+        
+        let hasSeenChatInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenChatInstructions")
+        if !hasSeenChatInstructions {
+            self.coachMarksController.startOn(self)
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenChatInstructions")
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -269,5 +282,51 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate {
                 }
             }
         })
+    }
+    
+    // MARK: CoachMarksControllerDataSource
+    
+    func numberOfCoachMarksForCoachMarksController(coachMarksController: CoachMarksController) -> Int {
+        return 2
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
+        switch(index) {
+        case 0:
+            var chatIntroCoachMark = coachMarksController.coachMarkForView(self.chatVC.view) { (frame: CGRect) -> UIBezierPath in
+                
+                return UIBezierPath(roundedRect: CGRectInset(frame, 25, 25), cornerRadius: 20)
+            }
+            chatIntroCoachMark.arrowOrientation = .Bottom
+            return chatIntroCoachMark
+        case 1:
+            var saveCoachMark = coachMarksController.coachMarkForView(self.navigationItem.rightBarButtonItems![0].valueForKey("view") as? UIView)
+            saveCoachMark.horizontalMargin = 5
+            return saveCoachMark
+        default:
+            return coachMarksController.coachMarkForView()
+        }
+    }
+    
+    func coachMarksController(coachMarksController: CoachMarksController, coachMarkViewsForIndex index: Int, coachMark: CoachMark) -> (bodyView: CoachMarkBodyView, arrowView: CoachMarkArrowView?) {
+        
+        let coachViews = coachMarksController.defaultCoachViewsWithArrow(true, arrowOrientation: coachMark.arrowOrientation)
+        
+        switch(index) {
+        case 0:
+            coachViews.bodyView.hintLabel.text = "Each venue has its own chat to plan your visit or leave your review"
+            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        case 1:
+            coachViews.bodyView.hintLabel.text = "Once you find a place you want to remember, hit the Save button to stash it to My List"
+            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
+            coachViews.bodyView.hintLabel.textAlignment = .Left
+        default:
+            break
+        }
+        
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
 }
