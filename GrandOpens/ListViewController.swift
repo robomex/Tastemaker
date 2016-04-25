@@ -42,7 +42,9 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                 
                 if !snapshot.exists() {
                     self.loading = false
+                    self.listVenues = []
                     self.tableView.alpha = 1.0
+                    self.tableView.reloadData()
                 }
                 
                 let enumerator = snapshot.children
