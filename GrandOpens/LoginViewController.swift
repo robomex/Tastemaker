@@ -572,20 +572,26 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     print("Firebase authentication of Facebook token failed: \(error)")
                 } else {
                     
-                    // FIX LATER: truncate the provided name to just the first name for nickname
+                    let separator = " "
+                    let displayName = authData.providerData["displayName"] as! String
+                    let elements = displayName.componentsSeparatedByString(separator)
+                    var nickname = elements[0]
+                    if nickname.characters.count > 20 {
+                        nickname = String(nickname.characters.prefix(20))
+                    }
                     
-                    let user = ["provider": authData.provider!, "email": authData.providerData["email"] as! String, "nickname": authData.providerData["displayName"] as! String, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
-                    let publicUser = ["nickname": authData.providerData["displayName"] as! String]
+                    let user = ["provider": authData.provider!, "email": authData.providerData["email"] as! String, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
+                    let publicUser = ["nickname": nickname]
                     DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                     DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                     
                     // FIX LATER: add Amplitude tracking for Facebook login
                     
-                    // FIX LATER: log out from Facebook via Settings logout function
+                    // FIX LATER: save profile pic URL and any other info to private user
                     
                     // Store for future access
                     NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
-                    NSUserDefaults.standardUserDefaults().setValue(authData.providerData["displayName"] as! String, forKey: "nickname")
+                    NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
