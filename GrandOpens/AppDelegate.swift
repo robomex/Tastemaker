@@ -303,13 +303,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Stop monitoring visits
         locationManager.stopMonitoringVisits()
         
-        
         self.feedTableViewController?.feedTableLogoutCleanup()
         // Check whether listVC has been loaded, if so clean up listVC observers
         let isLoaded = !(self.listViewController?.loading)!
         if isLoaded {
             self.listViewController?.listLogoutCleanup()
         }
+        
+        // Log out of Facebook
+        let loginManager = FBSDKLoginManager()
+        loginManager.logOut()
         
         // Clear Amplitude userId
         Amplitude.instance().setUserId(nil)
