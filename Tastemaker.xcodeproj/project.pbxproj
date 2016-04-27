@@ -665,7 +665,7 @@
 				);
 				INFOPLIST_FILE = GrandOpens/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Kalopsiac.Tastemaker;
 				PRODUCT_NAME = Tastemaker;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
@@ -687,7 +687,7 @@
 				);
 				INFOPLIST_FILE = GrandOpens/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.GrandOpens.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Kalopsiac.Tastemaker;
 				PRODUCT_NAME = Tastemaker;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "GrandOpens/Bridging-Header.h";
