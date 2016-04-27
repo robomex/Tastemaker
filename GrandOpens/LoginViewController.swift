@@ -171,13 +171,13 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         let toggleSignupButtonBorderAlpha: CGFloat = 0.4
         toggleSignupButton.enabled = true
-        toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
+        toggleSignupButton.setTitle("Want to sign up using your email?", forState: .Normal)
         toggleSignupButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         toggleSignupButton.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
         toggleSignupButton.layer.borderWidth = 2.0
         toggleSignupButton.layer.borderColor = UIColor(white: 1.0, alpha: toggleSignupButtonBorderAlpha).CGColor
         toggleSignupButton.layer.cornerRadius = 0
-        toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(17.0)
+        toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(12.0)
         
         headlineLabel.text = "discover and chat about \nthe newest restaurants"
         headlineLabel.font = UIFont.systemFontOfSize(17.0)
@@ -219,7 +219,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         disclaimerLabel.addLinkToURL(NSURL(string: kTermsOfServiceURL)!, withRange: termsOfServiceRange)
         let privacyPolicyRange: NSRange = disclaimerText.rangeOfString("Privacy Policy")
         disclaimerLabel.addLinkToURL(NSURL(string: kPrivacyPolicyURL)!, withRange: privacyPolicyRange)
-        disclaimerLabel.hidden = true
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -428,7 +427,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             signupButton.hidden = false
             toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
             textFieldDidChange(nicknameTextField)
-            disclaimerLabel.hidden = false
             signupShown = false
         } else {
             loginButton.hidden = false
@@ -437,9 +435,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             nicknameTextField.hidden = true
             signupButton.hidden = true
-            toggleSignupButton.setTitle("Don't have an account? Sign Up!", forState: .Normal)
+            toggleSignupButton.setTitle("Want to sign up using your email?", forState: .Normal)
             textFieldDidChange(passwordTextField)
-            disclaimerLabel.hidden = true
             signupShown = true
         }
     }
