@@ -20,6 +20,8 @@ def pods
 	#ONBOARDING
 	pod 'Instructions', '~> 0.4'
 	pod 'PermissionScope'
+	pod 'FBSDKCoreKit' #, '~> 4.11'
+	pod 'FBSDKLoginKit' #, '~> 4.11'
 
 	#NETWORKING
 	pod 'ReachabilitySwift'
