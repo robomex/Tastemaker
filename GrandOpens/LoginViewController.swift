@@ -395,9 +395,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                         DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                         
-                        Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
-                        Amplitude.instance().logEvent("Signed Up")
-                        
                         // Store the uid for future access
                         NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
                         NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
@@ -405,6 +402,9 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
                         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
                         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                        
+                        Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                        Amplitude.instance().logEvent("Signed Up")
                         
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)
