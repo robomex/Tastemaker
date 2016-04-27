@@ -11,8 +11,10 @@ import TTTAttributedLabel
 import SafariServices
 import Firebase
 import Amplitude_iOS
+import FBSDKCoreKit
+import FBSDKLoginKit
 
-class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate {
+class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafariViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate, FBSDKLoginButtonDelegate {
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var signupButton: UIButton!
@@ -26,6 +28,8 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     @IBOutlet weak var emailTextField: TextField!
     @IBOutlet weak var passwordTextField: TextField!
     @IBOutlet weak var nicknameTextField: TextField!
+    
+    let fbLoginButton = FBSDKLoginButton()
     
     // Onboarding code for testing
     var gradient: CAGradientLayer?
@@ -64,6 +68,17 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
         tap.delegate = self
+        
+        self.fbLoginButton.delegate = self
+        fbLoginButton.readPermissions = ["public_profile", "email"]
+        fbLoginButton.center.x = self.view.center.x
+        fbLoginButton.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(fbLoginButton)
+        
+        let fbLoginButtonBottomConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.BottomMargin, relatedBy: NSLayoutRelation.Equal, toItem: disclaimerLabel, attribute: NSLayoutAttribute.TopMargin, multiplier: 1, constant: -24)
+        let fbLoginButtonLeadingConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: .LeadingMargin, multiplier: 1, constant: 30)
+        let fbLoginButtonTrailingConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.Trailing, relatedBy: .Equal, toItem: view, attribute: .TrailingMargin, multiplier: 1, constant: -30)
+        NSLayoutConstraint.activateConstraints([fbLoginButtonBottomConstraint, fbLoginButtonLeadingConstraint, fbLoginButtonTrailingConstraint])
     }
     
     deinit {
@@ -384,17 +399,17 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                         Amplitude.instance().logEvent("Signed Up")
                         
+                        // Store the uid for future access
+                        NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
+                        NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                        
                         // Enter the app
                         self.navigationController?.popToRootViewControllerAnimated(true)
                     })
-                    
-                    // Store the uid for future access
-                    NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
-                    NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
                 }
             })
         }
@@ -536,5 +551,56 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             animateBackgroundGradient()
             animationLoop = true
         }
+    }
+    
+    
+    // MARK: FB Login Button
+    
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+        if error != nil {
+            print("Error encountered during Facebook login")
+        } else if result.isCancelled {
+            print("Facebook login was cancelled")
+        } else {
+            // FIX LATER: checks for which specific permissions were received/denied
+            // e.g.: if result.grantedPermissions.contains("email") { }
+            
+            // FIX LATER: perform checks for whether this is a new account, in which case
+            // create new accounts, or logging into an old account, in which case don't create new accounts
+            let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
+            
+            DataService.dataService.BASE_REF.authWithOAuthProvider("facebook", token: accessToken, withCompletionBlock: { error, authData in
+                
+                if error != nil {
+                    print("Firebase authentication of Facebook token failed: \(error)")
+                } else {
+                    
+                    // FIX LATER: truncate the provided name to just the first name for nickname
+                    
+                    let user = ["provider": authData.provider!, "email": authData.providerData["email"] as! String, "nickname": authData.providerData["displayName"] as! String, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
+                    let publicUser = ["nickname": authData.providerData["displayName"] as! String]
+                    DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
+                    DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
+                    
+                    // FIX LATER: add Amplitude tracking for Facebook login
+                    
+                    // FIX LATER: log out from Facebook via Settings logout function
+                    
+                    // Store for future access
+                    NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                    NSUserDefaults.standardUserDefaults().setValue(authData.providerData["displayName"] as! String, forKey: "nickname")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                    
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                }
+            })
+        }
+    }
+    
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        print("User logged out using the Facebook button")
     }
 }
