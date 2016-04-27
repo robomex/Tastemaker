@@ -559,11 +559,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         } else if result.isCancelled {
             print("Facebook login was cancelled")
         } else {
-            // FIX LATER: checks for which specific permissions were received/denied
-            // e.g.: if result.grantedPermissions.contains("email") { }
             
-            // FIX LATER: perform checks for whether this is a new account, in which case
-            // create new accounts, or logging into an old account, in which case don't create new accounts
             let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
             
             DataService.dataService.BASE_REF.authWithOAuthProvider("facebook", token: accessToken, withCompletionBlock: { error, authData in
@@ -580,24 +576,46 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         nickname = String(nickname.characters.prefix(20))
                     }
                     
-                    let user = ["provider": authData.provider!, "email": authData.providerData["email"] as! String, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
-                    let publicUser = ["nickname": nickname]
-                    DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
-                    DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
-                    
-                    // FIX LATER: add Amplitude tracking for Facebook login
-                    
-                    // FIX LATER: save profile pic URL and any other info to private user
-                    
-                    // Store for future access
-                    NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
-                    NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
-                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
-                    
-                    self.navigationController?.popToRootViewControllerAnimated(true)
+                    DataService.dataService.USERS_PRIVATE_REF.childByAppendingPath(authData.uid).observeSingleEventOfType(.Value, withBlock: {
+                        snapshot in
+                        
+                        var user = ["provider": authData.provider!, "nickname": nickname, "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours", "facebookId": authData.providerData["id"] as! String]
+                        let publicUser = ["nickname": nickname]
+                        if authData.providerData["email"] != nil {
+                            user["email"] = authData.providerData["email"] as? String
+                        }
+                        if authData.providerData["profileImageURL"] != nil {
+                            user["profileImageURL"] = authData.providerData["profileImageURL"] as? String
+                        }
+                        
+                        if snapshot.exists() {
+                            DataService.dataService.USERS_PRIVATE_REF.childByAppendingPath(authData.uid).updateChildValues(user)
+                            DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(authData.uid).updateChildValues(publicUser)
+                            NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                            NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                            
+                            Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                            Amplitude.instance().logEvent("Logged In Via Facebook")
+                            
+                            self.navigationController?.popToRootViewControllerAnimated(true)
+                        } else {
+                            user["createdOn"] = dateFormatter().stringFromDate(NSDate())
+                            DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
+                            DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
+                            
+                            NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                            NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                            
+                            Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                            Amplitude.instance().logEvent("Signed Up Via Facebook")
+                            
+                            self.navigationController?.popToRootViewControllerAnimated(true)
+                        }
+                    })
                 }
             })
         }
