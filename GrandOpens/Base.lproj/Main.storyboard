@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="YDE-Yr-KVW">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -73,8 +73,8 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="discover and chat about the newest restaurants" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DcV-is-TjW" userLabel="Headline Label">
-                                <rect key="frame" x="163" y="208" width="276" height="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="discover and chat about the newest restaurants" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DcV-is-TjW" userLabel="Headline Label">
+                                <rect key="frame" x="146" y="208" width="308" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="DcV-is-TjW" secondAttribute="height" multiplier="280:9" id="yWs-k9-Cgu"/>
                                 </constraints>
@@ -114,7 +114,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5b-aX-ILA">
-                                <rect key="frame" x="200" y="375" width="200" height="35"/>
+                                <rect key="frame" x="200" y="370" width="200" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="gSI-VH-POA"/>
                                 </constraints>
@@ -172,7 +172,7 @@
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="7sd-JM-RGL"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="9bb-Ea-R3Z"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="20" id="AVy-KC-qA5"/>
-                            <constraint firstItem="f5b-aX-ILA" firstAttribute="top" secondItem="NyN-75-oTW" secondAttribute="bottom" constant="10" id="AYY-EX-UoD"/>
+                            <constraint firstItem="f5b-aX-ILA" firstAttribute="top" secondItem="NyN-75-oTW" secondAttribute="bottom" constant="5" id="AYY-EX-UoD"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="top" secondItem="0D8-yd-EPY" secondAttribute="bottom" constant="10" id="BRV-nF-6ca"/>
                             <constraint firstItem="f5b-aX-ILA" firstAttribute="height" secondItem="NyN-75-oTW" secondAttribute="height" id="Edm-ue-vmv"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="width" secondItem="5MZ-q9-gxs" secondAttribute="width" id="F2Z-Gd-wcV"/>
