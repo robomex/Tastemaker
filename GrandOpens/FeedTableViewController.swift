@@ -37,6 +37,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     private let locationManager = CLLocationManager()
     var visits = [String: Bool]()
     
+    private var todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
+    
     // MARK: Initialization
     
     override func viewDidLoad() {
@@ -63,24 +65,25 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         }
         
         self.configureMapViewButton()
+        
+        // Add observer to handle when the FeedTableVC should update its list
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedTableViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
     
     deinit {
         stopNotifier()
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         self.navigationController!.navigationBar.translucent = false
         
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
         self.tabBarController?.tabBar.hidden = false
-        
-        let todayString = localDateFormatter().stringFromDate(NSDate())
-        let todayDate = localDateFormatter().dateFromString(todayString)
         
         if self.isMovingToParentViewController() {
             bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
@@ -99,8 +102,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         } else if self is GOUserProfileViewController {
             
         } else {
-            if self.isMovingToParentViewController() {
+            if self.isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
                 self.tableView.alpha = 0.0
+                todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
                 
                 venueListener = VenueListener(endDate: todayDate!, callback: {
                     venues in
@@ -562,5 +566,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             self.mapCenter = manager.location!.coordinate
         }
         self.locationManager.stopUpdatingLocation()
+    }
+    
+    
+    // MARK: Update FeedTableVC if entering app on screen on a new day
+    
+    func appDidEnterForeground(notification: NSNotification) {
+        if self.todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
+            self.viewWillAppear(false)
+        }
     }
 }
