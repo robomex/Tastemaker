@@ -118,6 +118,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     
                     self.venues = newList
                     self.tableView.reloadData()
+                    self.mapIsLoaded = false
                     NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
                     
                     // Need to include visit queries in FeedTableVC and its subclasses, ListVC and UserProfileVC, since the visits always need to be pulled after loading that screen's self.venues
@@ -436,22 +437,13 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     func mapViewButtonAction(sender: AnyObject) {
         
-        // Fix later, lazy new venue check, additional annotation for user location, if location enabled
-        if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
-            if self.venues.count != self.mapView.annotations.count - 1 {
-                self.mapIsLoaded = false
-            }
-        } else {
-            if self.venues.count != self.mapView.annotations.count {
-                self.mapIsLoaded = false
-            }
-        }
-        
         // Stop tableView from scrolling upon pressing Map button
         self.tableView.scrollEnabled = false
         self.tableView.setContentOffset(tableView.contentOffset, animated: false)
         
         if !mapIsLoaded {
+            let annotationsToRemove = self.mapView.annotations.filter {$0 !== mapView.userLocation}
+            self.mapView.removeAnnotations(annotationsToRemove)
             self.mapView.mapType = .Standard
             self.mapView.delegate = self
             // Tab bar height = 49, nav bar height = 64 -> 49 + 64 = 113
