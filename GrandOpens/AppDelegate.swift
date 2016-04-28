@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
         self.navController!.navigationBarHidden = true
         
-        // Set up Grand Open's global UIAppearance
+        // Set up Tastemaker's global UIAppearance
         self.setupAppearance()
         
         // CoreLocation for visit monitoring
@@ -78,8 +78,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         }
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-    
-        return true
     }
     
     
@@ -323,7 +321,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     // MARK: - ()
     
-    // Set up appearance parameters to achieve Grand Open's custom look and feel
+    // Set up appearance parameters to achieve Tastemaker's custom look and feel
     func setupAppearance() {
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
         

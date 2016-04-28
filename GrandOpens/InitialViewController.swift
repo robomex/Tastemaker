@@ -105,7 +105,7 @@ class InitialViewController: UIViewController {
                         self.view.backgroundColor = kPurple
                     })
                 } else {
-                    // Present Grand Opens UI
+                    // Present Tastemaker UI
                     (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
                 }
             }
