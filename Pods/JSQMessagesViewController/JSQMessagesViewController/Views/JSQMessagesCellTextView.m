@@ -27,7 +27,7 @@
     self.textColor = [UIColor whiteColor];
     self.editable = NO;
     self.selectable = YES;
-    self.userInteractionEnabled = YES;
+    self.userInteractionEnabled = NO;
     self.dataDetectorTypes = UIDataDetectorTypeNone;
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
