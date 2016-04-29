@@ -190,7 +190,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         if pinView == nil {
             pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = false
-            pinView!.image = UIImage(named: "Pin-Visited")
+            pinView!.image = UIImage(named: "Pin-Default")
         } else {
             pinView!.annotation = annotation
         }
