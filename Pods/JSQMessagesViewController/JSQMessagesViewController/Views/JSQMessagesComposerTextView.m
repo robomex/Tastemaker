@@ -230,4 +230,38 @@
               NSParagraphStyleAttributeName : paragraphStyle };
 }
 
+#pragma mark -- UIMenuController
+
+- (BOOL)canBecomeFirstResponder {
+    return [super canBecomeFirstResponder];
+}
+
+- (BOOL)becomeFirstResponder {
+    return [super becomeFirstResponder];
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    // FIX LATER: Whatever's causing the autocorrect bubbles to not work is in this function here
+    [UIMenuController sharedMenuController].menuItems = nil;
+    if ([self.text length] == 0) {
+        if (action == @selector(paste:)) {
+            return YES;
+        }
+    } else {
+        NSRange range = self.selectedRange;
+        if (range.length > 0) {
+            if (action == @selector(cut:) || action == @selector(copy:) ||
+                action == @selector(paste:)) {
+                return YES;
+            }
+        } else {
+            if (action == @selector(select:) || action == @selector(selectAll:) ||
+                action == @selector(paste:)) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
 @end
