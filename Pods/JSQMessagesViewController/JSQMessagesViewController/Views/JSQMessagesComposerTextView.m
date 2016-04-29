@@ -255,7 +255,7 @@
                 return YES;
             }
         } else {
-            if ( action == @selector(select:) || action == @selector(selectAll:) ||
+            if (action == @selector(select:) || action == @selector(selectAll:) ||
                 action == @selector(paste:)) {
                 return YES;
             }
