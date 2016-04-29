@@ -70,6 +70,13 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         self.collectionView?.emptyDataSetSource = self
         self.collectionView?.emptyDataSetDelegate = self
+        
+        // Add observer to catch when a long-press menu is about to show
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VenueChatViewController.handleMenuWillHide(_:)), name: UIMenuControllerDidHideMenuNotification, object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -365,20 +372,15 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     // MARK: Report button
     
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        
-        return super.collectionView(collectionView, shouldShowMenuForItemAtIndexPath: indexPath)
-    }
-    
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
         
         let message = self.messages[indexPath.row]
         if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId == self.uid {
             return false
-        } else if action == #selector(VenueChatViewController.reportMessage(_:)) {
+        } else if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId != self.uid {
             return true
         }
-        
+
         return super.collectionView(collectionView, canPerformAction: action, forItemAtIndexPath: indexPath, withSender: sender)
     }
     
@@ -398,6 +400,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
         Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1).append("Reported-UserIDs", value: (message.senderId)))
+    }
+    
+    func handleMenuWillHide(notification: NSNotification) {
+        UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: #selector(VenueChatViewController.reportMessage(_:)))]
     }
     
     
