@@ -241,7 +241,7 @@
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    
+    // FIX LATER: Whatever's causing the autocorrect bubbles to not work is in this function here
     [UIMenuController sharedMenuController].menuItems = nil;
     if ([self.text length] == 0) {
         if (action == @selector(paste:)) {
