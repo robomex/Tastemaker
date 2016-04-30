@@ -579,7 +579,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     DataService.dataService.USERS_PRIVATE_REF.childByAppendingPath(authData.uid).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
                         
-                        var user = ["provider": authData.provider!, "nickname": nickname, "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours", "facebookId": authData.providerData["id"] as! String]
+                        var user = ["provider": authData.provider!, "nickname": nickname, "updatedOn": dateFormatter().stringFromDate(NSDate()), "facebookId": authData.providerData["id"] as! String]
                         let publicUser = ["nickname": nickname]
                         if authData.providerData["email"] != nil {
                             user["email"] = authData.providerData["email"] as? String
@@ -600,6 +600,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                             self.navigationController?.popToRootViewControllerAnimated(true)
                         } else {
                             user["createdOn"] = dateFormatter().stringFromDate(NSDate())
+                            user["notificationPeriod"] = "eight hours"
                             DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
                             DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
                             
