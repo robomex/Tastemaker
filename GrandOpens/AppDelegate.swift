@@ -308,6 +308,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
             self.listViewController?.listLogoutCleanup()
         }
         
+        // Delete device token so pushes aren't attempted for an old or logged out device
+        if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
+            let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
+            DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").removeValue()
+        }
+        
         // Log out of Facebook
         let loginManager = FBSDKLoginManager()
         loginManager.logOut()
