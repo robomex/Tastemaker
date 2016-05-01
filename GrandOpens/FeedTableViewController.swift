@@ -30,6 +30,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     var bannedHandle: UInt?
     private var recentChatsVenueListHandle: UInt?
     private var recentChatsVenueList = [String]()
+    private var venueVoteCountsHandle: UInt?
+    private var venueVoteCounts = [String: Int]()
     
     private var mapViewButton = UIBarButtonItem()
     private var mapView = MKMapView()
@@ -109,6 +111,16 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     self.tableView.reloadData()
                 }
             })
+            venueVoteCountsHandle = DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                let enumerator = snapshot.children
+                self.venueVoteCounts = [:]
+                while let voteCounts = enumerator.nextObject() as? FDataSnapshot {
+                    self.venueVoteCounts[voteCounts.key] = voteCounts.value as? Int
+                }
+                self.tableView.reloadData()
+            })
         }
         
         if self is ListViewController {
@@ -171,6 +183,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         if self.isMovingFromParentViewController() {
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
+            DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
         }
     }
     
@@ -242,11 +255,12 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 venueCell!.setVisitStatus(false)
             }
             
-            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venue.objectId!)/voters").observeSingleEventOfType(FEventType.Value, withBlock: {
-                snapshot in
-
-                venueCell!.voteButton!.setTitle(String(snapshot.childrenCount), forState: UIControlState.Normal)
-            })
+            if self.venueVoteCounts[venue.objectId!] != nil {
+                venueCell!.voteButton!.setTitle(String(self.venueVoteCounts[venue.objectId!]!), forState: UIControlState.Normal)
+            } else {
+                venueCell!.voteButton!.setTitle("0", forState: .Normal)
+            }
+            
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -332,6 +346,15 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
             voteCount += 1
+            DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
+                (currentData: FMutableData!) in
+                var value = currentData.value as? Int
+                if (value == nil) {
+                    value = 0
+                }
+                currentData.value = value! + 1
+                return FTransactionResult.successWithValue(currentData)
+            })
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": true, "date": dateFormatter().stringFromDate(NSDate())])
             
@@ -340,6 +363,12 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         } else {
             if voteCount > 0 {
                 voteCount -= 1
+                DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
+                    (currentData: FMutableData!) in
+                    let value = currentData.value as? Int
+                    currentData.value = value! - 1
+                    return FTransactionResult.successWithValue(currentData)
+                })
             }
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])
@@ -347,7 +376,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": venueId])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))
         }
-        
+
         button.setTitle(String(voteCount), forState: UIControlState.Normal)
         
         if voted {
