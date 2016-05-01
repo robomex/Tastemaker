@@ -19,6 +19,7 @@ class DataService {
     private var _USER_ACTIVITIES_REF = Firebase(url: "\(BASE_URL)/userActivities")
     private var _VENUE_ACTIVITIES_REF = Firebase(url: "\(BASE_URL)/venueActivities")
     private var _MESSAGES_REF = Firebase(url: "\(BASE_URL)/messages")
+    private var _LISTS_REF = Firebase(url: "\(BASE_URL)/lists")
     
     var BASE_REF: Firebase {
         return _BASE_REF
@@ -48,6 +49,10 @@ class DataService {
     
     var MESSAGES_REF: Firebase {
         return _MESSAGES_REF
+    }
+    
+    var LISTS_REF: Firebase {
+        return _LISTS_REF
     }
     
     var VENUES_REF: Firebase {

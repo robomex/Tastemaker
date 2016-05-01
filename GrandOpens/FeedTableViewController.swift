@@ -28,6 +28,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var banned: Bool?
     var bannedHandle: UInt?
+    private var recentChatsVenueListHandle: UInt?
+    private var recentChatsVenueList = [String]()
     
     private var mapViewButton = UIBarButtonItem()
     private var mapView = MKMapView()
@@ -95,6 +97,18 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     self.banned = nil
                 }
             })
+            recentChatsVenueListHandle = DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    self.recentChatsVenueList = []
+                    while let recentChatsVenues = enumerator.nextObject() as? FDataSnapshot {
+                        self.recentChatsVenueList.append(recentChatsVenues.key)
+                    }
+                    self.tableView.reloadData()
+                }
+            })
         }
         
         if self is ListViewController {
@@ -156,6 +170,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         if self.isMovingFromParentViewController() {
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+            DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
         }
     }
     
@@ -216,6 +231,10 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             venueCell!.venue = venue
             venueCell!.tag = indexPath.row
             venueCell!.voteButton!.tag = indexPath.row
+            
+            if self.recentChatsVenueList.contains(venue.objectId!) {
+                venueCell?.venueNeighborhoodLabel?.text = (venueCell?.venueNeighborhoodLabel!.text)! + " 🔥"
+            }
 
             if self.visits[venue.objectId!] == true {
                 venueCell!.setVisitStatus(true)
