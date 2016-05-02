@@ -365,7 +365,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue ID": venueId])
-            Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1).append("Votes-Venues", value: venueId))
+            Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
         } else {
             if voteCount > 0 {
                 voteCount -= 1

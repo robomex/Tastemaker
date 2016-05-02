@@ -363,7 +363,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                         DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").childByAutoId().updateChildValues(["startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
                         
                         Amplitude.instance().logEvent("Visited Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
-                        Amplitude.instance().identify(AMPIdentify().add("Visits", value: 1).append("Visits-Venues", value: venue.name!))
+                        Amplitude.instance().identify(AMPIdentify().add("Visits", value: 1))
                     }
                 }
             } else {

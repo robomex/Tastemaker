@@ -202,7 +202,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
         
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
-        Amplitude.instance().identify(AMPIdentify().add("Saves", value: 1).append("Saves-Venues", value: (venue?.name)!))
+        Amplitude.instance().identify(AMPIdentify().add("Saves", value: 1))
     }
     
     func unsaveButtonAction(sender: AnyObject) {
