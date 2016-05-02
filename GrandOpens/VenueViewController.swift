@@ -185,7 +185,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
             userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
             chatVC.messageListener!.stop((chatVC.venue?.objectId)!)
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(chatVC.uid)/visits/\(chatVC.venue?.objectId)").removeObserverWithHandle(chatVC.visitRefHandle)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(chatVC.uid)/visits/\(chatVC.venue!.objectId!)").removeObserverWithHandle(chatVC.visitRefHandle)
         }
     
         onlineStatusRef!.removeValue()
