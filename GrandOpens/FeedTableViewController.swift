@@ -32,6 +32,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     private var recentChatsVenueList = [String]()
     private var venueVoteCountsHandle: UInt?
     private var venueVoteCounts = [String: Int]()
+    private var userVotesHandle: UInt?
+    private var userVotes = [String]()
     
     private var mapViewButton = UIBarButtonItem()
     private var mapView = MKMapView()
@@ -121,6 +123,18 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 }
                 self.tableView.reloadData()
             })
+            userVotesHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                self.userVotes = []
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    while let userVotesVenues = enumerator.nextObject() as? FDataSnapshot {
+                        self.userVotes.append(userVotesVenues.key)
+                    }
+                }
+                self.tableView.reloadData()
+            })
         }
         
         if self is ListViewController {
@@ -184,6 +198,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").removeObserverWithHandle(userVotesHandle!)
         }
     }
     
@@ -248,12 +263,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             if self.recentChatsVenueList.contains(venue.objectId!) {
                 venueCell?.venueNeighborhoodLabel?.text = (venueCell?.venueNeighborhoodLabel!.text)! + " 🔥"
             }
-
-            if self.visits[venue.objectId!] == true {
-                venueCell!.setVisitStatus(true)
-            } else {
-                venueCell!.setVisitStatus(false)
-            }
             
             if self.venueVoteCounts[venue.objectId!] != nil {
                 venueCell!.voteButton!.setTitle(String(self.venueVoteCounts[venue.objectId!]!), forState: UIControlState.Normal)
@@ -261,31 +270,29 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 venueCell!.voteButton!.setTitle("0", forState: .Normal)
             }
             
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venue.objectId!)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                snapshot in
-                
-                if snapshot.exists() {
-                    if snapshot.value.objectForKey("voted") as! Bool == true {
-                        venueCell!.setVoteStatus(true)
-                    } else {
-                        venueCell!.setVoteStatus(false)
-                    }
-                } else {
-                    venueCell!.setVoteStatus(false)
-                }
-                
-                if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
-                    UIView.animateWithDuration(0.1, animations: {
-                        self.tableView.alpha = 1.0
-                        venueCell!.containerView?.alpha = 1.0
-                    })
-                } else {
-                    // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
-                    UIView.animateWithDuration(0.1, animations: {
-                        venueCell!.containerView?.alpha = 1.0
-                    })
-                }
-            })
+            if self.userVotes.contains(venue.objectId!) {
+                venueCell!.voteButton!.selected = true
+            } else {
+                venueCell!.voteButton!.selected = false
+            }
+            
+            if self.visits[venue.objectId!] == true {
+                venueCell!.setVisitStatus(true)
+            } else {
+                venueCell!.setVisitStatus(false)
+            }
+            
+            if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
+                UIView.animateWithDuration(0.1, animations: {
+                    self.tableView.alpha = 1.0
+                    venueCell!.containerView?.alpha = 1.0
+                })
+            } else {
+                // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
+                UIView.animateWithDuration(0.1, animations: {
+                    venueCell!.containerView?.alpha = 1.0
+                })
+            }
             
             return venueCell!
         } else {
@@ -338,10 +345,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     // MARK: GOVenueCellViewDelegate
     
     func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venueId: String) {
-        venueCellView.shouldEnableVoteButton(true)
         
-        let voted: Bool = !button.selected
-        venueCellView.setVoteStatus(voted)
+        let voted: Bool = !venueCellView.voteButton!.selected
+        
+        if voted {
+            venueCellView.shouldEnableVoteButton(false)
+        } else {
+            venueCellView.shouldEnableVoteButton(true)
+        }
         
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
@@ -355,8 +366,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                 currentData.value = value! + 1
                 return FTransactionResult.successWithValue(currentData)
             })
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
-            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": true, "date": dateFormatter().stringFromDate(NSDate())])
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
+            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue ID": venueId])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1).append("Votes-Venues", value: venueId))
@@ -370,22 +381,14 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     return FTransactionResult.successWithValue(currentData)
                 })
             }
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").updateChildValues(["voted": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
-            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").childByAutoId().updateChildValues(["voted": false, "date": dateFormatter().stringFromDate(NSDate())])
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").removeValue()
+            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").removeValue()
             
-            Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": venueId])
+            Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue ID": venueId])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))
         }
-
-        button.setTitle(String(voteCount), forState: UIControlState.Normal)
         
-        if voted {
-            let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-            actualVenueCellView?.shouldEnableVoteButton(false)
-        } else {
-            let actualVenueCellView: GOVenueCellView? = self.tableView(self.tableView, viewForHeaderInSection: button.tag) as? GOVenueCellView
-            actualVenueCellView?.shouldEnableVoteButton(true)
-        }
+        button.setTitle(String(voteCount), forState: UIControlState.Normal)
     }
     
     

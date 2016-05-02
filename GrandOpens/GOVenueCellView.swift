@@ -143,11 +143,6 @@ class GOVenueCellView: UITableViewCell {
         }
     }
     
-    func setVoteStatus(voted: Bool) {
-        self.voteButton!.selected = voted
-        
-    }
-    
     func shouldEnableVoteButton(enable: Bool) {
         if enable {
             self.voteButton!.addTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
