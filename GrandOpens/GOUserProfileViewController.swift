@@ -327,6 +327,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         }
         
         Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": self.userId, "Unmuted User Nickname": self.userNickname])
+        Amplitude.instance().identify(AMPIdentify().add("Mutes", value: -1))
     }
     
     func configureMuteButton() {
