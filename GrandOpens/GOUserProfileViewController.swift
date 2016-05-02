@@ -172,7 +172,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
             })
             
             usersSavedListRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves")
-            usersSavedListHandle = usersSavedListRef?.queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+            usersSavedListHandle = usersSavedListRef?.observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
                 if !snapshot.exists() {

@@ -124,13 +124,8 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
-                // Nested if statements for unwrapping
                 if snapshot.exists() {
-                    if snapshot.value.objectForKey("saved") as! Bool == true {
-                        self.configureUnsaveButton()
-                    } else {
-                        self.configureSaveButton()
-                    }
+                    self.configureUnsaveButton()
                 } else {
                     self.configureSaveButton()
                 }
@@ -203,7 +198,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
    
         self.configureUnsaveButton()
         
-        userActivitiesSaveRef?.updateChildValues(["saved": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        userActivitiesSaveRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
         
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
@@ -214,7 +209,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
 
         self.configureSaveButton()
         
-        userActivitiesSaveRef?.updateChildValues(["saved": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+        userActivitiesSaveRef?.removeValue()
         venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": false, "date": dateFormatter().stringFromDate(NSDate())])
         
         Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])

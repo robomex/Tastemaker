@@ -37,7 +37,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         if self.isMovingToParentViewController() {
             self.tableView.alpha = 0.0
             
-            saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").queryOrderedByChild("saved").queryEqualToValue(true).observeEventType(FEventType.Value, withBlock: {
+            saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
                 if !snapshot.exists() {
@@ -54,7 +54,6 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                         snap in
                         
                         self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                        self.tableView.reloadData()
                         
                         for venue in self.listVenues {
                             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
