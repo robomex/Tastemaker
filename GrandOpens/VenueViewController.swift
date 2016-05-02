@@ -199,7 +199,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         self.configureUnsaveButton()
         
         userActivitiesSaveRef?.setValue(dateFormatter().stringFromDate(NSDate()))
-        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": true, "date": dateFormatter().stringFromDate(NSDate())])
+        venueActivitiesSaverRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
         Amplitude.instance().identify(AMPIdentify().add("Saves", value: 1))
@@ -210,7 +210,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         self.configureSaveButton()
         
         userActivitiesSaveRef?.removeValue()
-        venueActivitiesSaverRef?.childByAutoId().updateChildValues(["saved": false, "date": dateFormatter().stringFromDate(NSDate())])
+        venueActivitiesSaverRef?.removeValue()
         
         Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
     }
