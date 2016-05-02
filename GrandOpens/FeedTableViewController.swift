@@ -364,7 +364,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
-            Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue ID": venueId])
+            Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
         } else {
             if voteCount > 0 {
@@ -379,7 +379,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").removeValue()
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").removeValue()
             
-            Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue ID": venueId])
+            Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))
         }
         
