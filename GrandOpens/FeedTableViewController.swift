@@ -287,11 +287,6 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
                     self.tableView.alpha = 1.0
                     venueCell!.containerView?.alpha = 1.0
                 })
-            } else {
-                // For feedTableVC and listVC only the tableView alpha needs to be animated, but the tableView needs to start out at alpha 1.0 for the GOUserProfileVC due to push nav transition, so there the cells need to be animated instead - hence calling immediately below and above regardless of indexPath.row
-                UIView.animateWithDuration(0.1, animations: {
-                    venueCell!.containerView?.alpha = 1.0
-                })
             }
             
             return venueCell!

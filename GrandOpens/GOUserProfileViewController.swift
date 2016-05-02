@@ -151,7 +151,6 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tableView.alpha = 1.0
         self.tabBarController!.tabBar.hidden = true
         self.title = self.userNickname
         
@@ -182,13 +181,11 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
                 
                 let enumerator = snapshot.children
                 self.usersSavedListVenues = []
-                self.tableView.reloadData()
                 while let data = enumerator.nextObject() as? FDataSnapshot {
                     DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
                         snap in
                         
                         self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                        self.tableView.reloadData()
                         
                         for venue in self.usersSavedListVenues {
                             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
@@ -264,7 +261,12 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
         
         super.venues = self.usersSavedListVenues
         let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
-        venueCell.containerView?.alpha = 0.0
+        
+        if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
+            UIView.animateWithDuration(0.1, animations: {
+                self.tableView.alpha = 1.0
+            })
+        }
         return venueCell
     }
     
