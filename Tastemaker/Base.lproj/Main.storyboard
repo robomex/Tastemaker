@@ -14,7 +14,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="1TJ-Dr-wbt">
             <objects>
-                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" customClass="GOTabBarController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainNavController" id="Nwp-Ia-E1q" customClass="TabBarController" customModule="Tastemaker" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="au2-CR-bep">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>

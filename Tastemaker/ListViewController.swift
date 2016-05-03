@@ -94,7 +94,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         super.venues = self.listVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! VenueCellView
         return venueCell
     }
     

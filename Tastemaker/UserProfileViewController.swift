@@ -1,5 +1,5 @@
 //
-//  GOUserProfileViewController.swift
+//  UserProfileViewController.swift
 //  Tastemaker
 //
 //  Created by Tony Morales on 1/20/16.
@@ -12,7 +12,7 @@ import DZNEmptyDataSet
 import Amplitude_iOS
 import JSQMessagesViewController
 
-class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
     var userId = String()
     var userNickname = String()
@@ -60,7 +60,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
 //        layer.masksToBounds = true
 //        profilePictureImageView.alpha = 0.0
         
-//        if GOUtility.userHasProfilePicture(self.user!) {
+//        if Utility.userHasProfilePicture(self.user!) {
 //            let imageFile: PFFile! = self.user!.objectForKey(kUserProfilePicKey) as! PFFile
 //            profilePictureImageView.file = imageFile
 //            profilePictureImageView.loadInBackground { (image, error) in
@@ -85,13 +85,13 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
 //                }
 //            }
 //        } else {
-//            profilePictureImageView.image = GOUtility.defaultProfilePicture()
+//            profilePictureImageView.image = Utility.defaultProfilePicture()
 //            UIView.animateWithDuration(0.2, animations: {
 //                profilePictureBackgroundView.alpha = 1.0
 //                profilePictureImageView.alpha = 1.0
 //            })
 //            
-//            let backgroundImageView = UIImageView(image: GOUtility.defaultProfilePicture()!)
+//            let backgroundImageView = UIImageView(image: Utility.defaultProfilePicture()!)
 //            backgroundImageView.frame = self.tableView.backgroundView!.bounds
 //            backgroundImageView.alpha = 0.0
 //            backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
@@ -262,7 +262,7 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         super.venues = self.usersSavedListVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! GOVenueCellView
+        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! VenueCellView
         
         if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
             UIView.animateWithDuration(0.1, animations: {
@@ -331,11 +331,11 @@ class GOUserProfileViewController: FeedTableViewController, DZNEmptyDataSetSourc
     }
     
     func configureMuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(GOUserProfileViewController.muteButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.muteButtonAction(_:)))
     }
     
     func configureUnmuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(GOUserProfileViewController.unmuteButtonAction(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.unmuteButtonAction(_:)))
     }
     
     

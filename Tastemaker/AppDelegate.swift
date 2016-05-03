@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     
     let storyboard = UIStoryboard(name: "Main", bundle: nil)
     
-    var tabBarController: GOTabBarController?
+    var tabBarController: TabBarController?
     var navController: UINavigationController?
     
     let locationManager = CLLocationManager()
@@ -247,7 +247,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     // MARK: AppDelegate
 
     func presentTabBarController() {
-        self.tabBarController = GOTabBarController()
+        self.tabBarController = TabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
         self.listViewController = ListViewController(style: UITableViewStyle.Plain)
         self.settingsViewController = storyboard.instantiateViewControllerWithIdentifier("SettingsViewController") as? SettingsViewController

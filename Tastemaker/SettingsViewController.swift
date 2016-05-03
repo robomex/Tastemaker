@@ -196,7 +196,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 // becomeFirstResponder causes keyboard issues
 //                nicknameTextField.becomeFirstResponder()
             } else if indexPath.row == 1 {
-                let vc = GOMutedUsersViewController()
+                let vc = MutedUsersViewController()
                 navigationController?.pushViewController(vc, animated: true)
             } else if indexPath.row == 2 {
                 let notificationPeriodMenu = UIAlertController(title: nil, message: "After you post to a venue's chat, receive notifications about new chats", preferredStyle: .ActionSheet)

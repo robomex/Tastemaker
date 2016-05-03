@@ -1,5 +1,5 @@
 //
-//  GOTabBarController.swift
+//  TabBarController.swift
 //  Tastemaker
 //
 //  Created by Tony Morales on 9/26/15.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class GOTabBarController: UITabBarController, UINavigationControllerDelegate {
+class TabBarController: UITabBarController, UINavigationControllerDelegate {
     var navController: UINavigationController?
     
     // MARK: UIViewController

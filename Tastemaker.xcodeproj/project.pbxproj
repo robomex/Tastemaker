@@ -11,11 +11,11 @@
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
 		DE1F08641B61BD440094ACA0 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1F08631B61BD440094ACA0 /* Message.swift */; };
-		DE255AAB1BADE46E00F5C6D1 /* GOVenueCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */; };
+		DE255AAB1BADE46E00F5C6D1 /* VenueCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE255AAA1BADE46E00F5C6D1 /* VenueCellView.swift */; };
 		DE283D131B615F040003466D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D121B615F040003466D /* LoginViewController.swift */; };
 		DE283D151B61670E0003466D /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D141B61670E0003466D /* InitialViewController.swift */; };
 		DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE283D161B61A1A30003466D /* SettingsViewController.swift */; };
-		DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */; };
+		DE50682F1C54A4D2006FFD51 /* MutedUsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50682E1C54A4D2006FFD51 /* MutedUsersViewController.swift */; };
 		DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */; };
 		DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61261C1B2505950009FB34 /* AppDelegate.swift */; };
 		DE6126251B2505950009FB34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6126231B2505950009FB34 /* Main.storyboard */; };
@@ -24,7 +24,7 @@
 		DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE61267D1B26978E0009FB34 /* MobileCoreServices.framework */; };
 		DE78E0981C62BEE500CD22F3 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78E0971C62BEE500CD22F3 /* DataService.swift */; };
 		DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */; };
-		DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* GOTabBarController.swift */; };
+		DE86FA161BB7154700C313E2 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* TabBarController.swift */; };
 		DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */; };
 		DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
@@ -33,8 +33,8 @@
 		DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */; };
 		DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */; };
 		DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2A1B9E698900D0F221 /* Constants.swift */; };
-		DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */; };
-		DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */; };
+		DEA5EE2F1BA4AB7F00D0F221 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* Utility.swift */; };
+		DED2FDCD1C501AEF001A94B3 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED2FDCC1C501AEF001A94B3 /* UserProfileViewController.swift */; };
 		DEEB760A1B3298B600A94305 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76091B3298B600A94305 /* User.swift */; };
 		DEEB760C1B32990700A94305 /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760B1B32990700A94305 /* Venue.swift */; };
 		DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */; };
@@ -65,11 +65,11 @@
 		DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		DE1F08611B61BCDE0094ACA0 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		DE1F08631B61BD440094ACA0 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOVenueCellView.swift; sourceTree = "<group>"; };
+		DE255AAA1BADE46E00F5C6D1 /* VenueCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueCellView.swift; sourceTree = "<group>"; };
 		DE283D121B615F040003466D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DE283D141B61670E0003466D /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		DE283D161B61A1A30003466D /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOMutedUsersViewController.swift; sourceTree = "<group>"; };
+		DE50682E1C54A4D2006FFD51 /* MutedUsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutedUsersViewController.swift; sourceTree = "<group>"; };
 		DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueSorter.swift; sourceTree = "<group>"; };
 		DE6126171B2505950009FB34 /* Tastemaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tastemaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE61261B1B2505950009FB34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -91,7 +91,7 @@
 		DE78E0971C62BEE500CD22F3 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Regular.ttf"; sourceTree = "<group>"; };
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		DE86FA151BB7154700C313E2 /* GOTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOTabBarController.swift; sourceTree = "<group>"; };
+		DE86FA151BB7154700C313E2 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotation.swift; sourceTree = "<group>"; };
 		DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotationView.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -100,9 +100,9 @@
 		DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueChatViewController.swift; sourceTree = "<group>"; };
 		DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueDetailsViewController.swift; sourceTree = "<group>"; };
 		DEA5EE2A1B9E698900D0F221 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUtility.swift; sourceTree = "<group>"; };
+		DEA5EE2E1BA4AB7F00D0F221 /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		DEA846191C8223EE00BB231E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
-		DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GOUserProfileViewController.swift; sourceTree = "<group>"; };
+		DED2FDCC1C501AEF001A94B3 /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		DEEB76091B3298B600A94305 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DEEB760B1B32990700A94305 /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
@@ -154,7 +154,6 @@
 				DE1973EA1B6D29570056148B /* Tastemaker_Tests.swift */,
 				DE1973E81B6D29570056148B /* Supporting Files */,
 			);
-			name = "Tastemaker Tests";
 			path = "Tastemaker Tests";
 			sourceTree = "<group>";
 		};
@@ -200,7 +199,6 @@
 				DE6126281B2505950009FB34 /* LaunchScreen.xib */,
 				DE61261A1B2505950009FB34 /* Supporting Files */,
 			);
-			name = Tastemaker;
 			path = Tastemaker;
 			sourceTree = "<group>";
 		};
@@ -219,13 +217,13 @@
 			isa = PBXGroup;
 			children = (
 				DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */,
-				DE50682E1C54A4D2006FFD51 /* GOMutedUsersViewController.swift */,
-				DE86FA151BB7154700C313E2 /* GOTabBarController.swift */,
+				DE50682E1C54A4D2006FFD51 /* MutedUsersViewController.swift */,
+				DE86FA151BB7154700C313E2 /* TabBarController.swift */,
 				DEA50CF01B7B094A00396BDD /* VenueViewController.swift */,
 				DEA50CF41B7DBA8100396BDD /* VenueChatViewController.swift */,
 				DEA50CF61B7DBAA000396BDD /* VenueDetailsViewController.swift */,
 				DE283D161B61A1A30003466D /* SettingsViewController.swift */,
-				DED2FDCC1C501AEF001A94B3 /* GOUserProfileViewController.swift */,
+				DED2FDCC1C501AEF001A94B3 /* UserProfileViewController.swift */,
 				DE283D141B61670E0003466D /* InitialViewController.swift */,
 				DE283D121B615F040003466D /* LoginViewController.swift */,
 				DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */,
@@ -265,7 +263,7 @@
 			isa = PBXGroup;
 			children = (
 				DEA5EE2A1B9E698900D0F221 /* Constants.swift */,
-				DEA5EE2E1BA4AB7F00D0F221 /* GOUtility.swift */,
+				DEA5EE2E1BA4AB7F00D0F221 /* Utility.swift */,
 				DEA2DF5F1C19FD06007CB294 /* TextField.swift */,
 				DE58D6DB1C6D37470063FDD8 /* VenueSorter.swift */,
 			);
@@ -294,7 +292,7 @@
 		DEEB760F1B35E79A00A94305 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DE255AAA1BADE46E00F5C6D1 /* GOVenueCellView.swift */,
+				DE255AAA1BADE46E00F5C6D1 /* VenueCellView.swift */,
 				DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */,
 			);
 			name = Views;
@@ -483,21 +481,21 @@
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
 				DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */,
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
-				DE86FA161BB7154700C313E2 /* GOTabBarController.swift in Sources */,
+				DE86FA161BB7154700C313E2 /* TabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
 				DE58D6DC1C6D37470063FDD8 /* VenueSorter.swift in Sources */,
-				DED2FDCD1C501AEF001A94B3 /* GOUserProfileViewController.swift in Sources */,
-				DEA5EE2F1BA4AB7F00D0F221 /* GOUtility.swift in Sources */,
+				DED2FDCD1C501AEF001A94B3 /* UserProfileViewController.swift in Sources */,
+				DEA5EE2F1BA4AB7F00D0F221 /* Utility.swift in Sources */,
 				DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */,
 				DEA50CF51B7DBA8100396BDD /* VenueChatViewController.swift in Sources */,
 				DE61261D1B2505950009FB34 /* AppDelegate.swift in Sources */,
 				DE283D171B61A1A30003466D /* SettingsViewController.swift in Sources */,
 				DEEB760A1B3298B600A94305 /* User.swift in Sources */,
-				DE50682F1C54A4D2006FFD51 /* GOMutedUsersViewController.swift in Sources */,
+				DE50682F1C54A4D2006FFD51 /* MutedUsersViewController.swift in Sources */,
 				DE283D131B615F040003466D /* LoginViewController.swift in Sources */,
 				DE1F08641B61BD440094ACA0 /* Message.swift in Sources */,
 				DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */,
-				DE255AAB1BADE46E00F5C6D1 /* GOVenueCellView.swift in Sources */,
+				DE255AAB1BADE46E00F5C6D1 /* VenueCellView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

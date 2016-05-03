@@ -37,7 +37,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     // Used for grabbing avatars via containedIn PFQuery
     var userIdList = [String]()
     
-    // Indexed with messages and used for pushing GOUserProfile
+    // Indexed with messages and used for pushing UserProfile
 //    var users = Dictionary<String, PFUser>()
     
     let outgoingBubble = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(kBlue)
@@ -363,7 +363,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
         self.inputToolbar?.contentView?.textView?.resignFirstResponder()
         let message = self.messages[indexPath.item]
-        let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
+        let vc = UserProfileViewController(style: UITableViewStyle.Plain)
         vc.userId = message.senderId
         vc.userNickname = message.senderDisplayName
         navigationController?.pushViewController(vc, animated: true)

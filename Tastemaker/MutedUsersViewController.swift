@@ -1,5 +1,5 @@
 //
-//  GOMutedUsersViewController.swift
+//  MutedUsersViewController.swift
 //  Tastemaker
 //
 //  Created by Tony Morales on 1/24/16.
@@ -10,7 +10,7 @@ import UIKit
 import DZNEmptyDataSet
 import Firebase
 
-class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class MutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
     private var mutedUsersHandle: UInt?
     private var mutedUsers = [User]()
@@ -119,7 +119,7 @@ class GOMutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, 
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let vc = GOUserProfileViewController(style: UITableViewStyle.Plain)
+        let vc = UserProfileViewController(style: UITableViewStyle.Plain)
         let user = mutedUsers[indexPath.row]
         vc.userId = user.id
         vc.userNickname = user.nickname

@@ -1,5 +1,5 @@
 //
-//  GOVenueCellView.swift
+//  VenueCellView.swift
 //  Tastemaker
 //
 //  Created by Tony Morales on 9/19/15.
@@ -9,20 +9,20 @@
 import Foundation
 import UIKit
 
-struct GOVenueCellButtons: OptionSetType {
+struct VenueCellButtons: OptionSetType {
     let rawValue: Int
     init(rawValue: Int) {self.rawValue = rawValue}
     
-    static let None = GOVenueCellButtons(rawValue: 1 << 0)
-    static let Vote = GOVenueCellButtons(rawValue: 1 << 1)
+    static let None = VenueCellButtons(rawValue: 1 << 0)
+    static let Vote = VenueCellButtons(rawValue: 1 << 1)
     
-    static let Default: GOVenueCellButtons = [Vote]
+    static let Default: VenueCellButtons = [Vote]
 }
 
-class GOVenueCellView: UITableViewCell {
+class VenueCellView: UITableViewCell {
     
     // The bitmark which specifies the enabled interaction elements in the view
-    var buttons: GOVenueCellButtons = .None
+    var buttons: VenueCellButtons = .None
     
     
     // @name Accessing Interaction Elements
@@ -30,7 +30,7 @@ class GOVenueCellView: UITableViewCell {
     // The Vote button
     var voteButton: UIButton?
     
-    var delegate: GOVenueCellViewDelegate?
+    var delegate: VenueCellViewDelegate?
     
     var containerView: UIView?
     var venueNameLabel: UILabel?
@@ -41,11 +41,11 @@ class GOVenueCellView: UITableViewCell {
     
     // MARK: Initialization
     
-    init(frame: CGRect, buttons otherButtons: GOVenueCellButtons) {
+    init(frame: CGRect, buttons otherButtons: VenueCellButtons) {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: nil)
         self.frame = frame
         
-        GOVenueCellView.validateButtons(otherButtons)
+        VenueCellView.validateButtons(otherButtons)
         buttons = otherButtons
         
         self.clipsToBounds = false
@@ -57,7 +57,7 @@ class GOVenueCellView: UITableViewCell {
         self.addSubview(self.containerView!)
         self.containerView!.backgroundColor = UIColor.whiteColor()
         
-        if self.buttons.contains(GOVenueCellButtons.Vote) {
+        if self.buttons.contains(VenueCellButtons.Vote) {
             // Vote button
             voteButton = UIButton(type: UIButtonType.Custom)
             containerView!.addSubview(self.voteButton!)
@@ -106,15 +106,15 @@ class GOVenueCellView: UITableViewCell {
     }
     
     
-    // MARK: GOVenueCellView
+    // MARK: VenueCellView
     
     var venue: Venue? {
         didSet{
 //            var constrainWidth: CGFloat = containerView!.bounds.size.width
             
-            if self.buttons.contains(GOVenueCellButtons.Vote) {
+            if self.buttons.contains(VenueCellButtons.Vote) {
 //                constrainWidth = self.voteButton!.frame.origin.x
-                self.voteButton!.addTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+                self.voteButton!.addTarget(self, action: #selector(VenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
             let venueName: String? = venue?.name
@@ -145,9 +145,9 @@ class GOVenueCellView: UITableViewCell {
     
     func shouldEnableVoteButton(enable: Bool) {
         if enable {
-            self.voteButton!.addTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            self.voteButton!.addTarget(self, action: #selector(VenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         } else {
-            self.voteButton!.removeTarget(self, action: #selector(GOVenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            self.voteButton!.removeTarget(self, action: #selector(VenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         }
     }
     
@@ -170,28 +170,28 @@ class GOVenueCellView: UITableViewCell {
     
     // MARK: ()
     
-    static func validateButtons(buttons: GOVenueCellButtons) {
-        if buttons == GOVenueCellButtons.None {
-            fatalError("Buttons must be set before initializing GOVenueCellView")
+    static func validateButtons(buttons: VenueCellButtons) {
+        if buttons == VenueCellButtons.None {
+            fatalError("Buttons must be set before initializing VenueCellView")
         }
     }
     
     func didTapVoteButtonAction(button: UIButton) {
-        if delegate != nil && delegate!.respondsToSelector(#selector(GOVenueCellViewDelegate.venueCellView(_:didTapVoteButton:venueId:))) {
+        if delegate != nil && delegate!.respondsToSelector(#selector(VenueCellViewDelegate.venueCellView(_:didTapVoteButton:venueId:))) {
             delegate!.venueCellView!(self, didTapVoteButton: button, venueId: (venue?.objectId)!)
         }
     }
 }
 
-/*  The protocol defines methods a delegate of GOVenueCellView should implement.
+/*  The protocol defines methods a delegate of VenueCellView should implement.
     All methods of the protocol are optional.
 */
 
-@objc protocol GOVenueCellViewDelegate: NSObjectProtocol {
+@objc protocol VenueCellViewDelegate: NSObjectProtocol {
     
     /*
         Sent to the delegate when the vote button is tapped
         @param venue the PFObject for the venue that is being voted or unvoted
     */
-    optional func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venueId: String)
+    optional func venueCellView(venueCellView: VenueCellView, didTapVoteButton button: UIButton, venueId: String)
 }

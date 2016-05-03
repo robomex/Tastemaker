@@ -1,5 +1,5 @@
 //
-//  GOUtility.swift
+//  Utility.swift
 //  Tastemaker
 //
 //  Created by Tony Morales on 9/12/15.
@@ -9,10 +9,10 @@
 import Foundation
 import MapKit
 
-class GOUtility {
+class Utility {
     
     
-    // MARK: GOUtility
+    // MARK: Utility
     
     
     // MARK: Vote Venues

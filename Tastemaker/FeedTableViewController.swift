@@ -15,9 +15,9 @@ import MapKit
 import CoreLocation
 import Amplitude_iOS
 
-class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoachMarksControllerDataSource {
+class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoachMarksControllerDataSource {
 
-    var reusableViews: Set<GOVenueCellView>!
+    var reusableViews: Set<VenueCellView>!
     let coachMarksController = CoachMarksController()
     
     var reachability: Reachability?
@@ -139,7 +139,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
         
         if self is ListViewController {
             
-        } else if self is GOUserProfileViewController {
+        } else if self is UserProfileViewController {
             
         } else {
             if self.isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
@@ -246,9 +246,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
 
         let cellIdentifier = "VenueCell"
         
-        var venueCell: GOVenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? GOVenueCellView
+        var venueCell: VenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? VenueCellView
         if venueCell == nil {
-            venueCell = GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
+            venueCell = VenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
             venueCell!.delegate = self
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
@@ -291,7 +291,7 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
             
             return venueCell!
         } else {
-            return GOVenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: GOVenueCellButtons.Default)
+            return VenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
         }
     }
 
@@ -324,8 +324,8 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     
     // MARK: FeedTableViewController
     
-    func dequeueReusableView() -> GOVenueCellView? {
-        for view: GOVenueCellView in self.reusableViews {
+    func dequeueReusableView() -> VenueCellView? {
+        for view: VenueCellView in self.reusableViews {
             if view.superview == nil {
                 
                 // We found a section header that is no longer visible
@@ -337,9 +337,9 @@ class FeedTableViewController: UITableViewController, GOVenueCellViewDelegate, M
     }
     
     
-    // MARK: GOVenueCellViewDelegate
+    // MARK: VenueCellViewDelegate
     
-    func venueCellView(venueCellView: GOVenueCellView, didTapVoteButton button: UIButton, venueId: String) {
+    func venueCellView(venueCellView: VenueCellView, didTapVoteButton button: UIButton, venueId: String) {
         
         let voted: Bool = !venueCellView.voteButton!.selected
         
