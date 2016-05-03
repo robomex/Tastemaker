@@ -4060,23 +4060,6 @@
 			};
 			name = Debug;
 		};
-		5ADA809FCE5C642648F6A426F42EE533 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 059AF8A0D1A30D5D94CBA7901A68880F /* PagingMenuController.xcconfig */;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = $CONFIGURATION_BUILD_DIR/PagingMenuController;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Target Support Files/PagingMenuController/ResourceBundle-PagingMenuController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = PagingMenuController;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		627F1DFC383617B2665384570EFB78E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 33548E7DE5361181911B21CEF72895E7 /* FBSDKCoreKit.xcconfig */;
@@ -4103,6 +4086,23 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		676AFE495BB88A3DF6A71FD7D652389D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 059AF8A0D1A30D5D94CBA7901A68880F /* PagingMenuController.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/PagingMenuController";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Target Support Files/PagingMenuController/ResourceBundle-PagingMenuController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = PagingMenuController;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
 		};
@@ -4510,23 +4510,6 @@
 			};
 			name = Release;
 		};
-		ACF7462A910E24000E18D2D2086F1D7B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 059AF8A0D1A30D5D94CBA7901A68880F /* PagingMenuController.xcconfig */;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = $CONFIGURATION_BUILD_DIR/PagingMenuController;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Target Support Files/PagingMenuController/ResourceBundle-PagingMenuController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = PagingMenuController;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
 		BD18A623C7CF00E206B39C801EE2A916 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FCFCF496DBCCE38EA5B6FED58C06A79D /* Instructions.xcconfig */;
@@ -4643,6 +4626,23 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
+		};
+		F08563D88472AA22547C322C2C6D88AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 059AF8A0D1A30D5D94CBA7901A68880F /* PagingMenuController.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/PagingMenuController";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Target Support Files/PagingMenuController/ResourceBundle-PagingMenuController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = PagingMenuController;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
 		};
 		F9262114B0ED5EA9A27E2107E17B2B60 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -4832,8 +4832,8 @@
 		E5F89E434BDADBA0C7EC297F1013422F /* Build configuration list for PBXNativeTarget "PagingMenuController-PagingMenuController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ACF7462A910E24000E18D2D2086F1D7B /* Debug */,
-				5ADA809FCE5C642648F6A426F42EE533 /* Release */,
+				676AFE495BB88A3DF6A71FD7D652389D /* Debug */,
+				F08563D88472AA22547C322C2C6D88AA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

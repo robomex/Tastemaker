@@ -14,9 +14,6 @@ def pods
 	pod 'SCLAlertView-Objective-C'
 	pod 'PagingMenuController'
 
-	#PUSH
-	#pod 'Batch', '~> 1.5'
-
 	#ONBOARDING
 	pod 'Instructions', '~> 0.4'
 	pod 'PermissionScope'

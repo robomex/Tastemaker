@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28A44CC84CB0CC4548294F18 /* Pods_Tastemaker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA944B92C46FEEAF125D1DCE /* Pods_Tastemaker.framework */; };
 		DE1973EB1B6D29570056148B /* Tastemaker_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* Tastemaker_Tests.swift */; };
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
@@ -133,6 +134,7 @@
 				DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */,
 				DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */,
 				F9F7413D92CE837796E69D31 /* Pods_Tastemaker.framework in Frameworks */,
+				28A44CC84CB0CC4548294F18 /* Pods_Tastemaker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
