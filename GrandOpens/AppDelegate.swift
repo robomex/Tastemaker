@@ -138,6 +138,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     self.feedTableViewController?.navigationController?.popToRootViewControllerAnimated(false)
                     self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
                     self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
+                    
+                    Amplitude.instance().logEvent("Launch From Push", withEventProperties: ["Venue Name": targetVenue.name!])
                 })
             }
         } else if state == UIApplicationState.Active {
@@ -165,6 +167,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
 
                             self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
                             self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
+                            
+                            Amplitude.instance().logEvent("Launch From In-App Push", withEventProperties: ["Venue Name": targetVenue.name!])
                         })
                     }
                 }

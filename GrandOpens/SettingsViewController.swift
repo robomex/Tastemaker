@@ -203,26 +203,31 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let fifteenMinutesAction = UIAlertAction(title: "For 15 Minutes", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("fifteen minutes")
+                    Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "15 Minutes"])
                 })
                 notificationPeriodMenu.addAction(fifteenMinutesAction)
                 let oneHourAction = UIAlertAction(title: "For 1 Hour", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one hour")
+                    Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Hour"])
                 })
                 notificationPeriodMenu.addAction(oneHourAction)
                 let eightHoursAction = UIAlertAction(title: "For 8 Hours", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("eight hours")
+                    Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "8 Hours"])
                 })
                 notificationPeriodMenu.addAction(eightHoursAction)
                 let oneDayAction = UIAlertAction(title: "For 1 Day", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one day")
+                    Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Day"])
                 })
                 notificationPeriodMenu.addAction(oneDayAction)
                 let threeDaysAction = UIAlertAction(title: "For 3 Days", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("three days")
+                    Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "3 Days"])
                 })
                 notificationPeriodMenu.addAction(threeDaysAction)
                 let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)

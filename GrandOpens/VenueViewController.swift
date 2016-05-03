@@ -226,7 +226,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSilenceRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         self.configureUnsilenceButton()
         
-        // ADD AMPLITUDE TRACKING
+        Amplitude.instance().logEvent("Silenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
     
     func unsilenceButtonAction(sender: AnyObject) {
@@ -234,7 +234,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSilenceRef?.removeValue()
         self.configureSilenceButton()
         
-        // ADD AMPLITUDE TRACKING
+        Amplitude.instance().logEvent("Unsilenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
     
     func configureSilenceButton() {
