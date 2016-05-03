@@ -1,6 +1,6 @@
 //
 //  DataService.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 2/3/16.
 //  Copyright © 2016 Tony Morales. All rights reserved.

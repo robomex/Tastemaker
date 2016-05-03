@@ -1,6 +1,6 @@
 //
 //  TextField.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 12/10/15.
 //  Copyright © 2015 Tony Morales. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  GOMutedUsersViewController.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 1/24/16.
 //  Copyright © 2016 Tony Morales. All rights reserved.

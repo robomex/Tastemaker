@@ -1,6 +1,6 @@
 //
 //  VenueAnnotation.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 3/26/16.
 //  Copyright © 2016 Tony Morales. All rights reserved.

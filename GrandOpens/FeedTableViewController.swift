@@ -1,6 +1,6 @@
 //
 //  FeedTableViewController.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 6/20/15.
 //  Copyright (c) 2015 Tony Morales. All rights reserved.

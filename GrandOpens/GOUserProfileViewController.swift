@@ -1,6 +1,6 @@
 //
 //  GOUserProfileViewController.swift
-//  GrandOpens
+//  Tastemaker
 //
 //  Created by Tony Morales on 1/20/16.
 //  Copyright © 2016 Tony Morales. All rights reserved.

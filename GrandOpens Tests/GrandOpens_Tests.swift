@@ -1,6 +1,6 @@
 //
-//  GrandOpens_Tests.swift
-//  GrandOpens Tests
+//  Tastemaker_Tests.swift
+//  Tastemaker Tests
 //
 //  Created by Tony Morales on 8/1/15.
 //  Copyright (c) 2015 Tony Morales. All rights reserved.
@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class GrandOpens_Tests: XCTestCase {
+class Tastemaker_Tests: XCTestCase {
     
     override func setUp() {
         super.setUp()
