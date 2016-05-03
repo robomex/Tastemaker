@@ -305,7 +305,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
             coachViews.bodyView.hintLabel.text = "Once you find a place you want to remember, hit the Save button to stash it to My List"
-            coachViews.bodyView.nextLabel.text = "OK!"
+            coachViews.bodyView.nextLabel.text = "👍🏾"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         default:

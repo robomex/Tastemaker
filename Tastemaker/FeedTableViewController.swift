@@ -431,7 +431,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             coachViews.bodyView.nextLabel.text = "Got it!"
         case 2:
             coachViews.bodyView.hintLabel.text = "After you check out somewhere great, vote for it so others know what's good"
-            coachViews.bodyView.nextLabel.text = "K!"
+            coachViews.bodyView.nextLabel.text = "👍"
             coachViews.bodyView.hintLabel.textAlignment = .Left
         default: break
         }
