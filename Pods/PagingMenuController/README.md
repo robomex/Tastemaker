@@ -77,6 +77,10 @@ menuHeight: CGFloat
 ```Swift
 menuItemMargin: CGFloat
 ```
+* divider image to display right aligned in each menu item
+```Swift
+menuItemDividerImage: UIImage?
+```
 * duration for menu item view animation
 ```Swift
 animationDuration: NSTimeInterval
@@ -85,6 +89,10 @@ animationDuration: NSTimeInterval
 ```swift
 deceleratingRate: CGFloat
 ```
+* menu item position
+```swift
+menuSelectedItemCenter: Bool
+```
 * menu display mode and scrolling mode
 ```Swift
 menuDisplayMode: MenuDisplayMode
@@ -92,7 +100,7 @@ menuDisplayMode: MenuDisplayMode
 public enum MenuDisplayMode {
     case Standard(widthMode: MenuItemWidthMode, centerItem: Bool, scrollingMode: MenuScrollingMode)
     case SegmentedControl
-    case Infinite(widthMode: MenuItemWidthMode) // Requires three paging views at least
+    case Infinite(widthMode: MenuItemWidthMode, scrollingMode: MenuScrollingMode) // Requires three paging views at least
 }
 
 public enum MenuItemWidthMode {
@@ -118,6 +126,15 @@ public enum MenuItemMode {
     case None
     case Underline(height: CGFloat, color: UIColor, horizontalPadding: CGFloat, verticalPadding: CGFloat)
     case RoundRect(radius: CGFloat, horizontalPadding: CGFloat, verticalPadding: CGFloat, selectedColor: UIColor)
+}
+```
+
+* number of lazy loading pages
+```swift
+public var lazyLoadingPage: LazyLoadingPage = .Three
+public enum LazyLoadingPage {
+    case One // Currently sets false to scrollEnabled at this moment. Should be fixed in the future.
+    case Three
 }
 ```
 
@@ -168,10 +185,10 @@ pagingMenuController.delegate = self
 ```
 
 ```Swift
-func willMoveToMenuPage(page: Int) {
+func willMoveToPageMenuController(menuController: UIViewController, previousMenuController: UIViewController) {
 }
 
-func didMoveToMenuPage(page: Int) {
+func didMoveToPageMenuController(menuController: UIViewController, previousMenuController: UIViewController) {
 }
 ```
 
@@ -182,25 +199,18 @@ func didMoveToMenuPage(page: Int) {
 pagingMenuController.moveToMenuPage(1, animated: true)
 ```
 
+### Changing PagingMenuController's option
+
+Call `setup` method with new options again.
+It creates a new paging menu controller. Do not forget to cleanup properties in child view controller.
+
 ## Requirements
 
 iOS8+  
-Swift 1.2+  
-Xcode 6.3+  
+Swift 2.0+  
+Xcode 7.3+  
 
-*For iOS7 support*  
-Follow [Manual Installation](#manual)
-
-*Swift 1.2*   
-Please use swift_1.2 branch, but it doesn't have full features. **It's no longer maintained...**
-
-Podfile  
-`pod 'PagingMenuController', :git => 'https://github.com/kitasuke/PagingMenuController', :branch => 'swift_1.2'
-`
-
-Carfile  
-`github "kitasuke/PagingMenuController" "swift_1.2"
-`
+*Please use 0.8.0 tag for Swift 1.2*
 
 ## Installation
 

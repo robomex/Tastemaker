@@ -32,7 +32,7 @@ PODS:
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
-  - PagingMenuController (0.8.0)
+  - PagingMenuController (0.9.1)
   - PermissionScope (1.0.2)
   - ReachabilitySwift (2.3.3)
   - SCLAlertView-Objective-C (0.8.2)
@@ -71,7 +71,7 @@ SPEC CHECKSUMS:
   Instructions: 7283d009379714e8ff667153014cd62b6e4f4eb9
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
-  PagingMenuController: 1a9ff8ad0ab9704f215706997c1a624bc951f508
+  PagingMenuController: 95bab00761e1ba4f4f9fa6bf22ac71b065a675aa
   PermissionScope: 860828c5516d349b6f49e5491799cfef33c5ccc7
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SCLAlertView-Objective-C: de137408b04f3587551fa98b876b3cbc612cee79
