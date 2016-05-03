@@ -136,11 +136,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
                 snapshot in
                 
                 if snapshot.exists() {
-                    if snapshot.value.objectForKey("silenced") as! Bool == true {
-                        self.configureUnsilenceButton()
-                    } else {
-                        self.configureSilenceButton()
-                    }
+                    self.configureUnsilenceButton()
                 } else {
                     self.configureSilenceButton()
                 }
@@ -230,16 +226,16 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     
     func silenceButtonAction(sender: AnyObject) {
         
+        userActivitiesSilenceRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         self.configureUnsilenceButton()
-        userActivitiesSilenceRef?.updateChildValues(["silenced": true, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         
         // ADD AMPLITUDE TRACKING
     }
     
     func unsilenceButtonAction(sender: AnyObject) {
 
+        userActivitiesSilenceRef?.removeValue()
         self.configureSilenceButton()
-        userActivitiesSilenceRef?.updateChildValues(["silenced": false, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         
         // ADD AMPLITUDE TRACKING
     }

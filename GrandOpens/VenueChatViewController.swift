@@ -225,8 +225,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             saveChatMessage(id, message: chatMessage)
         }
         
-        let hasSeenSilenceInstrucitons = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenSilenceInstructions")
-        if !hasSeenSilenceInstrucitons {
+        let hasSeenSilenceInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenSilenceInstructions")
+        if !hasSeenSilenceInstructions {
             self.coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenSilenceInstructions")
         }
