@@ -144,14 +144,11 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         }
         
         seenNotificationRef = DataService.dataService.BASE_REF.childByAppendingPath("notifications/\(uid)/\(venueID)")
-        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(.Value, withBlock: {
+        seenNotificationRef!.observeSingleEventOfType(.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
-                let enumerator = snapshot.children
-                while let seenNotifications = enumerator.nextObject() as? FDataSnapshot {
-                    self.seenNotificationRef?.childByAppendingPath("\(seenNotifications.key)/seen").setValue(true)
-                }
+                self.seenNotificationRef!.removeValue()
             }
         })
     }
@@ -263,14 +260,11 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     // MARK: Observer for flagging new messages as seen upon app entering foreground
     
     func appDidEnterForeground(notification: NSNotification) {
-        seenNotificationRef!.queryOrderedByChild("date").queryLimitedToLast(1).observeSingleEventOfType(.Value, withBlock: {
+        seenNotificationRef!.observeSingleEventOfType(.Value, withBlock: {
             snapshot in
             
             if snapshot.exists() {
-                let enumerator = snapshot.children
-                while let seenNotifications = enumerator.nextObject() as? FDataSnapshot {
-                    self.seenNotificationRef?.childByAppendingPath("\(seenNotifications.key)/seen").setValue(true)
-                }
+                self.seenNotificationRef!.removeValue()
             }
         })
     }
