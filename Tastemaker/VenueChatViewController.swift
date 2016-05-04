@@ -488,7 +488,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         case 1:
             var chatAreaCoachMark = coachMarksController.coachMarkForView(self.view) { (frame: CGRect) -> UIBezierPath in
                 
-                return UIBezierPath(roundedRect: CGRectInset(frame, 25, 25), cornerRadius: 20)
+                return UIBezierPath(roundedRect: CGRectInset(frame, 25, 50), cornerRadius: 20)
             }
             chatAreaCoachMark.arrowOrientation = .Bottom
             return chatAreaCoachMark

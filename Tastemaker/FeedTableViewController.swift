@@ -542,6 +542,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         }
         
         self.mapView.hidden = false
+        self.navigationItem.rightBarButtonItem = nil
         self.configureListViewButton()
     }
     
@@ -599,6 +600,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         self.mapView.hidden = true
         self.tableView.scrollEnabled = true
         self.configureMapViewButton()
+        self.configureSortButton()
     }
     
     func configureMapViewButton() {
