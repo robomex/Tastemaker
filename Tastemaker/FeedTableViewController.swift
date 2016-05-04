@@ -152,7 +152,6 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         } else if self is UserProfileViewController {
             
         } else {
-            self.configureSortButton()
             if self.isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
                 self.tableView.alpha = 0.0
                 todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
@@ -185,6 +184,10 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                         })
                     }
                 })
+            }
+            
+            if self.mapView.hidden || !self.mapIsLoaded {
+                self.configureSortButton()
             }
             
             let tracker = GAI.sharedInstance().defaultTracker
