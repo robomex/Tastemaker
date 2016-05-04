@@ -72,6 +72,11 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         self.configureMapViewButton()
         
+        // Prevent the tableView from displaying behind the tabBar
+        self.edgesForExtendedLayout = UIRectEdge.None
+        self.extendedLayoutIncludesOpaqueBars = false
+        self.automaticallyAdjustsScrollViewInsets = false
+        
         // Add observer to handle when the FeedTableVC should update its list
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedTableViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
     }
