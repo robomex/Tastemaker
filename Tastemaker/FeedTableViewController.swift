@@ -23,6 +23,9 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     var reachability: Reachability?
     
     var venues = [Venue]()
+    var dateSort = [Venue]()
+    var chatSort = [Venue]()
+    var voteSort = [Venue]()
     
     var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
@@ -42,6 +45,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     private var mapIsLoaded: Bool = false
     private let locationManager = CLLocationManager()
     var visits = [String: Bool]()
+    private var sortButton = UIBarButtonItem()
+    private var sortedBy = String()
     
     private var todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
     
@@ -147,6 +152,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         } else if self is UserProfileViewController {
             
         } else {
+            self.configureSortButton()
             if self.isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
                 self.tableView.alpha = 0.0
                 todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
@@ -162,6 +168,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                     }
                     
                     self.venues = newList
+                    self.dateSort = self.venues
+                    self.sortedBy = "Opening Date"
                     self.tableView.reloadData()
                     self.mapIsLoaded = false
                     NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
@@ -244,7 +252,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return venues.count
+        return self.venues.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -259,8 +267,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         }
         
         // I had to add the following if statement since otherwise I would get array out of index errors when saving a venue for the first time, immediately backing out to the feed, and then immediately clicking on the list tab - CRASH - it appeared this was an issue with trying to create a cell for an empty venue array
-        if !venues.isEmpty {
-            let venue = venues[indexPath.row]
+        if !self.venues.isEmpty {
+            let venue = self.venues[indexPath.row]
             venueCell!.venue = venue
             venueCell!.tag = indexPath.row
             venueCell!.voteButton!.tag = indexPath.row
@@ -308,7 +316,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         let vc = VenueViewController()
        
-        let venue = venues[indexPath.row]
+        let venue = self.venues[indexPath.row]
         vc.venue = venue
         vc.venueID = venue.objectId
         if self.banned != nil {
@@ -609,6 +617,100 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             self.mapCenter = manager.location!.coordinate
         }
         self.locationManager.stopUpdatingLocation()
+    }
+    
+    
+    // MARK: Sort
+    
+    func configureSortButton() {
+        self.sortButton = UIBarButtonItem(title: "Sort", style: .Plain, target: self, action: #selector(FeedTableViewController.sortButtonAction(_:)))
+        self.navigationItem.setRightBarButtonItem(self.sortButton, animated: false)
+    }
+    
+    func sortButtonAction(sender: AnyObject) {
+        
+        let sortMenu = UIAlertController(title: "Sort Venues By", message: nil, preferredStyle: .ActionSheet)
+        
+        if self.sortedBy == "Opening Date" {
+            let sortByOpeningDate = UIAlertAction(title: "Opening Date ✅", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Opening Date"
+                self.venues = self.dateSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByOpeningDate)
+        } else {
+            let sortByOpeningDate = UIAlertAction(title: "Opening Date", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Opening Date"
+                self.venues = self.dateSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByOpeningDate)
+        }
+        
+        if self.sortedBy == "Votes" {
+            let sortByVotes = UIAlertAction(title: "Votes ✅", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Votes"
+                self.voteSort = self.venues.sort{ (a: Venue, b: Venue) -> Bool in
+                    let aVotes = self.venueVoteCounts[a.objectId!]
+                    let bVotes = self.venueVoteCounts[b.objectId!]
+                    return aVotes > bVotes
+                }
+                self.venues = self.voteSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByVotes)
+        } else {
+            let sortByVotes = UIAlertAction(title: "Votes", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Votes"
+                self.voteSort = self.venues.sort{ (a: Venue, b: Venue) -> Bool in
+                    let aVotes = self.venueVoteCounts[a.objectId!]
+                    let bVotes = self.venueVoteCounts[b.objectId!]
+                    return aVotes > bVotes
+                }
+                self.venues = self.voteSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByVotes)
+        }
+        
+        if self.sortedBy == "Recent Chats" {
+            let sortByChats = UIAlertAction(title: "Recent Chats ✅", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Recent Chats"
+                self.chatSort = self.venues.sort{ (a: Venue, b: Venue) -> Bool in
+                    return self.recentChatsVenueList.contains(a.objectId!) == true && self.recentChatsVenueList.contains(b.objectId!) != true
+                }
+                self.venues = self.chatSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByChats)
+        } else {
+            let sortByChats = UIAlertAction(title: "Recent Chats", style: .Default, handler: {
+                (alert: UIAlertAction!) -> Void in
+                
+                self.sortedBy = "Recent Chats"
+                self.chatSort = self.venues.sort{ (a: Venue, b: Venue) -> Bool in
+                    return self.recentChatsVenueList.contains(a.objectId!) == true && self.recentChatsVenueList.contains(b.objectId!) != true
+                }
+                self.venues = self.chatSort
+                self.tableView.reloadData()
+            })
+            sortMenu.addAction(sortByChats)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        sortMenu.addAction(cancelAction)
+
+        self.presentViewController(sortMenu, animated: true, completion: nil)
     }
     
     
