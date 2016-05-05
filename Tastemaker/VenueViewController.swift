@@ -119,13 +119,20 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         super.viewWillAppear(animated)
         
         if self.isMovingToParentViewController() {
-            userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves/\(venueID)")
+            userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves")
             venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
             userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
-                if snapshot.exists() {
+                let enumerator = snapshot.children
+                var savedVenues = [String]()
+                while let data = enumerator.nextObject() as? FDataSnapshot {
+                    savedVenues.append(data.key)
+                }
+                if savedVenues.contains((self.venue?.objectId!)!) {
                     self.configureUnsaveButton()
+                } else if snapshot.childrenCount >= 5 {
+                    self.navigationItem.setRightBarButtonItems([self.silenceButton], animated: false)
                 } else {
                     self.configureSaveButton()
                 }
@@ -191,7 +198,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
    
         self.configureUnsaveButton()
         
-        userActivitiesSaveRef?.setValue(dateFormatter().stringFromDate(NSDate()))
+        userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).setValue(dateFormatter().stringFromDate(NSDate()))
         venueActivitiesSaverRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
@@ -202,7 +209,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
 
         self.configureSaveButton()
         
-        userActivitiesSaveRef?.removeValue()
+        userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).removeValue()
         venueActivitiesSaverRef?.removeValue()
         
         Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
@@ -304,7 +311,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "Once you find a place you want to remember, hit the Save button to stash it to My List"
+            coachViews.bodyView.hintLabel.text = "Once you find a place you want to remember, hit the Save button to stash up to five venues to My List"
             coachViews.bodyView.nextLabel.text = "👍🏾"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left

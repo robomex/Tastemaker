@@ -140,7 +140,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         if loading {
             return nil
         } else {
-            let description = "You haven't saved any venues yet. \nIf a new place catches your eye, save it and it'll pop up here!"
+            let description = "\nYou haven't saved any venues yet.\n\nIf a new place catches your eye, hit 'Save' in the venue's chat screen!\n\nYou can save up to five venues here."
             let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
             return NSAttributedString(string: description, attributes: attributes)
         }
