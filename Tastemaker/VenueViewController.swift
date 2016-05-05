@@ -280,7 +280,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         case 0:
             var chatIntroCoachMark = coachMarksController.coachMarkForView(self.chatVC.view) { (frame: CGRect) -> UIBezierPath in
                 
-                return UIBezierPath(roundedRect: CGRectInset(frame, 25, 25), cornerRadius: 20)
+                return UIBezierPath(roundedRect: CGRectInset(frame, 35, 40), cornerRadius: 20)
             }
             chatIntroCoachMark.arrowOrientation = .Bottom
             return chatIntroCoachMark
