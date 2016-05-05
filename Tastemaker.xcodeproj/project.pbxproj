@@ -26,7 +26,6 @@
 		DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */; };
 		DE86FA161BB7154700C313E2 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86FA151BB7154700C313E2 /* TabBarController.swift */; };
 		DE96F93C1CA71A4900DBB83C /* VenueAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */; };
-		DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */; };
 		DE9CF6D51C0F7F5A00FEFF52 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */; };
 		DEA2DF601C19FD06007CB294 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA2DF5F1C19FD06007CB294 /* TextField.swift */; };
 		DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA50CF01B7B094A00396BDD /* VenueViewController.swift */; };
@@ -93,7 +92,6 @@
 		DE8300631B5F01E2000B71D7 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DE86FA151BB7154700C313E2 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		DE96F93B1CA71A4900DBB83C /* VenueAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotation.swift; sourceTree = "<group>"; };
-		DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueAnnotationView.swift; sourceTree = "<group>"; };
 		DE9CF6D41C0F7F5A00FEFF52 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DEA2DF5F1C19FD06007CB294 /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		DEA50CF01B7B094A00396BDD /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
@@ -293,7 +291,6 @@
 			isa = PBXGroup;
 			children = (
 				DE255AAA1BADE46E00F5C6D1 /* VenueCellView.swift */,
-				DE96F93D1CA71B5000DBB83C /* VenueAnnotationView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -479,7 +476,6 @@
 				DE283D151B61670E0003466D /* InitialViewController.swift in Sources */,
 				DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */,
 				DEA50CF71B7DBAA000396BDD /* VenueDetailsViewController.swift in Sources */,
-				DE96F93E1CA71B5000DBB83C /* VenueAnnotationView.swift in Sources */,
 				DEA50CF11B7B094A00396BDD /* VenueViewController.swift in Sources */,
 				DE86FA161BB7154700C313E2 /* TabBarController.swift in Sources */,
 				DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */,
