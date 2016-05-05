@@ -65,34 +65,25 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 160)
         mapView.center = CGPointMake(UIScreen.mainScreen().bounds.width/2, 165)
         
-        let venueAddress = (venue?.address)!
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(venueAddress, completionHandler: {(placemarks, error) -> Void in
-            if ((error) != nil) {
-                print("Error", error)
-            }
-            if let placemark = placemarks?.first {
-                let venueLocation: CLLocation = placemark.location!
-                
-                // Next three lines for Maps directions
-                let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.name as String!]
-                let mapPlacemark = MKPlacemark(coordinate: venueLocation.coordinate, addressDictionary: addressDictionary)
-                self.mapItem = MKMapItem(placemark: mapPlacemark)
-                
-                let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
-                self.mapView.setRegion(coordinateRegion, animated: false)
-                
-                // Show user location on map if location services are .AuthorizedAlways
-                if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
-                    self.mapView.showsUserLocation = true
-                }
-                
-                // Add annotation pin
-                let venuePin = MKPointAnnotation()
-                venuePin.coordinate = venueLocation.coordinate
-                self.mapView.addAnnotation(venuePin)
-            }
-        })
+        // Show user location on map if location services are .AuthorizedAlways
+        if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
+            self.mapView.showsUserLocation = true
+        }
+        
+        let venueLocation: CLLocation = CLLocation(latitude: self.venue!.latitude!, longitude: self.venue!.longitude!)
+        
+        // Next three lines for Maps directions
+        let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.name as String!]
+        let mapPlacemark = MKPlacemark(coordinate: venueLocation.coordinate, addressDictionary: addressDictionary)
+        self.mapItem = MKMapItem(placemark: mapPlacemark)
+        
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
+        self.mapView.setRegion(coordinateRegion, animated: false)
+        
+        // Add annotation pin
+        let venuePin = MKPointAnnotation()
+        venuePin.coordinate = venueLocation.coordinate
+        self.mapView.addAnnotation(venuePin)
         self.view.addSubview(mapView)
         
         // Address and neighborhood
@@ -150,10 +141,12 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 print("Cancel")
             }))
             alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
-                let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-                self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
-                
-                Amplitude.instance().logEvent("Opened Maps")
+                dispatch_async(dispatch_get_main_queue()) {
+                    let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+                    self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+                    
+                    Amplitude.instance().logEvent("Opened Maps")
+                }
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         case 1:
