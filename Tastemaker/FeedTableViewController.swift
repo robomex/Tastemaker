@@ -14,6 +14,7 @@ import SwiftyDrop
 import MapKit
 import CoreLocation
 import Amplitude_iOS
+import EasyAnimation
 
 class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoachMarksControllerDataSource {
 
@@ -37,6 +38,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     private var venueVoteCounts = [String: Int]()
     private var userVotesHandle: UInt?
     private var userVotes = [String]()
+    private var votedVenue = String()
+    private var unvotedVenue = String()
     
     private var mapViewButton = UIBarButtonItem()
     private var mapView = MKMapView()
@@ -133,7 +136,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 self.tableView.reloadData()
             })
-            userVotesHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").observeEventType(.Value, withBlock: {
+            userVotesHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").queryOrderedByValue().observeEventType(.Value, withBlock: {
                 snapshot in
                 
                 self.userVotes = []
@@ -143,7 +146,6 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                         self.userVotes.append(userVotesVenues.key)
                     }
                 }
-                self.tableView.reloadData()
             })
         }
         
@@ -286,16 +288,68 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 venueCell!.voteButton!.setTitle("0", forState: .Normal)
             }
             
-            if self.userVotes.contains(venue.objectId!) {
-                venueCell!.voteButton!.selected = true
-            } else {
-                venueCell!.voteButton!.selected = false
-            }
-            
             if self.visits[venue.objectId!] == true {
                 venueCell!.setVisitStatus(true)
             } else {
                 venueCell!.setVisitStatus(false)
+            }
+            
+            if self.userVotes.contains(venue.objectId!) {
+                if venue.objectId! != self.votedVenue {
+                    venueCell!.voteButton!.selected = true
+                    venueCell!.voteButton!.layer.cornerRadius = 20
+                    venueCell!.voteButton!.layer.borderWidth = 0
+                    venueCell!.voteButton!.backgroundColor = kPurple
+                    venueCell!.voteButton!.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    venueCell!.voteButton!.titleLabel!.font = UIFont.boldSystemFontOfSize(18.0)
+                    venueCell!.triangle?.alpha = 0
+                }
+            } else if !self.userVotes.contains(venue.objectId!) && (self.visits[venue.objectId!] == true || venue.name! == "Chicago Chat") {
+                if venue.objectId! != self.unvotedVenue {
+                    venueCell!.voteButton!.selected = false
+                    venueCell!.voteButton!.layer.cornerRadius = 5.0
+                    venueCell!.voteButton!.layer.borderWidth = 1.5
+                    venueCell!.voteButton!.layer.borderColor = kGray.CGColor
+                    venueCell!.triangle!.alpha = 1.0
+                }
+            }
+            
+            if venue.objectId! == self.votedVenue {
+                venueCell!.voteButton!.selected = true
+                UIView.animateAndChainWithDuration(0.8, delay: 0.0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.0, options: [], animations: {
+                    
+                    venueCell!.voteButton!.layer.transform = CATransform3DMakeScale(1.2, 1.2, 1.0)
+                    venueCell!.voteButton!.layer.cornerRadius = 20
+                    venueCell!.voteButton!.layer.borderWidth = 0
+                    venueCell!.voteButton!.backgroundColor = kPurple
+                    venueCell!.voteButton!.titleLabel!.font = UIFont.boldSystemFontOfSize(18.0)
+                    venueCell!.voteButton!.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    venueCell!.voteButton!.layoutIfNeeded()
+                    venueCell!.triangle?.alpha = 0
+                    }, completion: nil).animateWithDuration(0.2, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [], animations: {
+                        
+                        venueCell!.voteButton!.layer.transform = CATransform3DIdentity
+                        }, completion: nil)
+                self.votedVenue = ""
+            }
+            
+            if venue.objectId! == self.unvotedVenue {
+                venueCell!.voteButton!.selected = false
+                UIView.animateAndChainWithDuration(0.4, delay: 0.0, options: [], animations: {
+
+                    venueCell!.voteButton!.layer.cornerRadius = 5.0
+                    venueCell!.voteButton!.layer.borderWidth = 1.5
+                    venueCell!.voteButton!.backgroundColor = UIColor.clearColor()
+                    venueCell!.voteButton!.titleLabel!.font = UIFont.systemFontOfSize(14.0)
+                    venueCell!.voteButton!.titleEdgeInsets = UIEdgeInsets(top: 14, left: 0, bottom: 0, right: 0)
+                    venueCell!.voteButton!.layoutIfNeeded()
+                    venueCell!.triangle?.alpha = 1.0
+                    }, completion: nil).animateWithDuration(0.1, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [], animations: {
+                    
+                    venueCell!.voteButton!.layer.transform = CATransform3DIdentity
+                    }, completion: nil)
+
+                self.unvotedVenue = ""
             }
             
             if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
@@ -367,6 +421,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
+            self.votedVenue = venueId
             voteCount += 1
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
                 (currentData: FMutableData!) in
@@ -376,13 +431,16 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 currentData.value = value! + 1
                 return FTransactionResult.successWithValue(currentData)
+                }, andCompletionBlock: {
+                    _ in
+                    DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
             })
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
         } else {
+            self.unvotedVenue = venueId
             if voteCount > 0 {
                 voteCount -= 1
                 DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
@@ -390,9 +448,11 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                     let value = currentData.value as? Int
                     currentData.value = value! - 1
                     return FTransactionResult.successWithValue(currentData)
+                    }, andCompletionBlock: {
+                        _ in
+                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/votes/\(venueId)").removeValue()
                 })
             }
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/\(venueId)").removeValue()
             DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").removeValue()
             
             Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
