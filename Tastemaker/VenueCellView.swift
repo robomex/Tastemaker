@@ -30,7 +30,7 @@ class VenueCellView: UITableViewCell {
     // The Vote button
     var voteButton: UIButton?
     
-    var delegate: VenueCellViewDelegate?
+    weak var delegate: VenueCellViewDelegate?
     
     var containerView: UIView?
     var venueNameLabel: UILabel?
@@ -175,7 +175,7 @@ class VenueCellView: UITableViewCell {
     }
     
     func didTapVoteButtonAction(button: UIButton) {
-        if delegate != nil && delegate!.respondsToSelector(#selector(VenueCellViewDelegate.venueCellView(_:didTapVoteButton:venueId:))) {
+        if delegate != nil {
             delegate!.venueCellView!(self, didTapVoteButton: button, venueId: (venue?.objectId)!)
         }
     }
@@ -185,11 +185,10 @@ class VenueCellView: UITableViewCell {
     All methods of the protocol are optional.
 */
 
-@objc protocol VenueCellViewDelegate: NSObjectProtocol {
+@objc protocol VenueCellViewDelegate: class {
     
     /*
         Sent to the delegate when the vote button is tapped
-        @param venue the PFObject for the venue that is being voted or unvoted
     */
     optional func venueCellView(venueCellView: VenueCellView, didTapVoteButton button: UIButton, venueId: String)
 }
