@@ -37,6 +37,7 @@ class VenueCellView: UITableViewCell {
     var venueNeighborhoodLabel: UILabel?
     var venueOpeningDateLabel: UILabel?
     var isFeatured: String?
+    var triangle: TriangleView?
     
     
     // MARK: Initialization
@@ -60,34 +61,34 @@ class VenueCellView: UITableViewCell {
         if self.buttons.contains(VenueCellButtons.Vote) {
             // Vote button
             voteButton = UIButton(type: UIButtonType.Custom)
+            triangle = TriangleView(frame: CGRectMake(18, 24, 16, 12))
+            self.triangle!.alpha = 0.1
+            self.triangle!.backgroundColor = UIColor.clearColor()
+            containerView!.addSubview(self.triangle!)
             containerView!.addSubview(self.voteButton!)
-            self.voteButton!.frame = CGRectMake(10, 23, 30, 30)
+            self.voteButton!.frame = CGRectMake(6, 18, 40, 40)
             self.voteButton!.backgroundColor = UIColor.clearColor()
             self.voteButton!.setTitle("", forState: UIControlState.Normal)
             self.voteButton!.setTitleColor(kGray, forState: UIControlState.Normal)
-            self.voteButton!.setTitleColor(kPurple, forState: UIControlState.Selected)
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0)
-            self.voteButton!.titleLabel!.font = UIFont.systemFontOfSize(12.0)
+            self.voteButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Selected)
+            self.voteButton!.titleLabel!.font = UIFont.systemFontOfSize(14.0)
             self.voteButton!.titleLabel!.minimumScaleFactor = 0.8
             self.voteButton!.titleLabel!.adjustsFontSizeToFitWidth = true
             self.voteButton!.adjustsImageWhenHighlighted = false
-            self.voteButton!.setBackgroundImage(UIImage(named: "VoteNormal.png"), forState: UIControlState.Normal)
-            self.voteButton!.setBackgroundImage(UIImage(named: "VoteSelected.png"), forState: UIControlState.Selected)
-            self.voteButton!.setBackgroundImage(UIImage(named: "VoteDisabled.png"), forState: UIControlState.Disabled)
-            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(12.0, 0.0, 0.0, 0.0)
+            self.voteButton!.titleEdgeInsets = UIEdgeInsetsMake(14.0, 0.0, 0.0, 0.0)
 
             self.voteButton!.selected = false
         }
         
-        // Venue name label - COME BACK LATER AND FIX ARBITRARY SPACING
-        self.venueNameLabel = UILabel(frame: CGRectMake(50.0, 15.0, containerView!.bounds.size.width - 50.0, 26.0))
+        // Venue name label
+        self.venueNameLabel = UILabel(frame: CGRectMake(54.0, 15.0, containerView!.bounds.size.width - 54.0, 26.0))
         containerView!.addSubview(self.venueNameLabel!)
         self.venueNameLabel!.textColor = UIColor.blackColor()
         self.venueNameLabel!.font = UIFont.systemFontOfSize(22.0)
         self.venueNameLabel!.backgroundColor = UIColor.clearColor()
         
         // Venue neighborhood label
-        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(50.0, 42.0, containerView!.bounds.size.width - 50.0, 18.0))
+        self.venueNeighborhoodLabel = UILabel(frame: CGRectMake(54.0, 42.0, containerView!.bounds.size.width - 54.0, 18.0))
         containerView!.addSubview(self.venueNeighborhoodLabel!)
         self.venueNeighborhoodLabel!.textColor = UIColor.blackColor()
         self.venueNeighborhoodLabel!.font = UIFont.systemFontOfSize(14.0)
@@ -110,10 +111,8 @@ class VenueCellView: UITableViewCell {
     
     var venue: Venue? {
         didSet{
-//            var constrainWidth: CGFloat = containerView!.bounds.size.width
             
             if self.buttons.contains(VenueCellButtons.Vote) {
-//                constrainWidth = self.voteButton!.frame.origin.x
                 self.voteButton!.addTarget(self, action: #selector(VenueCellView.didTapVoteButtonAction(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             
@@ -153,15 +152,14 @@ class VenueCellView: UITableViewCell {
     
     func setVisitStatus(visited: Bool) {
         self.voteButton!.enabled = visited
-        if visited {
-            self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.2)
-        } else if venueNameLabel!.text == "Chicago Chat" {
+        if visited || venueNameLabel!.text == "Chicago Chat" {
             self.voteButton!.enabled = true
             self.containerView?.backgroundColor = kBlue.colorWithAlphaComponent(0.2)
-        } else if self.isFeatured != nil {
+        }
+        if self.isFeatured != nil && venueNameLabel!.text != "Chicago Chat" {
             if self.isFeatured! == "Featured" {
                 // During initial implementation of "Specials", i.e. featured's, the vote button was enabled, however if both the featured placement and the potential normal placement will coexist in the same list, don't want to automatically enable voting for everyone - instead of just visitors - as that will artificially inflate the vote numbers
-//                self.voteButton!.enabled = true
+                //                self.voteButton!.enabled = true
                 self.containerView?.backgroundColor = kRed.colorWithAlphaComponent(0.2)
             }
         }
