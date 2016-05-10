@@ -17,8 +17,6 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     var userId = String()
     var userNickname = String()
     private var userActivitiesMuteHandle = UInt?()
-    private var userActivitiesMuteRef: Firebase?
-    private var usersSavedListRef: Firebase?
     private var usersSavedListHandle = UInt?()
     private var usersSavedListVenues = [Venue]()
     private var loading: Bool = true
@@ -26,6 +24,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     private var originalVisitStatuses: [String] = []
     private var originalUserIdList = [String]()
     private var isMuted = Bool()
+    private var superUid = String()
     
     private var headerView: UIView?
     let profilePicWidth: CGFloat = 132
@@ -33,16 +32,16 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.tableView.emptyDataSetDelegate = self
-        self.tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.emptyDataSetSource = self
         
-        self.headerView = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.bounds.size.width, 222.0))
+        headerView = UIView(frame: CGRectMake(0.0, 0.0, tableView.bounds.size.width, 222.0))
         // Should be clear, this will be the container for our avatar, counts, and whatevz later
-        self.headerView!.backgroundColor = UIColor.clearColor()
+        headerView!.backgroundColor = UIColor.clearColor()
         
-        let texturedBackgroundView: UIView = UIView(frame: self.view.bounds)
+        let texturedBackgroundView: UIView = UIView(frame: view.bounds)
         texturedBackgroundView.backgroundColor = UIColor.whiteColor()
-        self.tableView.backgroundView = texturedBackgroundView
+        tableView.backgroundView = texturedBackgroundView
         
         let profilePictureBackgroundView = UIView(frame: CGRectMake(UIScreen.mainScreen().bounds.width/2 - profilePicWidth/2, 38.0, profilePicWidth, profilePicWidth))
         profilePictureBackgroundView.backgroundColor = UIColor.lightGrayColor()
@@ -50,14 +49,16 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         let layer: CALayer = profilePictureBackgroundView.layer
         layer.cornerRadius = 66.0
         layer.masksToBounds = true
-        self.headerView!.addSubview(profilePictureBackgroundView)
+        headerView!.addSubview(profilePictureBackgroundView)
         
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
-            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+        superUid = super.uid
+        
+        if navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC
             originalMessages = chatVC.messages
             originalVisitStatuses = chatVC.visitStatuses
@@ -73,73 +74,75 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tabBarController!.tabBar.hidden = true
-        self.title = self.userNickname
+        tabBarController!.tabBar.hidden = true
+        title = userNickname
         
-        if self.isMovingToParentViewController() {
+        if isMovingToParentViewController() {
             
-            userActivitiesMuteRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(self.userId)")
-            userActivitiesMuteHandle = userActivitiesMuteRef!.observeEventType(FEventType.Value, withBlock: {
-                snapshot in
+            userActivitiesMuteHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").observeEventType(FEventType.Value, withBlock: {
+                [weak self] snapshot in
                 
-                if snapshot.exists() {
-                    self.isMuted = true
-                    self.configureUnmuteButton()
-                } else if super.uid == self.userId {
-                    self.navigationItem.rightBarButtonItem = nil
-                } else {
-                    self.isMuted = false
-                    self.configureMuteButton()
+                if let throwawayUserProfileVC = self {
+                    if snapshot.exists() {
+                        throwawayUserProfileVC.isMuted = true
+                        throwawayUserProfileVC.configureUnmuteButton()
+                    } else if throwawayUserProfileVC.superUid == throwawayUserProfileVC.userId {
+                        throwawayUserProfileVC.navigationItem.rightBarButtonItem = nil
+                    } else {
+                        throwawayUserProfileVC.isMuted = false
+                        throwawayUserProfileVC.configureMuteButton()
+                    }
                 }
             })
             
-            usersSavedListRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves")
-            usersSavedListHandle = usersSavedListRef?.observeEventType(FEventType.Value, withBlock: {
-                snapshot in
+            usersSavedListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves").observeEventType(FEventType.Value, withBlock: {
+                [weak self] snapshot in
                 
-                if !snapshot.exists() {
-                    self.loading = false
-                    self.tableView.alpha = 1.0
-                    self.tableView.reloadData()
-                }
-                
-                let enumerator = snapshot.children
-                self.usersSavedListVenues = []
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
-                        snap in
-                        
-                        self.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                        
-                        for venue in self.usersSavedListVenues {
-                            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-                                snapshot in
-                                
-                                if snapshot.exists() {
-                                    self.visits[venue.objectId!] = true
-                                }
-                                self.loading = false
-                                self.tableView.reloadData()
-                            })
-                        }
-                    })
+                if let throwawayUserProfileVC = self {
+                    if !snapshot.exists() {
+                        throwawayUserProfileVC.loading = false
+                        throwawayUserProfileVC.tableView.alpha = 1.0
+                        throwawayUserProfileVC.tableView.reloadData()
+                    }
+                    
+                    let enumerator = snapshot.children
+                    throwawayUserProfileVC.usersSavedListVenues = []
+                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                        DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                            snap in
+                            
+                            throwawayUserProfileVC.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
+                            
+                            for venue in throwawayUserProfileVC.usersSavedListVenues {
+                                DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(throwawayUserProfileVC.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+                                    snapshot in
+                                    
+                                    if snapshot.exists() {
+                                        throwawayUserProfileVC.visits[venue.objectId!] = true
+                                    }
+                                    throwawayUserProfileVC.loading = false
+                                    throwawayUserProfileVC.tableView.reloadData()
+                                })
+                            }
+                        })
+                    }
                 }
             })
         }
 
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
-        self.navigationItem.leftBarButtonItem = nil
+        navigationItem.leftBarButtonItem = nil
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
-            self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+            navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
         }
         
-        if super.uid == self.userId {
-            self.navigationItem.rightBarButtonItem = nil
-        } else if self.isMuted {
-            self.configureUnmuteButton()
-        } else if !self.isMuted {
-            self.configureMuteButton()
+        if super.uid == userId {
+            navigationItem.rightBarButtonItem = nil
+        } else if isMuted {
+            configureUnmuteButton()
+        } else if !isMuted {
+            configureMuteButton()
         }
         
         let tracker = GAI.sharedInstance().defaultTracker
@@ -151,15 +154,19 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        self.navigationItem.rightBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if self.isMovingFromParentViewController() {
-            userActivitiesMuteRef!.removeObserverWithHandle(userActivitiesMuteHandle!)
-            usersSavedListRef?.removeObserverWithHandle(usersSavedListHandle!)
+        if isMovingFromParentViewController() {
+            visits.removeAll()
+            usersSavedListVenues.removeAll()
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").removeObserverWithHandle(userActivitiesMuteHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves").removeObserverWithHandle(usersSavedListHandle!)
+            tableView.emptyDataSetSource = nil
+            tableView.emptyDataSetDelegate = nil
         }
     }
 
@@ -178,17 +185,17 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.usersSavedListVenues.count
+        return usersSavedListVenues.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        super.venues = self.usersSavedListVenues
-        let venueCell = super.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as! VenueCellView
+        super.venues = usersSavedListVenues
+        let venueCell = super.tableView(tableView, cellForRowAtIndexPath: indexPath) as! VenueCellView
         
-        if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
+        if indexPath.row == (tableView.indexPathsForVisibleRows?.last?.row)! {
             UIView.animateWithDuration(0.1, animations: {
-                self.tableView.alpha = 1.0
+                tableView.alpha = 1.0
             })
         }
         return venueCell
@@ -200,15 +207,15 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     func muteButtonAction(sender: AnyObject) {
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        self.configureUnmuteButton()
-        self.isMuted = true
-        userActivitiesMuteRef?.setValue(true)
-        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
-            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+        configureUnmuteButton()
+        isMuted = true
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").setValue(true)
+        if navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC
-            chatVC.mutedUsers[self.userId] = "muted"
+            chatVC.mutedUsers[userId] = "muted"
             
             var filteredMessages: [JSQMessage] = []
             var filteredVisitStatuses: [String] = []
@@ -227,37 +234,37 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
             chatVC.collectionView.reloadData()
         }
         
-        Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": self.userId, "Muted User Nickname": self.userNickname])
+        Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": userId, "Muted User Nickname": userNickname])
         Amplitude.instance().identify(AMPIdentify().add("Mutes", value: 1))
     }
     
     func unmuteButtonAction(sender: AnyObject) {
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingActivityIndicatorView)
         
-        self.configureMuteButton()
-        self.isMuted = false
-        userActivitiesMuteRef?.removeValue()
-        if self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] is VenueViewController {
-            let venueVC = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! VenueViewController
+        configureMuteButton()
+        isMuted = false
+        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").removeValue()
+        if navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] is VenueViewController {
+            let venueVC = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC
-            chatVC.mutedUsers[self.userId] = nil
+            chatVC.mutedUsers[userId] = nil
             chatVC.messages = originalMessages
             chatVC.visitStatuses = originalVisitStatuses
             chatVC.userIdList = originalUserIdList
         }
         
-        Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": self.userId, "Unmuted User Nickname": self.userNickname])
+        Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": userId, "Unmuted User Nickname": userNickname])
         Amplitude.instance().identify(AMPIdentify().add("Mutes", value: -1))
     }
     
     func configureMuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.muteButtonAction(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Mute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.muteButtonAction(_:)))
     }
     
     func configureUnmuteButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.unmuteButtonAction(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Unmute", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileViewController.unmuteButtonAction(_:)))
     }
     
     
