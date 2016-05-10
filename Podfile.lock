@@ -7,6 +7,7 @@ PODS:
     - Bolts/Tasks
   - Bolts/Tasks (1.7.0)
   - DZNEmptyDataSet (1.7.3)
+  - EasyAnimation (1.0.5)
   - FBSDKCoreKit (4.10.1):
     - Bolts (~> 1.5)
   - FBSDKLoginKit (4.10.1):
@@ -42,6 +43,7 @@ PODS:
 DEPENDENCIES:
   - Amplitude-iOS (~> 3.5.0)
   - DZNEmptyDataSet
+  - EasyAnimation
   - FBSDKCoreKit
   - FBSDKLoginKit
   - Firebase (~> 2.5.0)
@@ -59,6 +61,7 @@ SPEC CHECKSUMS:
   Amplitude-iOS: 06d4f103728b15e95487b77a16749ae373f970a3
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   DZNEmptyDataSet: dd7cca17c1d07dfa78956859b1e70a52505678ef
+  EasyAnimation: 32821f37dd39187e7364369a3d8f65d38405cf1d
   FBSDKCoreKit: d2aaed5e9ab7d8d6301c533376a1fbff1cf3deb5
   FBSDKLoginKit: 699ff169080e3072de4b9b0faca90bf23dc36deb
   Firebase: 3565ea88b830f28f2c77ecc524622bc71a20d085
@@ -78,6 +81,6 @@ SPEC CHECKSUMS:
   SwiftyDrop: 54a30c4edd51be9863429c3ad2ad4108eb7b7814
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 01909c580058069d67d5f1b7198e4f537f2cf2d0
+PODFILE CHECKSUM: 5b717476419acd8bdf4632cd19de5eb3fa4feb0a
 
 COCOAPODS: 1.0.0.rc.1

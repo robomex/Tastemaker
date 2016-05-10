@@ -13,6 +13,7 @@ def pods
 	pod 'DZNEmptyDataSet'
 	pod 'SCLAlertView-Objective-C'
 	pod 'PagingMenuController'
+	pod 'EasyAnimation'
 
 	#ONBOARDING
 	pod 'Instructions', '~> 0.4'
