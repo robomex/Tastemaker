@@ -19,7 +19,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     var messages: [JSQMessage] = []
     var visitStatuses: [String] = []
     var venue: Venue?
-    var messageListener: MessageListener?
+    weak var messageListener: MessageListener?
     var avatars = Dictionary<String, JSQMessagesAvatarImage>()
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String: String]()
@@ -50,26 +50,26 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.senderId = uid
-        self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
-        self.showLoadEarlierMessagesHeader = true
+        senderId = uid
+        collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+        showLoadEarlierMessagesHeader = true
         
-        self.senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
+        senderDisplayName = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as! String
 
-        self.inputToolbar?.contentView!.leftBarButtonItem = nil
-        self.edgesForExtendedLayout = UIRectEdge.None
-        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+        inputToolbar?.contentView!.leftBarButtonItem = nil
+        edgesForExtendedLayout = UIRectEdge.None
+        inputToolbar?.contentView?.textView?.resignFirstResponder()
 
         // Items for Report function
         JSQMessagesCollectionViewCell.registerMenuAction(#selector(VenueChatViewController.reportMessage(_:)))
         UIMenuController.sharedMenuController().menuItems = [UIMenuItem.init(title: "Report", action: #selector(VenueChatViewController.reportMessage(_:)))]
         
-        self.coachMarksController.dataSource = self
-        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
-        self.coachMarksController.allowOverlayTap = true
+        coachMarksController.dataSource = self
+        coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        coachMarksController.allowOverlayTap = true
         
-        self.collectionView?.emptyDataSetSource = self
-        self.collectionView?.emptyDataSetDelegate = self
+        collectionView?.emptyDataSetSource = self
+        collectionView?.emptyDataSetDelegate = self
         
         // Add observer to catch when a long-press menu is about to show
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VenueChatViewController.handleMenuWillHide(_:)), name: UIMenuControllerDidHideMenuNotification, object: nil)
@@ -82,73 +82,79 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.navigationController!.navigationBar.translucent = false
+        navigationController!.navigationBar.translucent = false
         
         if !loaded {
 
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
-                snapshot in
+                [weak self] snapshot in
                 
-                let enumerator = snapshot.children
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    self.mutedUsers[data.key] = "muted"
-                }
-                
-                if let id = self.venue?.objectId {
-                    fetchMessages(id, callback: {
-                        messages in
-                        
-                        for m in messages {
-                            if self.mutedUsers[m.senderID] == nil {
-                                self.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
-                                self.visitStatuses.append(m.visitStatus)
-                                self.userIdList.append(m.senderID)
+                if let tempChatVC = self {
+                    let enumerator = snapshot.children
+                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                        tempChatVC.mutedUsers[data.key] = "muted"
+                    }
+                    
+                    if let id = tempChatVC.venue.objectId {
+                        fetchMessages(id, callback: {
+                            messages in
+                            
+                            for m in messages {
+                                if tempChatVC.mutedUsers[m.senderID] == nil {
+                                    tempChatVC.messages.append(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message))
+                                    tempChatVC.visitStatuses.append(m.visitStatus)
+                                    tempChatVC.userIdList.append(m.senderID)
+                                }
                             }
-                        }
-                        self.finishReceivingMessageAnimated(false)
-                        self.userIdList = Array(Set(self.userIdList))
-                        
-                        if self.messages.count > 14 {
-                            self.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
-                        }
-                    })
+                            tempChatVC.finishReceivingMessageAnimated(false)
+                            tempChatVC.userIdList = Array(Set(tempChatVC.userIdList))
+                            
+                            if messages.count > 14 {
+                                tempChatVC.collectionView?.loadEarlierMessagesHeaderTextColor = kBlue
+                            }
+                        })
+                    }
                 }
             })
             
             if let id = venue?.objectId {
                 messageListener = MessageListener(venueID: id, startDate: NSDate(), callback: {
-                    message in
-                    if self.mutedUsers[message.senderID] == nil {
-                        self.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
-                        self.visitStatuses.append(message.visitStatus)
-                        self.userIdList.append(message.senderID)
+                    [weak self] message in
+                    if let tempChatVC = self {
+                        if tempChatVC.mutedUsers[message.senderID] == nil {
+                            tempChatVC.messages.append(JSQMessage(senderId: message.senderID, senderDisplayName: message.senderName, date: message.date, text: message.message))
+                            tempChatVC.visitStatuses.append(message.visitStatus)
+                            tempChatVC.userIdList.append(message.senderID)
+                        }
+                        tempChatVC.finishReceivingMessage()
+                        tempChatVC.userIdList = Array(Set(tempChatVC.userIdList))
                     }
-                    self.finishReceivingMessage()
-                    self.userIdList = Array(Set(self.userIdList))
                 })
             }
             
             visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
-                snapshot in
+                [weak self] snapshot in
                 
-                if snapshot.exists() {
-                    self.visitStatus = "visited"
-                    
-                    let enumerator = snapshot.children
-                    while let data = enumerator.nextObject() as? FDataSnapshot {
-                        if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
-                            if date.timeIntervalSinceNow > (-3*60*60) {
-                                self.visitStatus = "thereNow"
-                            } else {
-                                self.visitStatus = "visited"
+                if let tempChatVC = self {
+                    if snapshot.exists() {
+                        tempChatVC.visitStatus = "visited"
+                        
+                        let enumerator = snapshot.children
+                        while let data = enumerator.nextObject() as? FDataSnapshot {
+                            if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
+                                if date.timeIntervalSinceNow > (-3*60*60) {
+                                    tempChatVC.visitStatus = "thereNow"
+                                } else {
+                                    tempChatVC.visitStatus = "visited"
+                                }
                             }
                         }
+                    } else {
+                        tempChatVC.visitStatus = "noVisits"
                     }
-                } else {
-                    self.visitStatus = "noVisits"
                 }
             })
-            self.loaded = true
+            loaded = true
         }
         
         let tracker = GAI.sharedInstance().defaultTracker
@@ -159,12 +165,23 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
+        
+        if isMovingFromParentViewController() {
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").removeObserverWithHandle(visitRefHandle)
+            messageListener?.stop(venue.objectId!)
+        }
+//        mutedUsers = [:]
+//        venue = nil
+//        messages = []
+//        visitStatuses = []
+//        userIdList = []
+//        visitStatus = ""
+        inputToolbar?.contentView?.textView?.resignFirstResponder()
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         
-        let data = self.messages[indexPath.row]
+        let data = messages[indexPath.row]
         return data
     }
     
@@ -174,8 +191,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         
-        let data = self.messages[indexPath.row]
-        let visitData = self.visitStatuses[indexPath.row]
+        let data = messages[indexPath.row]
+        let visitData = visitStatuses[indexPath.row]
         if data.senderId == uid {
             switch visitData {
                 case "thereNow": return outgoingThereNowBubble
@@ -195,7 +212,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
         let message = messages[indexPath.item]
-        let visitData = self.visitStatuses[indexPath.row]
+        let visitData = visitStatuses[indexPath.row]
         if message.senderId != uid && visitData == "noVisits" {
             cell.textView?.textColor = UIColor.blackColor()
         } else {
@@ -211,10 +228,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         
-        self.secondToLastMessageSendTime = self.lastMessageSendTime
-        self.lastMessageSendTime = self.currentMessageSendTime
-        self.currentMessageSendTime = NSDate()
-        if self.secondToLastMessageSendTime.timeIntervalSinceNow > -3 {
+        secondToLastMessageSendTime = lastMessageSendTime
+        lastMessageSendTime = currentMessageSendTime
+        currentMessageSendTime = NSDate()
+        if secondToLastMessageSendTime.timeIntervalSinceNow > -3 {
             showThrottleAlert()
             return
         }
@@ -227,7 +244,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         let hasSeenSilenceInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenSilenceInstructions")
         if !hasSeenSilenceInstructions {
-            self.coachMarksController.startOn(self)
+            coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenSilenceInstructions")
         }
         
@@ -288,7 +305,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
         if indexPath.item % 3 == 0 {
-            let message = self.messages[indexPath.item]
+            let message = messages[indexPath.item]
             return JSQMessagesTimestampFormatter.sharedFormatter().attributedTimestampForDate(message.date)
         }
         return nil
@@ -306,7 +323,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     func setupAvatarImage(id: String, name: String, incoming: Bool) {
         
         // If at some point we failed to get the image (e.g. broken URL), default to avatarColor
-        self.setupAvatarColor(id, name: name, incoming: incoming)
+        setupAvatarColor(id, name: name, incoming: incoming)
     }
     
     func setupAvatarColor(id: String, name: String, incoming: Bool) {
@@ -331,7 +348,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-        let message = self.messages[indexPath.item]
+        let message = messages[indexPath.item]
         if avatars[message.senderId] == nil {
 //            let query = PFUser.query()
 //            query?.whereKey("objectId", containedIn: userIdList)
@@ -342,18 +359,18 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
 //                        if let thumbnail = object[kUserProfilePicSmallKey] as? PFFile {
 //                            thumbnail.getDataInBackgroundWithBlock({ (imageData: NSData?, error: NSError?) -> Void in
 //                                if (error == nil) && message.senderId == object.objectId {
-//                                    self.avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
-//                                    self.collectionView?.reloadData()
+//                                    avatars[message.senderId] = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(data: imageData!), diameter: 30)
+//                                    collectionView?.reloadData()
 //                                }
 //                            })
 //                        }
 //                        if message.senderId == object.objectId {
-//                            self.users[message.senderId] = object as? PFUser
+//                            users[message.senderId] = object as? PFUser
 //                        }
 //                    }
 //                }
 //            }
-            self.setupAvatarImage(message.senderId, name: message.senderDisplayName, incoming: true)
+            setupAvatarImage(message.senderId, name: message.senderDisplayName, incoming: true)
             return avatars[message.senderId]
         } else {
             return avatars[message.senderId]
@@ -361,8 +378,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
-        self.inputToolbar?.contentView?.textView?.resignFirstResponder()
-        let message = self.messages[indexPath.item]
+        inputToolbar?.contentView?.textView?.resignFirstResponder()
+        let message = messages[indexPath.item]
         let vc = UserProfileViewController(style: UITableViewStyle.Plain)
         vc.userId = message.senderId
         vc.userNickname = message.senderDisplayName
@@ -374,10 +391,10 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
         
-        let message = self.messages[indexPath.row]
-        if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId == self.uid {
+        let message = messages[indexPath.row]
+        if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId == uid {
             return false
-        } else if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId != self.uid {
+        } else if action == #selector(VenueChatViewController.reportMessage(_:)) && message.senderId != uid {
             return true
         }
 
@@ -387,7 +404,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
         
         if action == #selector(VenueChatViewController.reportMessage(_:)) {
-            self.reportMessage(indexPath)
+            reportMessage(indexPath)
         }
         
         super.collectionView(collectionView, performAction: action, forItemAtIndexPath: indexPath, withSender: sender)
@@ -411,35 +428,37 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
         
-        if self.messages.count == 0 {
+        if messages.count == 0 {
             return
         }
         
         let firstMessageTime = dateFormatter().stringFromDate(messages[0].date)
-        let oldBottomOffset = (self.collectionView?.contentSize.height)! - (self.collectionView?.contentOffset.y)!
+        let oldBottomOffset = (collectionView?.contentSize.height)! - (collectionView?.contentOffset.y)!
         
         fetchEarlierMessages((venue?.objectId)!, firstMessageTime: firstMessageTime, callback: {
-            messages in
+            [weak self] messages in
             
-            for m in messages {
-                if self.mutedUsers[m.senderID] == nil {
-                    self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
-                    self.visitStatuses.insert(m.visitStatus, atIndex: 0)
-                    self.userIdList.append(m.senderID)
+            if let tempChatVC = self {
+                for m in messages {
+                    if tempChatVC.mutedUsers[m.senderID] == nil {
+                        tempChatVC.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
+                        tempChatVC.visitStatuses.insert(m.visitStatus, atIndex: 0)
+                        tempChatVC.userIdList.append(m.senderID)
+                    }
                 }
+                tempChatVC.userIdList = Array(Set(tempChatVC.userIdList))
+                tempChatVC.finishReceivingMessageAnimated(false)
+                collectionView?.layoutIfNeeded()
+                
+                if dateFormatter().stringFromDate(messages[0].date) == firstMessageTime {
+                    collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+                } else if messages.count < 12 {
+                    collectionView?.contentOffset = CGPointMake(0, (collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
+                    return
+                }
+                
+                collectionView?.contentOffset = CGPointMake(0, (collectionView?.contentSize.height)! - oldBottomOffset)
             }
-            self.userIdList = Array(Set(self.userIdList))
-            self.finishReceivingMessageAnimated(false)
-            self.collectionView?.layoutIfNeeded()
-            
-            if dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
-                self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
-            } else if messages.count < 12 {
-                self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
-                return
-            }
-            
-            self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset)
         })
     }
     
@@ -455,7 +474,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         messageThrottleAlert.customViewColor = kPurple
         messageThrottleAlert.backgroundType = .Blur
         messageThrottleAlert.shouldDismissOnTapOutside = true
-        messageThrottleAlert.showInfo(self.view.window?.rootViewController, title: "Whoa there", subTitle: "There's no rush, please wait a moment before sending a new message", closeButtonTitle: "Dismiss", duration: 5.0)
+        messageThrottleAlert.showInfo(view.window?.rootViewController, title: "Whoa there", subTitle: "There's no rush, please wait a moment before sending a new message", closeButtonTitle: "Dismiss", duration: 5.0)
     }
     
     
@@ -482,11 +501,11 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
         switch(index) {
         case 0:
-            var silenceCoachMark = coachMarksController.coachMarkForView(self.parentViewController?.parentViewController?.navigationItem.rightBarButtonItems![1].valueForKey("view") as? UIView)
+            var silenceCoachMark = coachMarksController.coachMarkForView(parentViewController?.parentViewController?.navigationItem.rightBarButtonItems![1].valueForKey("view") as? UIView)
             silenceCoachMark.horizontalMargin = 5
             return silenceCoachMark
         case 1:
-            var chatAreaCoachMark = coachMarksController.coachMarkForView(self.view) { (frame: CGRect) -> UIBezierPath in
+            var chatAreaCoachMark = coachMarksController.coachMarkForView(view) { (frame: CGRect) -> UIBezierPath in
                 
                 return UIBezierPath(roundedRect: CGRectInset(frame, 35, 50), cornerRadius: 20)
             }
