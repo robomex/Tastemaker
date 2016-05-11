@@ -85,7 +85,7 @@ public class PagingMenuController: UIViewController {
         guard currentPage == 0 && contentScrollView.contentSize.width < (pageWidth * CGFloat(visiblePagingViewNumber)) else { return PagingViewPosition(order: order) }
         return PagingViewPosition(order: order + 1)
     }
-    lazy private var shouldLoadPage: (Int) -> Bool = {
+    lazy private var shouldLoadPage: (Int) -> Bool = { [unowned self] in
         switch self.options.lazyLoadingPage {
         case .One:
             guard $0 == self.currentPage else { return false }
@@ -99,7 +99,7 @@ public class PagingMenuController: UIViewController {
         return true
     }
     
-    lazy private var isVisiblePagingViewController: (UIViewController) -> Bool = {
+    lazy private var isVisiblePagingViewController: (UIViewController) -> Bool = { [unowned self] in
         return self.childViewControllers.contains($0)
     }
     

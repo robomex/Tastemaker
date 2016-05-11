@@ -99,8 +99,8 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         }
 
         // Hide the chat inputToolbar if banned
-            chatVC.inputToolbar?.hidden = true
         if banned != nil {
+            chatVC.inputToolbar?.hidden = true
         }
         
         // Set notification to "seen" when app enters foreground from background
