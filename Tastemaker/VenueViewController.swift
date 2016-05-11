@@ -48,7 +48,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         view.backgroundColor = UIColor.whiteColor()
         
         // Remove Navigation Controller shadow image to seamlessly blend with PagingMenuController section
-        for parent in self.navigationController!.navigationBar.subviews {
+        for parent in navigationController!.navigationBar.subviews {
             for childView in parent.subviews {
                 if (childView is UIImageView) {
                     childView.removeFromSuperview()
@@ -82,33 +82,33 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         let pagingMenuController = PagingMenuController(viewControllers: viewControllers, options: options)
         pagingMenuController.delegate = self
         
-        self.addChildViewController(pagingMenuController)
-        self.view.addSubview(pagingMenuController.view)
+        addChildViewController(pagingMenuController)
+        view.addSubview(pagingMenuController.view)
         pagingMenuController.didMoveToParentViewController(self)
         
         // Save/unsave and silence/unsilence setup, check if currentUser saved/silenced this venue
         
         let loadingActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.White)
         loadingActivityIndicatorView.startAnimating()
-        self.navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: loadingActivityIndicatorView), UIBarButtonItem(customView: loadingActivityIndicatorView)], animated: true)
+        navigationItem.setRightBarButtonItems([UIBarButtonItem(customView: loadingActivityIndicatorView), UIBarButtonItem(customView: loadingActivityIndicatorView)], animated: true)
 
         // Set a blank text back button here to prevent ellipses from showing as title during nav animation
         if (navigationController != nil) {
             let backButton = UIBarButtonItem(title: " ", style: .Plain, target: nil, action: nil)
-            self.navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
+            navigationController!.navigationBar.topItem!.backBarButtonItem = backButton
         }
 
         // Hide the chat inputToolbar if banned
-        if self.banned != nil {
             chatVC.inputToolbar?.hidden = true
+        if banned != nil {
         }
         
         // Set notification to "seen" when app enters foreground from background
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(VenueViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
         
-        self.coachMarksController.dataSource = self
-        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
-        self.coachMarksController.allowOverlayTap = true
+        coachMarksController.dataSource = self
+        coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        coachMarksController.allowOverlayTap = true
     }
     
     deinit {
@@ -118,7 +118,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if self.isMovingToParentViewController() {
+        if isMovingToParentViewController() {
             userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves")
             venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
             userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
@@ -164,11 +164,11 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         super.viewDidAppear(animated)
         
         onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
-        onlineStatusRef?.setValue(["\(self.venueID)": true])
+        onlineStatusRef?.setValue(["\(venueID)": true])
         
         let hasSeenChatInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenChatInstructions")
         if !hasSeenChatInstructions {
-            self.coachMarksController.startOn(self)
+            coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenChatInstructions")
         }
     }
@@ -176,11 +176,9 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if self.isMovingFromParentViewController() {
+        if isMovingFromParentViewController() {
             userActivitiesSaveRef!.removeObserverWithHandle(userActivitiesSaveHandle!)
             userActivitiesSilenceRef!.removeObserverWithHandle(userActivitiesSilenceHandle!)
-            chatVC.messageListener!.stop((chatVC.venue?.objectId)!)
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(chatVC.uid)/visits/\(chatVC.venue!.objectId!)").removeObserverWithHandle(chatVC.visitRefHandle)
         }
     
         onlineStatusRef!.removeValue()
@@ -196,7 +194,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     
     func saveButtonAction(sender: AnyObject) {
    
-        self.configureUnsaveButton()
+        configureUnsaveButton()
         
         userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).setValue(dateFormatter().stringFromDate(NSDate()))
         venueActivitiesSaverRef?.setValue(dateFormatter().stringFromDate(NSDate()))
@@ -207,7 +205,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     
     func unsaveButtonAction(sender: AnyObject) {
 
-        self.configureSaveButton()
+        configureSaveButton()
         
         userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).removeValue()
         venueActivitiesSaverRef?.removeValue()
@@ -216,13 +214,13 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     }
     
     func configureSaveButton() {
-        self.saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.saveButtonAction(_:)))
-        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+        saveButton = UIBarButtonItem(title: "Save", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.saveButtonAction(_:)))
+        navigationItem.setRightBarButtonItems([saveButton, silenceButton], animated: false)
     }
     
     func configureUnsaveButton() {
-        self.saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.unsaveButtonAction(_:)))
-        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+        saveButton = UIBarButtonItem(title: "Unsave", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(VenueViewController.unsaveButtonAction(_:)))
+        navigationItem.setRightBarButtonItems([saveButton, silenceButton], animated: false)
     }
     
     
@@ -231,7 +229,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     func silenceButtonAction(sender: AnyObject) {
         
         userActivitiesSilenceRef?.setValue(dateFormatter().stringFromDate(NSDate()))
-        self.configureUnsilenceButton()
+        configureUnsilenceButton()
         
         Amplitude.instance().logEvent("Silenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
@@ -239,19 +237,19 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     func unsilenceButtonAction(sender: AnyObject) {
 
         userActivitiesSilenceRef?.removeValue()
-        self.configureSilenceButton()
+        configureSilenceButton()
         
         Amplitude.instance().logEvent("Unsilenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
     
     func configureSilenceButton() {
-        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: #selector(VenueViewController.silenceButtonAction(_:)))
-        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+        silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications.png"), style: .Plain, target: self, action: #selector(VenueViewController.silenceButtonAction(_:)))
+        navigationItem.setRightBarButtonItems([saveButton, silenceButton], animated: false)
     }
     
     func configureUnsilenceButton() {
-        self.silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: #selector(VenueViewController.unsilenceButtonAction(_:)))
-        self.navigationItem.setRightBarButtonItems([self.saveButton, self.silenceButton], animated: false)
+        silenceButton = UIBarButtonItem(image: UIImage(named: "Notifications-Silenced.png"), style: .Plain, target: self, action: #selector(VenueViewController.unsilenceButtonAction(_:)))
+        navigationItem.setRightBarButtonItems([saveButton, silenceButton], animated: false)
     }
     
     
@@ -292,7 +290,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             chatIntroCoachMark.arrowOrientation = .Bottom
             return chatIntroCoachMark
         case 1:
-            var saveCoachMark = coachMarksController.coachMarkForView(self.navigationItem.rightBarButtonItems![0].valueForKey("view") as? UIView)
+            var saveCoachMark = coachMarksController.coachMarkForView(navigationItem.rightBarButtonItems![0].valueForKey("view") as? UIView)
             saveCoachMark.horizontalMargin = 5
             return saveCoachMark
         default:
