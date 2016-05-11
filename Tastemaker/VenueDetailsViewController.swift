@@ -16,7 +16,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     var venue: Venue?
     let regionRadius: CLLocationDistance = 500
     var mapView = MKMapView()
-    var mapItem: MKMapItem? = nil
+    weak var mapItem: MKMapItem? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +34,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         venueDescriptionLabel.numberOfLines = 2
         venueDescriptionLabel.sizeToFit()
         venueDescriptionLabel.backgroundColor = UIColor.whiteColor()
-        self.view.addSubview(venueDescriptionLabel)
+        view.addSubview(venueDescriptionLabel)
         
         // Opening date and food type label
         
@@ -56,7 +56,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         venueFoodTypeAndOpeningDateLabel.numberOfLines = 1
         venueFoodTypeAndOpeningDateLabel.sizeToFit()
         venueFoodTypeAndOpeningDateLabel.backgroundColor = UIColor.whiteColor()
-        self.view.addSubview(venueFoodTypeAndOpeningDateLabel)
+        view.addSubview(venueFoodTypeAndOpeningDateLabel)
         
         // Map
         
@@ -67,7 +67,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         // Show user location on map if location services are .AuthorizedAlways
         if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
-            self.mapView.showsUserLocation = true
+            mapView.showsUserLocation = true
         }
         
         let venueLocation: CLLocation = CLLocation(latitude: self.venue!.latitude!, longitude: self.venue!.longitude!)
@@ -75,16 +75,16 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Next three lines for Maps directions
         let addressDictionary = [String(CNPostalAddressStreetKey): self.venue?.name as String!]
         let mapPlacemark = MKPlacemark(coordinate: venueLocation.coordinate, addressDictionary: addressDictionary)
-        self.mapItem = MKMapItem(placemark: mapPlacemark)
+        mapItem = MKMapItem(placemark: mapPlacemark)
         
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, self.regionRadius * 2.0, self.regionRadius * 2.0)
-        self.mapView.setRegion(coordinateRegion, animated: false)
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(venueLocation.coordinate, regionRadius * 2.0, regionRadius * 2.0)
+        mapView.setRegion(coordinateRegion, animated: false)
         
         // Add annotation pin
         let venuePin = MKPointAnnotation()
         venuePin.coordinate = venueLocation.coordinate
-        self.mapView.addAnnotation(venuePin)
-        self.view.addSubview(mapView)
+        mapView.addAnnotation(venuePin)
+        view.addSubview(mapView)
         
         // Address and neighborhood
         
@@ -94,7 +94,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         addressNeighborhoodPhoneTableView.delegate = self
         addressNeighborhoodPhoneTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         addressNeighborhoodPhoneTableView.scrollEnabled = false
-        self.view.addSubview(addressNeighborhoodPhoneTableView)
+        view.addSubview(addressNeighborhoodPhoneTableView)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -104,6 +104,16 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         tracker.set(kGAIScreenName, value: "VenueDetailsViewController")
         let builder = GAIDictionaryBuilder.createScreenView()
         tracker.send(builder.build() as [NSObject: AnyObject])
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if isMovingFromParentViewController() {
+            mapItem = nil
+            
+            print("venuedetailsVC diddisappear")
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -142,10 +152,14 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             }))
             alertController.addAction(UIAlertAction(title: "Open in Maps", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
                 dispatch_async(dispatch_get_main_queue()) {
-                    let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
-                    self.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+                    [weak self] in
                     
-                    Amplitude.instance().logEvent("Opened Maps")
+                    if let tempVenueDetailsVC = self {
+                        let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
+                        tempVenueDetailsVC.mapItem?.openInMapsWithLaunchOptions(launchOptions)
+                        
+                        Amplitude.instance().logEvent("Opened Maps")
+                    }
                 }
             }))
             UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
@@ -190,14 +204,4 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         return pinView
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 }
