@@ -170,12 +170,6 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").removeObserverWithHandle(visitRefHandle)
             messageListener?.stop(venue!.objectId!)
         }
-//        mutedUsers = [:]
-//        venue = nil
-//        messages = []
-//        visitStatuses = []
-//        userIdList = []
-//        visitStatus = ""
         inputToolbar?.contentView?.textView?.resignFirstResponder()
     }
     

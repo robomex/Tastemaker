@@ -111,8 +111,6 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         
         if isMovingFromParentViewController() {
             mapItem = nil
-            
-            print("venuedetailsVC diddisappear")
         }
     }
     
