@@ -28,7 +28,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     var chatSort = [Venue]()
     var voteSort = [Venue]()
     
-    var venueListener: VenueListener?
+    weak var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var banned: Bool?
     var bannedHandle: UInt?
@@ -51,17 +51,17 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     private var sortButton = UIBarButtonItem()
     private var sortedBy = String()
     
-    private var todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
+    weak private var todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
     
     // MARK: Initialization
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "Chicago"
-        self.coachMarksController.dataSource = self
-        self.coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
-        self.coachMarksController.allowOverlayTap = true
+        navigationItem.title = "Chicago"
+        coachMarksController.dataSource = self
+        coachMarksController.overlayBackgroundColor = kGray.colorWithAlphaComponent(0.8)
+        coachMarksController.allowOverlayTap = true
         
         UIApplication.sharedApplication().statusBarStyle = .LightContent
 
@@ -69,7 +69,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         startNotifier()
         
         // Prevents additional cells from being drawn for short lists
-        self.tableView.tableFooterView = UIView()
+        tableView.tableFooterView = UIView()
         
         if CLLocationManager.locationServicesEnabled() && (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
             
@@ -78,12 +78,12 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             locationManager.startUpdatingLocation()
         }
         
-        self.configureMapViewButton()
+        configureMapViewButton()
         
         // Prevent the tableView from displaying behind the tabBar
-        self.edgesForExtendedLayout = UIRectEdge.None
-        self.extendedLayoutIncludesOpaqueBars = false
-        self.automaticallyAdjustsScrollViewInsets = false
+        edgesForExtendedLayout = UIRectEdge.None
+        extendedLayoutIncludesOpaqueBars = false
+        automaticallyAdjustsScrollViewInsets = false
         
         // Add observer to handle when the FeedTableVC should update its list
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FeedTableViewController.appDidEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
@@ -97,14 +97,14 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        self.navigationController!.navigationBar.translucent = false
+        navigationController!.navigationBar.translucent = false
         
         navigationController!.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         
-        self.tabBarController?.tabBar.hidden = false
+        tabBarController?.tabBar.hidden = false
         
-        if self.isMovingToParentViewController() {
+        if isMovingToParentViewController() {
             bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -154,42 +154,44 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         } else if self is UserProfileViewController {
             
         } else {
-            if self.isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
-                self.tableView.alpha = 0.0
+            if isMovingToParentViewController() || todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
+                tableView.alpha = 0.0
                 todayDate = localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate()))
                 
                 venueListener = VenueListener(endDate: todayDate!, callback: {
-                    venues in
+                    [weak self] venues in
                     
-                    var newList = [Venue]()
-                    var newNSUserDefaultsList: [[String:AnyObject]] = []
-                    for venue in venues {
-                        newList.append(venue)
-                        newNSUserDefaultsList.append(serializeVenue(venue))
-                    }
-                    
-                    self.venues = newList
-                    self.dateSort = self.venues
-                    self.sortedBy = "Opening Date"
-                    self.tableView.reloadData()
-                    self.mapIsLoaded = false
-                    NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-                    
-                    // Need to include visit queries in FeedTableVC and its subclasses, ListVC and UserProfileVC, since the visits always need to be pulled after loading that screen's self.venues
-                    for venue in self.venues {
-                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-                            snapshot in
-                            
-                            if snapshot.exists() {
-                                self.visits[venue.objectId!] = true
-                            }
-                        })
+                    if let throwawayFeedTableVC = self {
+                        var newList = [Venue]()
+                        var newNSUserDefaultsList: [[String:AnyObject]] = []
+                        for venue in venues {
+                            newList.append(venue)
+                            newNSUserDefaultsList.append(serializeVenue(venue))
+                        }
+                        
+                        throwawayFeedTableVC.venues = newList
+                        throwawayFeedTableVC.dateSort = throwawayFeedTableVC.venues
+                        throwawayFeedTableVC.sortedBy = "Opening Date"
+                        throwawayFeedTableVC.tableView.reloadData()
+                        throwawayFeedTableVC.mapIsLoaded = false
+                        NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
+                        
+                        // Need to include visit queries in FeedTableVC and its subclasses, ListVC and UserProfileVC, since the visits always need to be pulled after loading that screen's self.venues
+                        for venue in throwawayFeedTableVC.venues {
+                            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(throwawayFeedTableVC.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
+                                snapshot in
+                                
+                                if snapshot.exists() {
+                                    throwawayFeedTableVC.visits[venue.objectId!] = true
+                                }
+                            })
+                        }
                     }
                 })
             }
             
-            if self.mapView.hidden || !self.mapIsLoaded {
-                self.configureSortButton()
+            if mapView.hidden || !mapIsLoaded {
+                configureSortButton()
             }
             
             let tracker = GAI.sharedInstance().defaultTracker
@@ -204,7 +206,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         let hasSeenInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenInstructions")
         if !hasSeenInstructions {
-            self.coachMarksController.startOn(self)
+            coachMarksController.startOn(self)
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenInstructions")
         }
     }
@@ -212,11 +214,20 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        if self.isMovingFromParentViewController() {
+        if isMovingFromParentViewController() {
             DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").removeObserverWithHandle(userVotesHandle!)
+            venues.removeAll()
+            visits.removeAll()
+            dateSort.removeAll()
+            chatSort.removeAll()
+            voteSort.removeAll()
+            banned = nil
+            recentChatsVenueList.removeAll()
+            venueVoteCounts.removeAll()
+            userVotes.removeAll()
         }
     }
     
@@ -257,45 +268,45 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.venues.count
+        return venues.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 
         let cellIdentifier = "VenueCell"
         
-        var venueCell: VenueCellView? = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? VenueCellView
+        var venueCell: VenueCellView? = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as? VenueCellView
         if venueCell == nil {
-            venueCell = VenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
+            venueCell = VenueCellView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
             venueCell!.delegate = self
             venueCell!.selectionStyle = UITableViewCellSelectionStyle.None
         }
         
         // I had to add the following if statement since otherwise I would get array out of index errors when saving a venue for the first time, immediately backing out to the feed, and then immediately clicking on the list tab - CRASH - it appeared this was an issue with trying to create a cell for an empty venue array
-        if !self.venues.isEmpty {
-            let venue = self.venues[indexPath.row]
+        if !venues.isEmpty {
+            let venue = venues[indexPath.row]
             venueCell!.venue = venue
             venueCell!.tag = indexPath.row
             venueCell!.voteButton!.tag = indexPath.row
             
-            if self.recentChatsVenueList.contains(venue.objectId!) {
+            if recentChatsVenueList.contains(venue.objectId!) {
                 venueCell?.venueNeighborhoodLabel?.text = (venueCell?.venueNeighborhoodLabel!.text)! + " 🔥"
             }
             
-            if self.venueVoteCounts[venue.objectId!] != nil {
-                venueCell!.voteButton!.setTitle(String(self.venueVoteCounts[venue.objectId!]!), forState: UIControlState.Normal)
+            if venueVoteCounts[venue.objectId!] != nil {
+                venueCell!.voteButton!.setTitle(String(venueVoteCounts[venue.objectId!]!), forState: UIControlState.Normal)
             } else {
                 venueCell!.voteButton!.setTitle("0", forState: .Normal)
             }
             
-            if self.visits[venue.objectId!] == true {
+            if visits[venue.objectId!] == true {
                 venueCell!.setVisitStatus(true)
             } else {
                 venueCell!.setVisitStatus(false)
             }
             
-            if self.userVotes.contains(venue.objectId!) {
-                if venue.objectId! != self.votedVenue {
+            if userVotes.contains(venue.objectId!) {
+                if venue.objectId! != votedVenue {
                     venueCell!.voteButton!.selected = true
                     venueCell!.voteButton!.layer.cornerRadius = 20
                     venueCell!.voteButton!.layer.borderWidth = 0
@@ -304,8 +315,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                     venueCell!.voteButton!.titleLabel!.font = UIFont.boldSystemFontOfSize(18.0)
                     venueCell!.triangle?.alpha = 0
                 }
-            } else if !self.userVotes.contains(venue.objectId!) && (self.visits[venue.objectId!] == true || venue.name! == "Chicago Chat") {
-                if venue.objectId! != self.unvotedVenue {
+            } else if !userVotes.contains(venue.objectId!) && (visits[venue.objectId!] == true || venue.name! == "Chicago Chat") {
+                if venue.objectId! != unvotedVenue {
                     venueCell!.voteButton!.selected = false
                     venueCell!.voteButton!.layer.cornerRadius = 5.0
                     venueCell!.voteButton!.layer.borderWidth = 1.5
@@ -314,7 +325,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
             }
             
-            if venue.objectId! == self.votedVenue {
+            if venue.objectId! == votedVenue {
                 venueCell!.voteButton!.selected = true
                 UIView.animateAndChainWithDuration(0.8, delay: 0.0, usingSpringWithDamping: 0.3, initialSpringVelocity: 0.0, options: [], animations: {
                     
@@ -330,10 +341,10 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                         
                         venueCell!.voteButton!.layer.transform = CATransform3DIdentity
                         }, completion: nil)
-                self.votedVenue = ""
+                votedVenue = ""
             }
             
-            if venue.objectId! == self.unvotedVenue {
+            if venue.objectId! == unvotedVenue {
                 venueCell!.voteButton!.selected = false
                 UIView.animateAndChainWithDuration(0.4, delay: 0.0, options: [], animations: {
 
@@ -349,19 +360,19 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                     venueCell!.voteButton!.layer.transform = CATransform3DIdentity
                     }, completion: nil)
 
-                self.unvotedVenue = ""
+                unvotedVenue = ""
             }
             
-            if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
+            if indexPath.row == (tableView.indexPathsForVisibleRows?.last?.row)! {
                 UIView.animateWithDuration(0.1, animations: {
-                    self.tableView.alpha = 1.0
+                    tableView.alpha = 1.0
                     venueCell!.containerView?.alpha = 1.0
                 })
             }
             
             return venueCell!
         } else {
-            return VenueCellView(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
+            return VenueCellView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, 76.0), buttons: VenueCellButtons.Default)
         }
     }
 
@@ -373,11 +384,11 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         let vc = VenueViewController()
        
-        let venue = self.venues[indexPath.row]
+        let venue = venues[indexPath.row]
         vc.venue = venue
         vc.venueID = venue.objectId
-        if self.banned != nil {
-            vc.banned = self.banned
+        if banned != nil {
+            vc.banned = banned
         }
         
         let venueName: String = venue.name!
@@ -395,7 +406,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     // MARK: FeedTableViewController
     
     func dequeueReusableView() -> VenueCellView? {
-        for view: VenueCellView in self.reusableViews {
+        for view: VenueCellView in reusableViews {
             if view.superview == nil {
                 
                 // We found a section header that is no longer visible
@@ -421,7 +432,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         var voteCount: Int = Int(button.titleLabel!.text!)!
         if (voted) {
-            self.votedVenue = venueId
+            votedVenue = venueId
             voteCount += 1
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
                 (currentData: FMutableData!) in
@@ -440,7 +451,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
         } else {
-            self.unvotedVenue = venueId
+            unvotedVenue = venueId
             if voteCount > 0 {
                 voteCount -= 1
                 DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
@@ -473,10 +484,10 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         switch(index) {
         case 0:
             let indexOfFirstTip = NSIndexPath(forRow: 0, inSection: 0)
-            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfFirstTip) as? UIView)
+            return coachMarksController.coachMarkForView(tableView.cellForRowAtIndexPath(indexOfFirstTip) as? UIView)
         case 1:
             let indexOfSecondTip = NSIndexPath(forRow: 3, inSection: 0)
-            return coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
+            return coachMarksController.coachMarkForView(tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
         case 2:
             let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
             var thirdCoachMark = coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
@@ -560,32 +571,32 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     func mapViewButtonAction(sender: AnyObject) {
         
         // Stop tableView from scrolling upon pressing Map button
-        self.tableView.scrollEnabled = false
-        self.tableView.setContentOffset(tableView.contentOffset, animated: false)
+        tableView.scrollEnabled = false
+        tableView.setContentOffset(tableView.contentOffset, animated: false)
         
         if !mapIsLoaded {
-            let annotationsToRemove = self.mapView.annotations.filter {$0 !== mapView.userLocation}
-            self.mapView.removeAnnotations(annotationsToRemove)
-            self.mapView.mapType = .Standard
-            self.mapView.delegate = self
+            let annotationsToRemove = mapView.annotations.filter {$0 !== mapView.userLocation}
+            mapView.removeAnnotations(annotationsToRemove)
+            mapView.mapType = .Standard
+            mapView.delegate = self
             // Tab bar height = 49, nav bar height = 64 -> 49 + 64 = 113
-            self.mapView.frame = CGRectMake(0, self.tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
+            mapView.frame = CGRectMake(0, tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
             
             if (CLLocationManager.authorizationStatus() == .AuthorizedAlways || CLLocationManager.authorizationStatus() == .AuthorizedWhenInUse) {
                 let chicagoLocation = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
-                if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: self.mapCenter.latitude, longitude: self.mapCenter.longitude)) > 15000 {
-                    self.mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
+                if CLLocation(latitude: chicagoLocation.latitude, longitude: chicagoLocation.longitude).distanceFromLocation(CLLocation(latitude: mapCenter.latitude, longitude: mapCenter.longitude)) > 15000 {
+                    mapCenter = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
                 }
             }
             
-            let coordinateRegion = MKCoordinateRegionMakeWithDistance(self.mapCenter, self.regionRadius * 2.0, self.regionRadius * 2.0)
-            self.mapView.setRegion(coordinateRegion, animated: false)
+            let coordinateRegion = MKCoordinateRegionMakeWithDistance(mapCenter, regionRadius * 2.0, regionRadius * 2.0)
+            mapView.setRegion(coordinateRegion, animated: false)
             
             if CLLocationManager.authorizationStatus() == .AuthorizedAlways {
-                self.mapView.showsUserLocation = true
+                mapView.showsUserLocation = true
             }
             
-            for venue in self.venues {
+            for venue in venues {
                 let venueLocation: CLLocation = CLLocation(latitude: venue.latitude!, longitude: venue.longitude!)
                 let coordinate = venueLocation.coordinate
                 let title = venue.name
@@ -595,18 +606,18 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 let subtitle = venue.description
                 let annotation = VenueAnnotation(coordinate: coordinate, title: title!, subtitle: subtitle!, type: type!, venue: venue)
                 
-                self.mapView.addAnnotation(annotation)
+                mapView.addAnnotation(annotation)
             }
             
-            self.view.addSubview(mapView)
-            self.mapIsLoaded = true
+            view.addSubview(mapView)
+            mapIsLoaded = true
         } else {
-            self.mapView.frame = CGRectMake(0, self.tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
+            mapView.frame = CGRectMake(0, tableView.contentOffset.y, UIScreen.mainScreen().bounds.width, UIScreen.mainScreen().bounds.height - 113)
         }
         
-        self.mapView.hidden = false
-        self.navigationItem.rightBarButtonItem = nil
-        self.configureListViewButton()
+        mapView.hidden = false
+        navigationItem.rightBarButtonItem = nil
+        configureListViewButton()
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -628,7 +639,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         let venue = venueAnnotation.venue
         if venue.foodType == "Featured" {
             pinView!.image = UIImage(named: "Pin-Featured")
-        } else if self.visits[venue.objectId!] != nil && self.visits[venue.objectId!] == true {
+        } else if visits[venue.objectId!] != nil && visits[venue.objectId!] == true {
             pinView!.image = UIImage(named: "Pin-Visited")
         } else {
             pinView!.image = UIImage(named: "Pin-Default")
@@ -645,8 +656,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         let venue = venueAnnotation.venue
         vc.venue = venue
         vc.venueID = venue.objectId
-        if self.banned != nil {
-            vc.banned = self.banned
+        if banned != nil {
+            vc.banned = banned
         }
         
         let venueName: String = venue.name!
@@ -660,43 +671,43 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     
     func listViewButtonAction(sender: AnyObject) {
         
-        self.mapView.hidden = true
-        self.tableView.scrollEnabled = true
-        self.configureMapViewButton()
-        self.configureSortButton()
+        mapView.hidden = true
+        tableView.scrollEnabled = true
+        configureMapViewButton()
+        configureSortButton()
     }
     
     func configureMapViewButton() {
-        self.mapViewButton = UIBarButtonItem(title: "Map", style: .Plain, target: self, action: #selector(FeedTableViewController.mapViewButtonAction(_:)))
-        self.navigationItem.setLeftBarButtonItem(self.mapViewButton, animated: false)
+        mapViewButton = UIBarButtonItem(title: "Map", style: .Plain, target: self, action: #selector(FeedTableViewController.mapViewButtonAction(_:)))
+        navigationItem.setLeftBarButtonItem(mapViewButton, animated: false)
     }
     
     func configureListViewButton() {
-        self.mapViewButton = UIBarButtonItem(title: "List", style: .Plain, target: self, action: #selector(FeedTableViewController.listViewButtonAction(_:)))
-        self.navigationItem.setLeftBarButtonItem(self.mapViewButton, animated: false)
+        mapViewButton = UIBarButtonItem(title: "List", style: .Plain, target: self, action: #selector(FeedTableViewController.listViewButtonAction(_:)))
+        navigationItem.setLeftBarButtonItem(mapViewButton, animated: false)
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         if manager.location != nil {
-            self.mapCenter = manager.location!.coordinate
+            mapCenter = manager.location!.coordinate
         }
-        self.locationManager.stopUpdatingLocation()
+        locationManager.stopUpdatingLocation()
     }
     
     
     // MARK: Sort
     
     func configureSortButton() {
-        self.sortButton = UIBarButtonItem(title: "Sort", style: .Plain, target: self, action: #selector(FeedTableViewController.sortButtonAction(_:)))
-        self.navigationItem.setRightBarButtonItem(self.sortButton, animated: false)
+        sortButton = UIBarButtonItem(title: "Sort", style: .Plain, target: self, action: #selector(FeedTableViewController.sortButtonAction(_:)))
+        navigationItem.setRightBarButtonItem(sortButton, animated: false)
     }
     
     func sortButtonAction(sender: AnyObject) {
         
         let sortMenu = UIAlertController(title: "Sort Venues By", message: nil, preferredStyle: .ActionSheet)
         
-        if self.sortedBy == "Opening Date" {
+        if sortedBy == "Opening Date" {
             let sortByOpeningDate = UIAlertAction(title: "Opening Date ✅", style: .Default, handler: {
                 (alert: UIAlertAction!) -> Void in
                 
@@ -775,15 +786,16 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         sortMenu.addAction(cancelAction)
 
-        self.presentViewController(sortMenu, animated: true, completion: nil)
+        presentViewController(sortMenu, animated: true, completion: nil)
     }
     
     
     // MARK: Update FeedTableVC if entering app on screen on a new day
     
     func appDidEnterForeground(notification: NSNotification) {
-        if self.todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
-            self.viewWillAppear(false)
+
+        if todayDate != localDateFormatter().dateFromString(localDateFormatter().stringFromDate(NSDate())) {
+            viewWillAppear(false)
         }
     }
 }
