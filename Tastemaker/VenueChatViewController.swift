@@ -95,7 +95,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                         tempChatVC.mutedUsers[data.key] = "muted"
                     }
                     
-                    if let id = tempChatVC.venue.objectId {
+                    if let id = tempChatVC.venue!.objectId {
                         fetchMessages(id, callback: {
                             messages in
                             
@@ -167,8 +167,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidDisappear(animated)
         
         if isMovingFromParentViewController() {
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").removeObserverWithHandle(visitRefHandle)
-            messageListener?.stop(venue.objectId!)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").removeObserverWithHandle(visitRefHandle)
+            messageListener?.stop(venue!.objectId!)
         }
 //        mutedUsers = [:]
 //        venue = nil
