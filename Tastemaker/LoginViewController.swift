@@ -41,7 +41,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // for tracking keyboard
     private var keyboardShown: Bool?
     
-    private var signupShown: Bool?
+    private var loginShown: Bool = false
     private var emailResetShown: Bool?
     
     override func viewDidLoad() {
@@ -76,7 +76,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         fbLoginButton.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(fbLoginButton)
         
-        let fbLoginButtonBottomConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.TopMargin, relatedBy: NSLayoutRelation.Equal, toItem: orLabel, attribute: NSLayoutAttribute.BottomMargin, multiplier: 1, constant: 26)
+        let fbLoginButtonBottomConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.TopMargin, relatedBy: NSLayoutRelation.Equal, toItem: orLabel, attribute: NSLayoutAttribute.BottomMargin, multiplier: 1, constant: 29)
         let fbLoginButtonLeadingConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: .LeadingMargin, multiplier: 1, constant: 30)
         let fbLoginButtonTrailingConstraint = NSLayoutConstraint(item: fbLoginButton, attribute: NSLayoutAttribute.Trailing, relatedBy: .Equal, toItem: view, attribute: .TrailingMargin, multiplier: 1, constant: -30)
         NSLayoutConstraint.activateConstraints([fbLoginButtonBottomConstraint, fbLoginButtonLeadingConstraint, fbLoginButtonTrailingConstraint])
@@ -131,7 +131,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         
         passwordTextField.layer.cornerRadius = textFieldCornerRadius
         passwordTextField.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.4)
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "password (6+ characters)", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
         passwordTextField.textColor = UIColor.whiteColor()
         passwordTextField.tintColor = UIColor.whiteColor()
         passwordTextField.addTarget(self, action: #selector(LoginViewController.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
@@ -145,7 +145,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         nicknameTextField.tintColor = UIColor.whiteColor()
         nicknameTextField.addTarget(self, action: #selector(LoginViewController.textFieldDidChange(_:)), forControlEvents: .EditingChanged)
         nicknameTextField.delegate = self
-        nicknameTextField.hidden = true
 
         let loginButtonBorderAlpha: CGFloat = 0.4
         loginButton.enabled = false
@@ -157,6 +156,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         loginButton.layer.borderColor = UIColor(white: 1.0, alpha: loginButtonBorderAlpha).CGColor
         loginButton.layer.cornerRadius = textFieldCornerRadius
         loginButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
+        loginButton.hidden = true
         
         let signupButtonBorderAlpha: CGFloat = 0.4
         signupButton.enabled = false
@@ -168,11 +168,10 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         signupButton.layer.borderColor = UIColor(white: 1.0, alpha: signupButtonBorderAlpha).CGColor
         signupButton.layer.cornerRadius = textFieldCornerRadius
         signupButton.titleLabel?.font = UIFont.systemFontOfSize(22.0)
-        signupButton.hidden = true
         
         let toggleSignupButtonBorderAlpha: CGFloat = 0.4
         toggleSignupButton.enabled = true
-        toggleSignupButton.setTitle("Sign Up with your email here!", forState: .Normal)
+        toggleSignupButton.setTitle("Already have an account? Log In!", forState: .Normal)
         toggleSignupButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         toggleSignupButton.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
         toggleSignupButton.layer.borderWidth = 2.0
@@ -180,7 +179,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         toggleSignupButton.layer.cornerRadius = 0
         toggleSignupButton.titleLabel?.font = UIFont.systemFontOfSize(17.0)
         
-        headlineLabel.text = "find the newest restaurants\nchat about what was good"
+        headlineLabel.text = "find the newest restaurants,\nchat about what was good"
         headlineLabel.font = UIFont.systemFontOfSize(17.0)
         
         emailResetButton.enabled = false
@@ -200,6 +199,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         toggleEmailResetButton.backgroundColor = UIColor.clearColor()
         toggleEmailResetButton.layer.borderColor = UIColor.clearColor().CGColor
         toggleEmailResetButton.titleLabel?.font = UIFont.systemFontOfSize(12.0)
+        toggleEmailResetButton.hidden = true
         
         let disclaimerText: NSString = "By signing up you agree to our Terms & Privacy Policy."
         disclaimerLabel.delegate = self
@@ -423,17 +423,18 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
     // MARK: didTapToggleSignupButton
 
     @IBAction func didTapToggleSignupButton(sender: UIButton) {
-        if signupShown ?? true {
+        if loginShown {
             loginButton.hidden = true
             toggleEmailResetButton.hidden = true
             passwordTextField.returnKeyType = .Next
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password (6+ characters)", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             nicknameTextField.hidden = false
             signupButton.hidden = false
-            toggleSignupButton.setTitle("Have an account? Log In!", forState: .Normal)
+            toggleSignupButton.setTitle("Already have an account? Log In!", forState: .Normal)
             textFieldDidChange(nicknameTextField)
-            orLabel.hidden = true
-            signupShown = false
+            toggleEmailResetButton.hidden = true
+            disclaimerLabel.hidden = false
+            loginShown = false
         } else {
             loginButton.hidden = false
             toggleEmailResetButton.hidden = false
@@ -441,10 +442,11 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             passwordTextField.attributedPlaceholder = NSAttributedString(string: "password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor().colorWithAlphaComponent(0.7)])
             nicknameTextField.hidden = true
             signupButton.hidden = true
-            toggleSignupButton.setTitle("Sign Up with your email here!", forState: .Normal)
+            toggleSignupButton.setTitle("New to Tastemaker? Sign Up!", forState: .Normal)
             textFieldDidChange(passwordTextField)
-            orLabel.hidden = false
-            signupShown = true
+            toggleEmailResetButton.hidden = false
+            disclaimerLabel.hidden = true
+            loginShown = true
         }
     }
     

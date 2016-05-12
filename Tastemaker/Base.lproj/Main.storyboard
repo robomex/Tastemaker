@@ -114,7 +114,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5b-aX-ILA">
-                                <rect key="frame" x="200" y="425" width="200" height="35"/>
+                                <rect key="frame" x="200" y="515" width="200" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="gSI-VH-POA"/>
                                 </constraints>
@@ -164,7 +164,10 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ke1-q8-ZlB">
-                                <rect key="frame" x="50" y="345" width="500" height="35"/>
+                                <rect key="frame" x="50" y="390" width="500" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="rTE-ww-1mB"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -176,6 +179,7 @@
                             <constraint firstItem="DcV-is-TjW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="30" id="3kX-4K-Svu"/>
                             <constraint firstItem="dXP-cv-ppb" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="4jV-d5-Wcl"/>
                             <constraint firstItem="NyN-75-oTW" firstAttribute="width" secondItem="yr7-OJ-N1K" secondAttribute="width" id="5AC-fO-zek"/>
+                            <constraint firstItem="l6G-Tr-yuV" firstAttribute="top" secondItem="f5b-aX-ILA" secondAttribute="bottom" constant="15" id="5Ni-Oc-Uum"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="7sd-JM-RGL"/>
                             <constraint firstItem="5Wz-2V-yiW" firstAttribute="centerX" secondItem="5MZ-q9-gxs" secondAttribute="centerX" id="9bb-Ea-R3Z"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="20" id="AVy-KC-qA5"/>
@@ -185,6 +189,7 @@
                             <constraint firstItem="f5b-aX-ILA" firstAttribute="height" secondItem="NyN-75-oTW" secondAttribute="height" id="Edm-ue-vmv"/>
                             <constraint firstItem="l6G-Tr-yuV" firstAttribute="width" secondItem="5MZ-q9-gxs" secondAttribute="width" id="F2Z-Gd-wcV"/>
                             <constraint firstItem="gFC-QV-YXK" firstAttribute="top" secondItem="f5b-aX-ILA" secondAttribute="bottom" constant="20" id="Fcj-n0-3BV"/>
+                            <constraint firstItem="ke1-q8-ZlB" firstAttribute="top" secondItem="5Wz-2V-yiW" secondAttribute="bottom" constant="10" id="GSt-8l-k7z"/>
                             <constraint firstItem="yr7-OJ-N1K" firstAttribute="centerX" secondItem="dXP-cv-ppb" secondAttribute="centerX" id="H5l-XU-a49"/>
                             <constraint firstItem="0D8-yd-EPY" firstAttribute="width" secondItem="yr7-OJ-N1K" secondAttribute="width" id="IPU-9B-nrP"/>
                             <constraint firstItem="dXP-cv-ppb" firstAttribute="leading" secondItem="5MZ-q9-gxs" secondAttribute="leadingMargin" constant="30" id="LRP-dW-HDS"/>
@@ -223,9 +228,12 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="248-aS-C8Q"/>
                                 <exclude reference="DFR-KV-0vN"/>
                                 <exclude reference="X7r-RT-rCg"/>
+                                <exclude reference="gxK-a2-8CB"/>
                                 <exclude reference="AYY-EX-UoD"/>
+                                <exclude reference="tqn-aK-m6T"/>
                                 <exclude reference="Fcj-n0-3BV"/>
                                 <exclude reference="gvO-5t-43V"/>
                             </mask>
