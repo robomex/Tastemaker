@@ -20,9 +20,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     var userHandle = UInt()
     var notificationPeriod = String()
     var settingsTableView: UITableView!
+    private var usesPassword: Bool?
+    private var oldPassword: String?
+    private var newPassword: String?
+    private var newPasswordReentry: String?
+    private var email: String?
     
     var settingsHeadings = ["My Account", "Additional Information", ""]
-    var myAccountRows = ["Nickname", "Muted Users", "Notification Period"]
+    var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Change Password"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     
     override func viewDidLoad() {
@@ -35,6 +40,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         settingsTableView.delegate = self
         settingsTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "settingsCell")
         settingsTableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+
+        let tabBarHeight = self.tabBarController?.tabBar.bounds.height
+        edgesForExtendedLayout = UIRectEdge.All
+        settingsTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight!, right: 0)
         self.view.addSubview(settingsTableView)
     }
     
@@ -52,6 +61,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             
             if authData == nil {
                 (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
+            } else if authData.provider == "password" {
+                self.usesPassword = true
+                self.email = (authData.providerData["email"] as! String)
+                self.settingsTableView.reloadData()
             }
         })
         
@@ -91,7 +104,11 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 3
+            if (usesPassword != nil) && usesPassword! {
+                return 4
+            } else {
+                return 3
+            }
         case 1:
             return 2
         case 2:
@@ -233,6 +250,81 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
                 notificationPeriodMenu.addAction(cancelAction)
                 self.presentViewController(notificationPeriodMenu, animated: true, completion: nil)
+            } else if indexPath.row == 3 {
+                let changePasswordAlert = SCLAlertView()
+                let oldPasswordTextField = changePasswordAlert.addTextField("Old Password")
+                let newPasswordTextField = changePasswordAlert.addTextField("New Password")
+                let newPasswordReentryTextField = changePasswordAlert.addTextField("Re-enter New Password")
+                oldPasswordTextField.autocorrectionType = .No
+                newPasswordTextField.autocorrectionType = .No
+                newPasswordReentryTextField.autocorrectionType = .No
+                oldPasswordTextField.autocapitalizationType = .None
+                newPasswordTextField.autocapitalizationType = .None
+                newPasswordReentryTextField.autocapitalizationType = .None
+                oldPasswordTextField.keyboardType = .Default
+                newPasswordTextField.keyboardType = .Default
+                newPasswordReentryTextField.keyboardType = .Default
+                oldPasswordTextField.secureTextEntry = true
+                newPasswordTextField.secureTextEntry = true
+                newPasswordReentryTextField.secureTextEntry = true
+                
+                changePasswordAlert.addButton("Change Password", validationBlock: {
+                    self.oldPassword = oldPasswordTextField.text!
+                    self.newPassword = newPasswordTextField.text!
+                    self.newPasswordReentry = newPasswordReentryTextField.text!
+                    
+                    let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
+                    if self.oldPassword! == "" {
+                        showSimpleAlertWithTitle("Please enter your old password", message: "", actionTitle: "OK", viewController: self)
+                        oldPasswordTextField.becomeFirstResponder()
+                        return false
+                    } else if self.newPassword! == "" {
+                        showSimpleAlertWithTitle("Please enter a new password", message: "", actionTitle: "OK", viewController: self)
+                        newPasswordTextField.becomeFirstResponder()
+                        return false
+                    } else if self.newPassword!.characters.count < 6 {
+                        showSimpleAlertWithTitle("Choose a new password at least 6 characters long", message: "", actionTitle: "OK", viewController: self)
+                        newPasswordTextField.becomeFirstResponder()
+                        return false
+                    } else if regex.firstMatchInString(self.newPassword!, options: NSMatchingOptions(), range: NSMakeRange(0, (self.newPassword?.characters.count)!)) != nil {
+                        showSimpleAlertWithTitle("Choose a password without special characters", message: "", actionTitle: "OK", viewController: self)
+                        newPasswordTextField.becomeFirstResponder()
+                        return false
+                    } else if self.newPassword! != self.newPasswordReentry! {
+                        showSimpleAlertWithTitle("Your new password doesn't match", message: "", actionTitle: "OK", viewController: self)
+                        newPasswordTextField.becomeFirstResponder()
+                        return false
+                    } else if self.newPassword != nil {
+                        var trimmedPassword = self.newPassword!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+                        trimmedPassword = trimmedPassword.stringByReplacingOccurrencesOfString(" ", withString: "")
+                        if self.newPassword! != trimmedPassword {
+                            showSimpleAlertWithTitle("Passwords cannot contain spaces", message: "", actionTitle: "OK", viewController: self)
+                            newPasswordTextField.becomeFirstResponder()
+                            return false
+                        }
+                    }
+                    return true
+                    }, actionBlock: {
+                        
+                        DataService.dataService.BASE_REF.changePasswordForUser(self.email!, fromOld: self.oldPassword!, toNew: self.newPassword!, withCompletionBlock: {
+                            error in
+                            
+                            if error != nil {
+                                showSimpleAlertWithTitle("We were unable to change your password right now, you may have entered your old password incorrectly", message: "", actionTitle: "OK", viewController: self)
+                                print(error)
+                            } else {
+                                showSimpleAlertWithTitle("You successfully changed your password", message: "", actionTitle: "OK", viewController: self)
+                                DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["updatedOn": dateFormatter().stringFromDate(NSDate())])
+                                Amplitude.instance().logEvent("Changed Password")
+                            }
+                        })
+                })
+                changePasswordAlert.showAnimationType = .SlideInToCenter
+                changePasswordAlert.hideAnimationType = .FadeOut
+                changePasswordAlert.customViewColor = kPurple
+                changePasswordAlert.backgroundType = .Blur
+                changePasswordAlert.shouldDismissOnTapOutside = true
+                changePasswordAlert.showEdit(view.window?.rootViewController, title: nil, subTitle: "Enter your old password and choose a new password 6+ characters long ", closeButtonTitle: "Cancel", duration: 0)
             }
         } else if indexPath.section == 1 {
             switch (indexPath.row) {
