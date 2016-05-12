@@ -16,7 +16,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     var venue: Venue?
     let regionRadius: CLLocationDistance = 500
     var mapView = MKMapView()
-    weak var mapItem: MKMapItem? = nil
+    var mapItem: MKMapItem? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
