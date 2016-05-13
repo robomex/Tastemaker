@@ -423,37 +423,35 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, header headerView: JSQMessagesLoadEarlierHeaderView!, didTapLoadEarlierMessagesButton sender: UIButton!) {
         
-        if messages.count == 0 {
+        if self.messages.count == 0 {
             return
         }
         
         let firstMessageTime = dateFormatter().stringFromDate(messages[0].date)
-        let oldBottomOffset = (collectionView?.contentSize.height)! - (collectionView?.contentOffset.y)!
+        let oldBottomOffset = (self.collectionView?.contentSize.height)! - (self.collectionView?.contentOffset.y)!
         
         fetchEarlierMessages((venue?.objectId)!, firstMessageTime: firstMessageTime, callback: {
-            [weak self] messages in
+            messages in
             
-            if let tempChatVC = self {
-                for m in messages {
-                    if tempChatVC.mutedUsers[m.senderID] == nil {
-                        tempChatVC.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
-                        tempChatVC.visitStatuses.insert(m.visitStatus, atIndex: 0)
-                        tempChatVC.userIdList.append(m.senderID)
-                    }
+            for m in messages {
+                if self.mutedUsers[m.senderID] == nil {
+                    self.messages.insert(JSQMessage(senderId: m.senderID, senderDisplayName: m.senderName, date: m.date, text: m.message), atIndex: 0)
+                    self.visitStatuses.insert(m.visitStatus, atIndex: 0)
+                    self.userIdList.append(m.senderID)
                 }
-                tempChatVC.userIdList = Array(Set(tempChatVC.userIdList))
-                tempChatVC.finishReceivingMessageAnimated(false)
-                collectionView?.layoutIfNeeded()
-                
-                if dateFormatter().stringFromDate(messages[0].date) == firstMessageTime {
-                    collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
-                } else if messages.count < 12 {
-                    collectionView?.contentOffset = CGPointMake(0, (collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
-                    return
-                }
-                
-                collectionView?.contentOffset = CGPointMake(0, (collectionView?.contentSize.height)! - oldBottomOffset)
             }
+            self.userIdList = Array(Set(self.userIdList))
+            self.finishReceivingMessageAnimated(false)
+            self.collectionView?.layoutIfNeeded()
+            
+            if dateFormatter().stringFromDate(self.messages[0].date) == firstMessageTime {
+                self.collectionView?.loadEarlierMessagesHeaderTextColor = UIColor.clearColor()
+            } else if messages.count < 12 {
+                self.collectionView?.contentOffset = CGPointMake(0, (self.collectionView?.contentSize.height)! - oldBottomOffset - kJSQMessagesCollectionViewCellLabelHeightDefault)
+                return
+            }
+            
+            self.collectionView?.contentOffset = CGPointMake(0, (collectionView?.contentSize.height)! - oldBottomOffset)
         })
     }
     
