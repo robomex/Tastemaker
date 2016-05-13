@@ -172,7 +172,9 @@ class InitialViewController: UIViewController {
         }, cancelled: {
             results in
                 
-            print("cancelled yo")
+            self.pscope.hide()
+            (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "LaunchedBefore")
         })
     }
 }
