@@ -15,6 +15,7 @@ import MapKit
 import CoreLocation
 import Amplitude_iOS
 import EasyAnimation
+import PermissionScope
 
 class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoachMarksControllerDataSource {
 
@@ -492,7 +493,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
             var thirdCoachMark = coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
                 (frame: CGRect) -> UIBezierPath in
-                return UIBezierPath(ovalInRect: CGRectMake(0, 305, 50, 50))
+                return UIBezierPath(ovalInRect: CGRectMake(0, 304, 52, 52))
             }
             thirdCoachMark.maxWidth = 390
             thirdCoachMark.horizontalMargin = 5
@@ -513,12 +514,22 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted blue, plus each city has a general chat (also highlighted blue) to talk about whatever"
+            if (PermissionScope().statusLocationAlways() == .Unauthorized || PermissionScope().statusLocationAlways() == .Unknown) {
+                coachViews.bodyView.hintLabel.text = "Enable location data in the Settings tab so places you've visited are automatically highlighted blue - plus each city has a general chat (also highlighted blue) to talk about whatever"
+            } else {
+                coachViews.bodyView.hintLabel.text = "Places you've visited are highlighted blue, plus each city has a general chat (also highlighted blue) to talk about whatever"
+            }
             coachViews.bodyView.hintLabel.textAlignment = .Left
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.nextLabel.text = "Got it!"
         case 2:
-            coachViews.bodyView.hintLabel.text = "After you check out somewhere great, vote for it so others know what's good"
+            if (PermissionScope().statusLocationAlways() == .Unauthorized || PermissionScope().statusLocationAlways() == .Unknown) {
+                coachViews.bodyView.hintLabel.text = "After you enable location data, vote for a place you visited that was great so others know what's good"
+            } else {
+                coachViews.bodyView.hintLabel.text = "After you check out somewhere great, vote for it so others know what's good"
+            }
             coachViews.bodyView.nextLabel.text = "👍"
+            coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         default: break
         }

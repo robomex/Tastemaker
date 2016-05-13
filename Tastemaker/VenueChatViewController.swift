@@ -13,6 +13,7 @@ import SCLAlertView_Objective_C
 import Firebase
 import Amplitude_iOS
 import Instructions
+import PermissionScope
 
 class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, CoachMarksControllerDataSource {
     
@@ -501,7 +502,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         case 1:
             var chatAreaCoachMark = coachMarksController.coachMarkForView(view) { (frame: CGRect) -> UIBezierPath in
                 
-                return UIBezierPath(roundedRect: CGRectInset(frame, 35, 50), cornerRadius: 20)
+                return UIBezierPath(roundedRect: CGRectInset(frame, 35, 70), cornerRadius: 20)
             }
             chatAreaCoachMark.arrowOrientation = .Bottom
             return chatAreaCoachMark
@@ -516,12 +517,20 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         switch(index) {
         case 0:
-            coachViews.bodyView.hintLabel.text = "You'll get notifications when someone replies to your chats - you can silence notifications for this venue by tapping the bell icon"
+            if (PermissionScope().statusNotifications() == .Unauthorized || PermissionScope().statusNotifications() == .Unknown) {
+                coachViews.bodyView.hintLabel.text = "Turn on notifications in the Settings tab so you know when someone replies to your chats - afterwards you can silence notifications for this venue by tapping the bell icon"
+            } else {
+                coachViews.bodyView.hintLabel.text = "You'll get notifications when someone replies to your chats - you can silence notifications for this venue by tapping the bell icon"
+            }
             coachViews.bodyView.nextLabel.text = "OK!"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left
         case 1:
-            coachViews.bodyView.hintLabel.text = "You'll get notifications about replies sent within eight hours of the last message you sent - you can change the Notification Period in Settings"
+            if (PermissionScope().statusNotifications() == .Unauthorized || PermissionScope().statusNotifications() == .Unknown) {
+                coachViews.bodyView.hintLabel.text = "After you enable notifications you'll get updates about replies sent within eight hours of the last message you sent - you can change the Notification Period in Settings"
+            } else {
+                coachViews.bodyView.hintLabel.text = "You'll get notifications about replies sent within eight hours of the last message you sent - you can change the Notification Period in Settings"
+            }
             coachViews.bodyView.nextLabel.text = "👍🏻"
             coachViews.bodyView.hintLabel.layoutManager.hyphenationFactor = 0.0
             coachViews.bodyView.hintLabel.textAlignment = .Left

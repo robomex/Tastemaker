@@ -32,7 +32,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     var settingsHeadings = ["My Account", "Permissions", "Additional Information", ""]
     var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Change Password"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
-    var fixPermissionsRows = ["Fix Permissions"]
+    var fixPermissionsRows = ["Update Permissions"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -393,7 +393,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         } else if indexPath.section == 1 {
             if (needToFixPermissions != nil) && needToFixPermissions! {
                 
-                Amplitude.instance().logEvent("Viewed Fix Permissions")
+                Amplitude.instance().logEvent("Viewed Update Permissions")
                 
                 pscope.show({
                     finished, results in
@@ -425,7 +425,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         }
                         
                         self.pscope.hide()
-                        if PermissionScope().statusLocationAlways() != .Unauthorized && PermissionScope().statusNotifications() != .Unauthorized {
+                        if (PermissionScope().statusLocationAlways() != .Unauthorized && PermissionScope().statusLocationAlways() != .Unknown) && (PermissionScope().statusNotifications() != .Unauthorized && PermissionScope().statusNotifications() != .Unknown) {
                             self.needToFixPermissions = false
                         }
                         self.settingsTableView.reloadData()
