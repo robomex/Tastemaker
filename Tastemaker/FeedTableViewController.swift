@@ -184,6 +184,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                                 
                                 if snapshot.exists() {
                                     throwawayFeedTableVC.visits[venue.objectId!] = true
+                                    throwawayFeedTableVC.tableView.reloadData()
                                 }
                             })
                         }
@@ -364,11 +365,10 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 unvotedVenue = ""
             }
             
-            if indexPath.row == (tableView.indexPathsForVisibleRows?.last?.row)! {
+            if indexPath.row == (self.tableView.indexPathsForVisibleRows?.last?.row)! {
                 UIView.animateWithDuration(0.1, animations: {
-                    tableView.alpha = 1.0
+                    self.tableView.alpha = 1.0
                     venueCell!.containerView?.alpha = 1.0
-                    self.tableView.reloadData()
                 })
             }
             
