@@ -368,6 +368,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 UIView.animateWithDuration(0.1, animations: {
                     tableView.alpha = 1.0
                     venueCell!.containerView?.alpha = 1.0
+                    self.tableView.reloadData()
                 })
             }
             
