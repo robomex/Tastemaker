@@ -374,11 +374,13 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
         inputToolbar?.contentView?.textView?.resignFirstResponder()
-        let message = messages[indexPath.item]
-        let vc = UserProfileViewController(style: UITableViewStyle.Plain)
-        vc.userId = message.senderId
-        vc.userNickname = message.senderDisplayName
-        navigationController?.pushViewController(vc, animated: true)
+        if navigationController?.viewControllers.count < 6 {
+            let message = messages[indexPath.item]
+            let vc = UserProfileViewController(style: UITableViewStyle.Plain)
+            vc.userId = message.senderId
+            vc.userNickname = message.senderDisplayName
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     
