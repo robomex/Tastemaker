@@ -112,18 +112,8 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
                             snap in
                             
                             throwawayUserProfileVC.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
-                            
-                            for venue in throwawayUserProfileVC.usersSavedListVenues {
-                                DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(throwawayUserProfileVC.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-                                    snapshot in
-                                    
-                                    if snapshot.exists() {
-                                        throwawayUserProfileVC.visits[venue.objectId!] = true
-                                    }
-                                    throwawayUserProfileVC.loading = false
-                                    throwawayUserProfileVC.tableView.reloadData()
-                                })
-                            }
+                            throwawayUserProfileVC.loading = false
+                            throwawayUserProfileVC.tableView.reloadData()
                         })
                     }
                 }

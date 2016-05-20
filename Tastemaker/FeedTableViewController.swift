@@ -39,6 +39,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     private var venueVoteCounts = [String: Int]()
     private var userVotesHandle: UInt?
     private var userVotes = [String]()
+    var visits = [String: Bool]()
+    private var visitsHandle: UInt?
     private var votedVenue = String()
     private var unvotedVenue = String()
     
@@ -48,7 +50,6 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2DMake(41.8781136, -87.6297982)
     private var mapIsLoaded: Bool = false
     private let locationManager = CLLocationManager()
-    var visits = [String: Bool]()
     private var sortButton = UIBarButtonItem()
     private var sortedBy = String()
     
@@ -106,6 +107,18 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         tabBarController?.tabBar.hidden = false
         
         if isMovingToParentViewController() {
+            visitsHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits").observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    let enumerator = snapshot.children
+                    self.visits = [:]
+                    while let visitedVenue = enumerator.nextObject() as? FDataSnapshot {
+                        self.visits[visitedVenue.key] = true
+                    }
+                    self.tableView.reloadData()
+                }
+            })
             bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
                 snapshot in
                 
@@ -176,18 +189,6 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                         throwawayFeedTableVC.tableView.reloadData()
                         throwawayFeedTableVC.mapIsLoaded = false
                         NSUserDefaults.standardUserDefaults().setObject(newNSUserDefaultsList, forKey: "venues")
-                        
-                        // Need to include visit queries in FeedTableVC and its subclasses, ListVC and UserProfileVC, since the visits always need to be pulled after loading that screen's self.venues
-                        for venue in throwawayFeedTableVC.venues {
-                            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(throwawayFeedTableVC.uid)/visits/\(venue.objectId!)").observeSingleEventOfType(.Value, withBlock: {
-                                snapshot in
-                                
-                                if snapshot.exists() {
-                                    throwawayFeedTableVC.visits[venue.objectId!] = true
-                                    throwawayFeedTableVC.tableView.reloadData()
-                                }
-                            })
-                        }
                     }
                 })
             }
@@ -221,6 +222,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
             DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
             DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").removeObserverWithHandle(userVotesHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits").removeObserverWithHandle(visitsHandle!)
             venues.removeAll()
             visits.removeAll()
             dateSort.removeAll()
