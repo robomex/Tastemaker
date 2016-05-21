@@ -20,6 +20,7 @@ struct Venue {
     let phoneNumber: String?
     var foodType: String?
     let description: String?
+    let website: String?
 }
 
 private let openingDateFormat = "yyyy-MM-dd"
@@ -79,7 +80,8 @@ func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
     let phoneNumber = snapshot.value.objectForKey(kVenuePhoneNumber) as? String
     let foodType = snapshot.value.objectForKey(kVenueFoodType) as? String
     let description = snapshot.value.objectForKey(kVenueDescription) as? String
-    return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description)
+    let website = snapshot.value.objectForKey(kVenueWebsite) as? String
+    return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description, website: website)
 }
 
 private let objectIdKey = "objectId"
@@ -92,6 +94,7 @@ private let neighborhoodKey = "neighborhood"
 private let phoneNumberKey = "phoneNumber"
 private let foodTypeKey = "foodType"
 private let descriptionKey = "description"
+private let websiteKey = "website"
 
 func serializeVenue(venue: Venue) -> Dictionary <String, AnyObject> {
     return [
@@ -104,10 +107,11 @@ func serializeVenue(venue: Venue) -> Dictionary <String, AnyObject> {
         neighborhoodKey: venue.neighborhood!,
         phoneNumberKey: venue.phoneNumber!,
         foodTypeKey: venue.foodType!,
-        descriptionKey: venue.description!
+        descriptionKey: venue.description!,
+        websiteKey: venue.website!
     ]
 }
 
 func deserializeVenue(dictionary: Dictionary <String, AnyObject>) -> Venue {
-    return Venue(objectId: (dictionary[objectIdKey] as! String), name: (dictionary[nameKey] as! String), openingDate: (dictionary[openingDateKey] as! String), address: (dictionary[addressKey] as! String), latitude: (dictionary[latitudeKey] as! Double), longitude: (dictionary[longitudeKey] as! Double), neighborhood: (dictionary[neighborhoodKey] as! String), phoneNumber: (dictionary[phoneNumberKey] as! String), foodType: (dictionary[foodTypeKey] as! String), description: (dictionary[descriptionKey] as! String))
+    return Venue(objectId: (dictionary[objectIdKey] as! String), name: (dictionary[nameKey] as! String), openingDate: (dictionary[openingDateKey] as! String), address: (dictionary[addressKey] as! String), latitude: (dictionary[latitudeKey] as! Double), longitude: (dictionary[longitudeKey] as! Double), neighborhood: (dictionary[neighborhoodKey] as! String), phoneNumber: (dictionary[phoneNumberKey] as! String), foodType: (dictionary[foodTypeKey] as! String), description: (dictionary[descriptionKey] as! String), website: (dictionary[websiteKey] as! String))
 }

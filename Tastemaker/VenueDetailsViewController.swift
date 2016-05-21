@@ -10,8 +10,9 @@ import UIKit
 import MapKit
 import Contacts
 import Amplitude_iOS
+import SafariServices
 
-class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate {
+class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
 
     var venue: Venue?
     let regionRadius: CLLocationDistance = 500
@@ -86,10 +87,10 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         mapView.addAnnotation(venuePin)
         view.addSubview(mapView)
         
-        // Address and neighborhood
+        // Address, neighborhood, phone number, and website label
         
         let addressNeighborhoodPhoneTableView = UITableView()
-        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 250, UIScreen.mainScreen().bounds.width, 88)
+        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 250, UIScreen.mainScreen().bounds.width, 132)
         addressNeighborhoodPhoneTableView.dataSource = self
         addressNeighborhoodPhoneTableView.delegate = self
         addressNeighborhoodPhoneTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -115,7 +116,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -133,6 +134,11 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         case 1:
             let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
             cell.textLabel?.text = venue?.phoneNumber ?? "Phone Number Not Found"
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            return cell
+        case 2:
+            let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+            cell.textLabel?.text = venue?.website ?? "Website Not Found"
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             return cell
         default:
@@ -170,10 +176,22 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 
                 Amplitude.instance().logEvent("Called Venue")
             }
+        case 2:
+            if venue?.website! != nil && venue?.website! != "Website Not Found" {
+                let safariVC = SFSafariViewController(URL: NSURL(string: venue!.website!)!)
+                safariVC.delegate = self
+                self.presentViewController(safariVC, animated: true, completion: nil)
+                
+                Amplitude.instance().logEvent("Viewed Venue Website")
+            }
         default:
             return
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
