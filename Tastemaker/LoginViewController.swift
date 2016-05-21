@@ -226,15 +226,6 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         orLabel.font = UIFont.systemFontOfSize(17.0)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "LoginViewController")
-        let builder = GAIDictionaryBuilder.createScreenView()
-        tracker.send(builder.build() as [NSObject: AnyObject])
-    }
-    
     
     // MARK: UITextField functions
     

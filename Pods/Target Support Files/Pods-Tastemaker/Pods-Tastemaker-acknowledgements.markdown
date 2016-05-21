@@ -143,30 +143,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 https://www.firebase.com/terms/terms-of-service.html
 
-## Google
-
-Copyright 2015 Google Inc.
-
-## GoogleAnalytics
-
-Copyright 2015 Google Inc.
-
-## GoogleInterchangeUtilities
-
-Copyright 2015 Google Inc.
-
-## GoogleNetworkingUtilities
-
-Copyright 2015 Google Inc.
-
-## GoogleSymbolUtilities
-
-Copyright 2015 Google Inc.
-
-## GoogleUtilities
-
-Copyright 2015 Google Inc.
-
 ## Instructions
 
 The MIT License (MIT)

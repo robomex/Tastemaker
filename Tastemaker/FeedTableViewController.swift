@@ -196,11 +196,6 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             if mapView.hidden || !mapIsLoaded {
                 configureSortButton()
             }
-            
-            let tracker = GAI.sharedInstance().defaultTracker
-            tracker.set(kGAIScreenName, value: "NewVenuesFeedViewController")
-            let builder = GAIDictionaryBuilder.createScreenView()
-            tracker.send(builder.build() as [NSObject: AnyObject])
         }
     }
     

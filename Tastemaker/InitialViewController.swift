@@ -110,11 +110,6 @@ class InitialViewController: UIViewController {
                 }
             }
         })
-        
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "InitialViewController")
-        let builder = GAIDictionaryBuilder.createScreenView()
-        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewDidDisappear(animated: Bool) {

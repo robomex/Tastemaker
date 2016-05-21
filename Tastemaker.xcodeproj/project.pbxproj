@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A6A316F34E8E99847E9D6D6 /* Pods_Tastemaker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA944B92C46FEEAF125D1DCE /* Pods_Tastemaker.framework */; };
 		DE1973EB1B6D29570056148B /* Tastemaker_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1973EA1B6D29570056148B /* Tastemaker_Tests.swift */; };
 		DE1F08601B61BCD20094ACA0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F085F1B61BCD20094ACA0 /* libicucore.dylib */; };
 		DE1F08621B61BCDE0094ACA0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1F08611B61BCDE0094ACA0 /* libc++.dylib */; };
@@ -41,7 +42,6 @@
 		DEEF8C701B27F6AD004D2D3D /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */; };
 		DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C711B27FA40004D2D3D /* Social.framework */; };
 		DEEF8C741B27FA46004D2D3D /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEEF8C731B27FA46004D2D3D /* Accounts.framework */; };
-		DEF236351CD41E92007876C6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DEF236341CD41E92007876C6 /* GoogleService-Info.plist */; };
 		F9F7413D92CE837796E69D31 /* Pods_Tastemaker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD170F84DA824EFBEC870BD /* Pods_Tastemaker.framework */; };
 /* End PBXBuildFile section */
 
@@ -109,7 +109,6 @@
 		DEEF8C6F1B27F6AD004D2D3D /* ListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		DEEF8C711B27FA40004D2D3D /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		DEEF8C731B27FA46004D2D3D /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
-		DEF236341CD41E92007876C6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		EA944B92C46FEEAF125D1DCE /* Pods_Tastemaker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tastemaker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA22CA936F84D53233B4521D /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -133,6 +132,7 @@
 				DEEF8C721B27FA40004D2D3D /* Social.framework in Frameworks */,
 				DE61267E1B26978E0009FB34 /* MobileCoreServices.framework in Frameworks */,
 				F9F7413D92CE837796E69D31 /* Pods_Tastemaker.framework in Frameworks */,
+				3A6A316F34E8E99847E9D6D6 /* Pods_Tastemaker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +206,6 @@
 			isa = PBXGroup;
 			children = (
 				DE61261B1B2505950009FB34 /* Info.plist */,
-				DEF236341CD41E92007876C6 /* GoogleService-Info.plist */,
 				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
 				DE8300631B5F01E2000B71D7 /* Bridging-Header.h */,
 			);
@@ -406,7 +405,6 @@
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
-				DEF236351CD41E92007876C6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

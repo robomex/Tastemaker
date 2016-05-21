@@ -134,11 +134,6 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         } else if !isMuted {
             configureMuteButton()
         }
-        
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "UserProfileViewController")
-        let builder = GAIDictionaryBuilder.createScreenView()
-        tracker.send(builder.build() as [NSObject: AnyObject])
     }
     
     override func viewWillDisappear(animated: Bool) {

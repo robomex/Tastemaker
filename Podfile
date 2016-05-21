@@ -25,7 +25,6 @@ def pods
 	pod 'ReachabilitySwift'
 
 	#ANALYTICS
-	pod 'Google/Analytics'
 	pod 'Amplitude-iOS', '~> 3.5.0'
 end
 

@@ -98,15 +98,6 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         view.addSubview(addressNeighborhoodPhoneTableView)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let tracker = GAI.sharedInstance().defaultTracker
-        tracker.set(kGAIScreenName, value: "VenueDetailsViewController")
-        let builder = GAIDictionaryBuilder.createScreenView()
-        tracker.send(builder.build() as [NSObject: AnyObject])
-    }
-    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
