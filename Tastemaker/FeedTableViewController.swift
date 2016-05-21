@@ -487,16 +487,16 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     func coachMarksController(coachMarksController: CoachMarksController, coachMarksForIndex index: Int) -> CoachMark {
         switch(index) {
         case 0:
-            let indexOfFirstTip = NSIndexPath(forRow: 0, inSection: 0)
+            let indexOfFirstTip = NSIndexPath(forRow: 1, inSection: 0)
             return coachMarksController.coachMarkForView(tableView.cellForRowAtIndexPath(indexOfFirstTip) as? UIView)
         case 1:
-            let indexOfSecondTip = NSIndexPath(forRow: 3, inSection: 0)
+            let indexOfSecondTip = NSIndexPath(forRow: 0, inSection: 0)
             return coachMarksController.coachMarkForView(tableView.cellForRowAtIndexPath(indexOfSecondTip) as? UIView)
         case 2:
-            let indexOfThirdTip = NSIndexPath(forRow: 3, inSection: 0)
+            let indexOfThirdTip = NSIndexPath(forRow: 0, inSection: 0)
             var thirdCoachMark = coachMarksController.coachMarkForView(self.tableView.cellForRowAtIndexPath(indexOfThirdTip)) {
                 (frame: CGRect) -> UIBezierPath in
-                return UIBezierPath(ovalInRect: CGRectMake(0, 304, 52, 52))
+                return UIBezierPath(ovalInRect: CGRectMake(0, 76, 52, 52))
             }
             thirdCoachMark.maxWidth = 390
             thirdCoachMark.horizontalMargin = 5

@@ -47,7 +47,7 @@ class VenueListener {
                 for features in reversed {
                     var featuredVenue: Venue = snapshotToVenue(features as! FDataSnapshot)
                     featuredVenue.foodType = "Featured"
-                    venues.insert(featuredVenue, atIndex: 3)
+                    venues.insert(featuredVenue, atIndex: 0)
                 }
                 callback(venues)
             })
