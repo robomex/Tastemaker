@@ -12,7 +12,7 @@ import Firebase
 
 class MutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
 
-    private var mutedUsersHandle: UInt?
+    private var mutedUsersHandle: FIRDatabaseHandle?
     private var mutedUsers = [User]()
     private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
@@ -42,14 +42,14 @@ class MutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZ
         
         if self.isMovingToParentViewController() {
             mutedUsers = []
-            mutedUsersHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeEventType(FEventType.Value, withBlock: {
+            mutedUsersHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/mutes").observeEventType(FIRDataEventType.Value, withBlock: {
                 snapshot in
                 
                 let enumerator = snapshot.children
                 self.mutedUsers = []
                 
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                while let data = enumerator.nextObject() as? FIRDataSnapshot {
+                    DataService.dataService.USERS_PUBLIC_REF.child("\(data.key)").observeSingleEventOfType(FIRDataEventType.Value, withBlock: {
                         snap in
                         
                         self.mutedUsers.insert(snapshotToUser(snap), atIndex: 0)
@@ -65,7 +65,7 @@ class MutedUsersViewController: UITableViewController, DZNEmptyDataSetSource, DZ
         super.viewDidDisappear(animated)
         
         if self.isMovingFromParentViewController() {
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").removeObserverWithHandle(mutedUsersHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/mutes").removeObserverWithHandle(mutedUsersHandle!)
         }
     }
     

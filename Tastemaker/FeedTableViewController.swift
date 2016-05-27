@@ -32,15 +32,15 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     weak var venueListener: VenueListener?
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var banned: Bool?
-    var bannedHandle: UInt?
-    private var recentChatsVenueListHandle: UInt?
+    var bannedHandle: FIRDatabaseHandle?
+    private var recentChatsVenueListHandle: FIRDatabaseHandle?
     private var recentChatsVenueList = [String]()
-    private var venueVoteCountsHandle: UInt?
+    private var venueVoteCountsHandle: FIRDatabaseHandle?
     private var venueVoteCounts = [String: Int]()
-    private var userVotesHandle: UInt?
+    private var userVotesHandle: FIRDatabaseHandle?
     private var userVotes = [String]()
     var visits = [String: Bool]()
-    private var visitsHandle: UInt?
+    private var visitsHandle: FIRDatabaseHandle?
     private var votedVenue = String()
     private var unvotedVenue = String()
     
@@ -107,19 +107,19 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         tabBarController?.tabBar.hidden = false
         
         if isMovingToParentViewController() {
-            visitsHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits").observeEventType(.Value, withBlock: {
+            visitsHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits").observeEventType(.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {
                     let enumerator = snapshot.children
                     self.visits = [:]
-                    while let visitedVenue = enumerator.nextObject() as? FDataSnapshot {
+                    while let visitedVenue = enumerator.nextObject() as? FIRDataSnapshot {
                         self.visits[visitedVenue.key] = true
                     }
                     self.tableView.reloadData()
                 }
             })
-            bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").observeEventType(FEventType.Value, withBlock: {
+            bannedHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.child("banned").observeEventType(FIRDataEventType.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {
@@ -128,35 +128,35 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                     self.banned = nil
                 }
             })
-            recentChatsVenueListHandle = DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").observeEventType(.Value, withBlock: {
+            recentChatsVenueListHandle = DataService.dataService.LISTS_REF.child("venues/recentChats").observeEventType(.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {
                     let enumerator = snapshot.children
                     self.recentChatsVenueList = []
-                    while let recentChatsVenues = enumerator.nextObject() as? FDataSnapshot {
+                    while let recentChatsVenues = enumerator.nextObject() as? FIRDataSnapshot {
                         self.recentChatsVenueList.append(recentChatsVenues.key)
                     }
                     self.tableView.reloadData()
                 }
             })
-            venueVoteCountsHandle = DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").observeEventType(.Value, withBlock: {
+            venueVoteCountsHandle = DataService.dataService.LISTS_REF.child("venues/votes").observeEventType(.Value, withBlock: {
                 snapshot in
                 
                 let enumerator = snapshot.children
                 self.venueVoteCounts = [:]
-                while let voteCounts = enumerator.nextObject() as? FDataSnapshot {
+                while let voteCounts = enumerator.nextObject() as? FIRDataSnapshot {
                     self.venueVoteCounts[voteCounts.key] = voteCounts.value as? Int
                 }
                 self.tableView.reloadData()
             })
-            userVotesHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").queryOrderedByValue().observeEventType(.Value, withBlock: {
+            userVotesHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/votes/").queryOrderedByValue().observeEventType(.Value, withBlock: {
                 snapshot in
                 
                 self.userVotes = []
                 if snapshot.exists() {
                     let enumerator = snapshot.children
-                    while let userVotesVenues = enumerator.nextObject() as? FDataSnapshot {
+                    while let userVotesVenues = enumerator.nextObject() as? FIRDataSnapshot {
                         self.userVotes.append(userVotesVenues.key)
                     }
                 }
@@ -213,11 +213,11 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         super.viewDidDisappear(animated)
         
         if isMovingFromParentViewController() {
-            DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
-            DataService.dataService.LISTS_REF.childByAppendingPath("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
-            DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/votes/").removeObserverWithHandle(userVotesHandle!)
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits").removeObserverWithHandle(visitsHandle!)
+            DataService.dataService.CURRENT_USER_PRIVATE_REF.child("banned").removeObserverWithHandle(bannedHandle!)
+            DataService.dataService.LISTS_REF.child("venues/recentChats").removeObserverWithHandle(recentChatsVenueListHandle!)
+            DataService.dataService.LISTS_REF.child("venues/votes").removeObserverWithHandle(venueVoteCountsHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/votes/").removeObserverWithHandle(userVotesHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits").removeObserverWithHandle(visitsHandle!)
             venues.removeAll()
             visits.removeAll()
             dateSort.removeAll()
@@ -231,7 +231,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
     }
     
     func feedTableLogoutCleanup() {
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.child("banned").removeObserverWithHandle(bannedHandle!)
         venueListener?.stop()
     }
 
@@ -433,19 +433,19 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         if (voted) {
             votedVenue = venueId
             voteCount += 1
-            DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
-                (currentData: FMutableData!) in
+            DataService.dataService.LISTS_REF.child("venues/votes/\(venueId)").runTransactionBlock({
+                (currentData: FIRMutableData!) in
                 var value = currentData.value as? Int
                 if (value == nil) {
                     value = 0
                 }
                 currentData.value = value! + 1
-                return FTransactionResult.successWithValue(currentData)
+                return FIRTransactionResult.successWithValue(currentData)
                 }, andCompletionBlock: {
                     _ in
-                    DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
+                    DataService.dataService.USER_ACTIVITIES_REF.child("\(self.uid)/votes/\(venueId)").setValue(dateFormatter().stringFromDate(NSDate()))
             })
-            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
+            DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
@@ -453,17 +453,17 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             unvotedVenue = venueId
             if voteCount > 0 {
                 voteCount -= 1
-                DataService.dataService.LISTS_REF.childByAppendingPath("venues/votes/\(venueId)").runTransactionBlock({
-                    (currentData: FMutableData!) in
+                DataService.dataService.LISTS_REF.child("venues/votes/\(venueId)").runTransactionBlock({
+                    (currentData: FIRMutableData!) in
                     let value = currentData.value as? Int
                     currentData.value = value! - 1
-                    return FTransactionResult.successWithValue(currentData)
+                    return FIRTransactionResult.successWithValue(currentData)
                     }, andCompletionBlock: {
                         _ in
-                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(self.uid)/votes/\(venueId)").removeValue()
+                        DataService.dataService.USER_ACTIVITIES_REF.child("\(self.uid)/votes/\(venueId)").removeValue()
                 })
             }
-            DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueId)/voters/\(uid)").removeValue()
+            DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venueId)/voters/\(uid)").removeValue()
             
             Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))

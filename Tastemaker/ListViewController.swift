@@ -15,7 +15,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     
     // MARK: Initialization
     
-    private var saveListHandle: UInt?
+    private var saveListHandle: FIRDatabaseHandle?
     private var listVenues = [Venue]()
     var loading: Bool = true
     
@@ -37,7 +37,7 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         if self.isMovingToParentViewController() {
             self.tableView.alpha = 0.0
             
-            saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").observeEventType(FEventType.Value, withBlock: {
+            saveListHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/saves").observeEventType(FIRDataEventType.Value, withBlock: {
                 snapshot in
                 
                 if !snapshot.exists() {
@@ -49,8 +49,8 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
                 
                 let enumerator = snapshot.children
                 self.listVenues = []
-                while let data = enumerator.nextObject() as? FDataSnapshot {
-                    DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                while let data = enumerator.nextObject() as? FIRDataSnapshot {
+                    DataService.dataService.VENUES_REF.child("\(data.key)").observeSingleEventOfType(FIRDataEventType.Value, withBlock: {
                         snap in
                         
                         self.listVenues.insert(snapshotToVenue(snap), atIndex: 0)
@@ -63,8 +63,8 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
     }
     
     func listLogoutCleanup() {
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("banned").removeObserverWithHandle(bannedHandle!)
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
+        DataService.dataService.CURRENT_USER_PRIVATE_REF.child("banned").removeObserverWithHandle(bannedHandle!)
+        DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/saves").removeObserverWithHandle(saveListHandle!)
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

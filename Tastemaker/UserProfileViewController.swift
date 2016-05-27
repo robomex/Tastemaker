@@ -16,8 +16,8 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
 
     var userId = String()
     var userNickname = String()
-    private var userActivitiesMuteHandle = UInt?()
-    private var usersSavedListHandle = UInt?()
+    private var userActivitiesMuteHandle = FIRDatabaseHandle?()
+    private var usersSavedListHandle = FIRDatabaseHandle?()
     private var usersSavedListVenues = [Venue]()
     private var loading: Bool = true
     private var originalMessages: [JSQMessage] = []
@@ -79,7 +79,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         
         if isMovingToParentViewController() {
             
-            userActivitiesMuteHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").observeEventType(FEventType.Value, withBlock: {
+            userActivitiesMuteHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/mutes/\(userId)").observeEventType(FIRDataEventType.Value, withBlock: {
                 [weak self] snapshot in
                 
                 if let throwawayUserProfileVC = self {
@@ -95,7 +95,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
                 }
             })
             
-            usersSavedListHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves").observeEventType(FEventType.Value, withBlock: {
+            usersSavedListHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(userId)/saves").observeEventType(FIRDataEventType.Value, withBlock: {
                 [weak self] snapshot in
                 
                 if let throwawayUserProfileVC = self {
@@ -107,8 +107,8 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
                     
                     let enumerator = snapshot.children
                     throwawayUserProfileVC.usersSavedListVenues = []
-                    while let data = enumerator.nextObject() as? FDataSnapshot {
-                        DataService.dataService.VENUES_REF.childByAppendingPath("\(data.key)").observeSingleEventOfType(FEventType.Value, withBlock: {
+                    while let data = enumerator.nextObject() as? FIRDataSnapshot {
+                        DataService.dataService.VENUES_REF.child("\(data.key)").observeSingleEventOfType(FIRDataEventType.Value, withBlock: {
                             snap in
                             
                             throwawayUserProfileVC.usersSavedListVenues.insert(snapshotToVenue(snap), atIndex: 0)
@@ -148,8 +148,8 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         if isMovingFromParentViewController() {
             visits.removeAll()
             usersSavedListVenues.removeAll()
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").removeObserverWithHandle(userActivitiesMuteHandle!)
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(userId)/saves").removeObserverWithHandle(usersSavedListHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/mutes/\(userId)").removeObserverWithHandle(userActivitiesMuteHandle!)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(userId)/saves").removeObserverWithHandle(usersSavedListHandle!)
             tableView.emptyDataSetSource = nil
             tableView.emptyDataSetDelegate = nil
         }
@@ -196,7 +196,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         
         configureUnmuteButton()
         isMuted = true
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").setValue(true)
+        DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/mutes/\(userId)").setValue(true)
         if navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] is VenueViewController {
             let venueVC = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC
@@ -230,7 +230,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
         
         configureMuteButton()
         isMuted = false
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(super.uid)/mutes/\(userId)").removeValue()
+        DataService.dataService.USER_ACTIVITIES_REF.child("\(super.uid)/mutes/\(userId)").removeValue()
         if navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] is VenueViewController {
             let venueVC = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! VenueViewController
             let chatVC = venueVC.chatVC

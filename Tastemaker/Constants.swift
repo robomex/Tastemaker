@@ -12,7 +12,6 @@ import Foundation
 // MARK: URLs
 let kPrivacyPolicyURL =     "https://gettastemaker.com/privacy"
 let kTermsOfServiceURL =    "https://gettastemaker.com/terms"
-let BASE_URL =              "https://grandopens.firebaseio.com"
 
 
 // MARK: Colors

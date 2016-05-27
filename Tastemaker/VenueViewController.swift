@@ -20,15 +20,15 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     
     private let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     
-    private var userActivitiesSaveHandle = UInt?()
-    private var userActivitiesSaveRef: Firebase?
-    private var venueActivitiesSaverRef: Firebase?
+    private var userActivitiesSaveHandle = FIRDatabaseHandle?()
+    private var userActivitiesSaveRef: FIRDatabaseReference?
+    private var venueActivitiesSaverRef: FIRDatabaseReference?
     
-    private var userActivitiesSilenceHandle = UInt?()
-    private var userActivitiesSilenceRef: Firebase?
+    private var userActivitiesSilenceHandle = FIRDatabaseHandle?()
+    private var userActivitiesSilenceRef: FIRDatabaseReference?
     
-    private var onlineStatusRef: Firebase?
-    private var seenNotificationRef: Firebase?
+    private var onlineStatusRef: FIRDatabaseReference?
+    private var seenNotificationRef: FIRDatabaseReference?
     
     private var saveButton = UIBarButtonItem()
     private var silenceButton = UIBarButtonItem()
@@ -119,14 +119,14 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         super.viewWillAppear(animated)
         
         if isMovingToParentViewController() {
-            userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/saves")
-            venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venueID)/savers/\(uid)")
-            userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FEventType.Value, withBlock: {
+            userActivitiesSaveRef = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/saves")
+            venueActivitiesSaverRef = DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venueID)/savers/\(uid)")
+            userActivitiesSaveHandle = userActivitiesSaveRef!.observeEventType(FIRDataEventType.Value, withBlock: {
                 snapshot in
                 
                 let enumerator = snapshot.children
                 var savedVenues = [String]()
-                while let data = enumerator.nextObject() as? FDataSnapshot {
+                while let data = enumerator.nextObject() as? FIRDataSnapshot {
                     savedVenues.append(data.key)
                 }
                 if savedVenues.contains((self.venue?.objectId!)!) {
@@ -138,7 +138,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
                 }
             })
             
-            userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/silences/\(venueID)")
+            userActivitiesSilenceRef = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/silences/\(venueID)")
             userActivitiesSilenceHandle = userActivitiesSilenceRef!.observeEventType(.Value, withBlock: {
                 snapshot in
                 
@@ -150,7 +150,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
             })
         }
         
-        seenNotificationRef = DataService.dataService.BASE_REF.childByAppendingPath("notifications/\(uid)/\(venueID)")
+        seenNotificationRef = DataService.dataService.BASE_REF.child("notifications/\(uid)/\(venueID)")
         seenNotificationRef!.observeSingleEventOfType(.Value, withBlock: {
             snapshot in
             
@@ -163,7 +163,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)")
+        onlineStatusRef = DataService.dataService.BASE_REF.child("onlineStatuses/\(uid)")
         onlineStatusRef?.setValue(["\(venueID)": true])
         
         let hasSeenChatInstructions = NSUserDefaults.standardUserDefaults().boolForKey("HasSeenChatInstructions")
@@ -196,7 +196,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
    
         configureUnsaveButton()
         
-        userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).setValue(dateFormatter().stringFromDate(NSDate()))
+        userActivitiesSaveRef?.child(self.venue!.objectId!).setValue(dateFormatter().stringFromDate(NSDate()))
         venueActivitiesSaverRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
@@ -207,7 +207,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
 
         configureSaveButton()
         
-        userActivitiesSaveRef?.childByAppendingPath(self.venue!.objectId!).removeValue()
+        userActivitiesSaveRef?.child(self.venue!.objectId!).removeValue()
         venueActivitiesSaverRef?.removeValue()
         
         Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])

@@ -25,9 +25,9 @@ struct User {
 //    }
 }
 
-func snapshotToUser(snapshot: FDataSnapshot) -> User {
+func snapshotToUser(snapshot: FIRDataSnapshot) -> User {
     let id = snapshot.key
-    let nickname = snapshot.value.objectForKey(kUserNicknameKey) as? String
+    let nickname = snapshot.value!.objectForKey(kUserNicknameKey) as? String
     return User(id: id, nickname: nickname!)
 }
 

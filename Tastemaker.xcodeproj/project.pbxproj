@@ -36,6 +36,7 @@
 		DEA5EE2B1B9E698A00D0F221 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2A1B9E698900D0F221 /* Constants.swift */; };
 		DEA5EE2F1BA4AB7F00D0F221 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA5EE2E1BA4AB7F00D0F221 /* Utility.swift */; };
 		DED2FDCD1C501AEF001A94B3 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED2FDCC1C501AEF001A94B3 /* UserProfileViewController.swift */; };
+		DEE65C4B1CF0E935005FA206 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DEE65C4A1CF0E935005FA206 /* GoogleService-Info.plist */; };
 		DEEB760A1B3298B600A94305 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB76091B3298B600A94305 /* User.swift */; };
 		DEEB760C1B32990700A94305 /* Venue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760B1B32990700A94305 /* Venue.swift */; };
 		DEEB760E1B35DD1400A94305 /* FeedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */; };
@@ -103,6 +104,7 @@
 		DEA5EE2E1BA4AB7F00D0F221 /* Utility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		DEA846191C8223EE00BB231E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		DED2FDCC1C501AEF001A94B3 /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		DEE65C4A1CF0E935005FA206 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DEEB76091B3298B600A94305 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DEEB760B1B32990700A94305 /* Venue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Venue.swift; sourceTree = "<group>"; };
 		DEEB760D1B35DD1400A94305 /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 			children = (
 				DE61261B1B2505950009FB34 /* Info.plist */,
 				DE78E09D1C634CB300CD22F3 /* Muli-Regular.ttf */,
+				DEE65C4A1CF0E935005FA206 /* GoogleService-Info.plist */,
 				DE8300631B5F01E2000B71D7 /* Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -403,6 +406,7 @@
 			files = (
 				DE78E09E1C63548700CD22F3 /* Muli-Regular.ttf in Resources */,
 				DE6126251B2505950009FB34 /* Main.storyboard in Resources */,
+				DEE65C4B1CF0E935005FA206 /* GoogleService-Info.plist in Resources */,
 				DE61262A1B2505950009FB34 /* LaunchScreen.xib in Resources */,
 				DE6126271B2505950009FB34 /* Images.xcassets in Resources */,
 			);

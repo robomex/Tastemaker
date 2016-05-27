@@ -25,7 +25,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     let uid: String = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
     var mutedUsers = [String: String]()
     
-    var visitRefHandle = UInt()
+    var visitRefHandle = FIRDatabaseHandle()
     var loaded: Bool = false
     
     var visitStatus = "noVisits"
@@ -87,12 +87,12 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         
         if !loaded {
 
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/mutes").observeSingleEventOfType(FEventType.Value, withBlock: {
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/mutes").observeSingleEventOfType(FIRDataEventType.Value, withBlock: {
                 [weak self] snapshot in
                 
                 if let tempChatVC = self {
                     let enumerator = snapshot.children
-                    while let data = enumerator.nextObject() as? FDataSnapshot {
+                    while let data = enumerator.nextObject() as? FIRDataSnapshot {
                         tempChatVC.mutedUsers[data.key] = "muted"
                     }
                     
@@ -133,7 +133,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                 })
             }
             
-            visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FEventType.Value, withBlock: {
+            visitRefHandle = DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits/\(venue!.objectId!)").queryLimitedToLast(1).observeEventType(FIRDataEventType.Value, withBlock: {
                 [weak self] snapshot in
                 
                 if let tempChatVC = self {
@@ -141,8 +141,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
                         tempChatVC.visitStatus = "visited"
                         
                         let enumerator = snapshot.children
-                        while let data = enumerator.nextObject() as? FDataSnapshot {
-                            if let date = dateFormatter().dateFromString(data.value.objectForKey("startedAt") as! String) {
+                        while let data = enumerator.nextObject() as? FIRDataSnapshot {
+                            if let date = dateFormatter().dateFromString(data.value!.objectForKey("startedAt") as! String) {
                                 if date.timeIntervalSinceNow > (-3*60*60) {
                                     tempChatVC.visitStatus = "thereNow"
                                 } else {
@@ -163,7 +163,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         super.viewDidDisappear(animated)
         
         if isMovingFromParentViewController() {
-            DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue!.objectId!)").removeObserverWithHandle(visitRefHandle)
+            DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits/\(venue!.objectId!)").removeObserverWithHandle(visitRefHandle)
             messageListener?.stop(venue!.objectId!)
         }
         inputToolbar?.contentView?.textView?.resignFirstResponder()
@@ -405,7 +405,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
     func reportMessage(indexPath: NSIndexPath) {
         
         let message = messages[indexPath.row]
-        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
+        DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
         
         Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
         Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1))

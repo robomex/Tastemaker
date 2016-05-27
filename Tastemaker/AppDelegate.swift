@@ -38,8 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
         
+        // Set up new version of Firebase
+        FIRApp.configure()
+        
+        // Override point for customization after application launch.
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.initialViewController = storyboard.instantiateViewControllerWithIdentifier("InitialViewController") as? InitialViewController
         
         self.navController = UINavigationController(rootViewController: self.initialViewController!)
@@ -65,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
             
-            DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/").removeValue()
+            DataService.dataService.BASE_REF.child("onlineStatuses/\(uid)/").removeValue()
         }
         
         return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -87,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
             if notificationSettings.types != .None {
                 application.registerForRemoteNotifications()
             } else if notificationSettings.types == .None {
-                DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").removeValue()
+                DataService.dataService.BASE_REF.child("devices/\(uid)").removeValue()
             }
         }
     }
@@ -97,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
 
-            DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").updateChildValues(["token": deviceToken.hexString, "updatedOn": dateFormatter().stringFromDate(NSDate())])
+            DataService.dataService.BASE_REF.child("devices/\(uid)").updateChildValues(["token": deviceToken.hexString, "updatedOn": dateFormatter().stringFromDate(NSDate())])
         }
     }
     
@@ -113,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         if state == UIApplicationState.Inactive || state == UIApplicationState.Background {
             if let venue = userInfo["venue"] {
                 
-                DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                DataService.dataService.VENUES_REF.child(venue as! String).observeSingleEventOfType(.Value, withBlock: {
                     snapshot in
 
                     let targetVenue = snapshotToVenue(snapshot)
@@ -140,7 +144,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     
                     if let venue = userInfo["venue"] {
                         
-                        DataService.dataService.VENUES_REF.childByAppendingPath(venue as! String).observeSingleEventOfType(.Value, withBlock: {
+                        DataService.dataService.VENUES_REF.child(venue as! String).observeSingleEventOfType(.Value, withBlock: {
                             snapshot in
                             
                             let targetVenue = snapshotToVenue(snapshot)
@@ -179,14 +183,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
             
-            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            let onlineStatusRef = DataService.dataService.BASE_REF.child("onlineStatuses/\(uid)/")
             onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
                 snapshot in
 
                 if snapshot.exists() {
                     let enumerator = snapshot.children
-                    while let venueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
-                        onlineStatusRef.childByAppendingPath("\(venueOnlineStatuses.key)").setValue(false)
+                    while let venueOnlineStatuses = enumerator.nextObject() as? FIRDataSnapshot {
+                        onlineStatusRef.child("\(venueOnlineStatuses.key)").setValue(false)
                     }
                 }
             })
@@ -210,14 +214,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
             
-            let onlineStatusRef = DataService.dataService.BASE_REF.childByAppendingPath("onlineStatuses/\(uid)/")
+            let onlineStatusRef = DataService.dataService.BASE_REF.child("onlineStatuses/\(uid)/")
             onlineStatusRef.observeSingleEventOfType(.Value, withBlock: {
                 snapshot in
                 
                 if snapshot.exists() {
                     let enumerator = snapshot.children
-                    while let dormantVenueOnlineStatuses = enumerator.nextObject() as? FDataSnapshot {
-                        onlineStatusRef.childByAppendingPath("\(dormantVenueOnlineStatuses.key)").setValue(true)
+                    while let dormantVenueOnlineStatuses = enumerator.nextObject() as? FIRDataSnapshot {
+                        onlineStatusRef.child("\(dormantVenueOnlineStatuses.key)").setValue(true)
                     }
                 }
             })
@@ -241,7 +245,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         self.tabBarController = TabBarController()
         self.feedTableViewController = FeedTableViewController(style: UITableViewStyle.Plain)
         self.listViewController = ListViewController(style: UITableViewStyle.Plain)
-        self.settingsViewController = storyboard.instantiateViewControllerWithIdentifier("SettingsViewController") as? SettingsViewController
+        self.settingsViewController = SettingsViewController()
         
         let feedNavigationController: UINavigationController = UINavigationController(rootViewController: self.feedTableViewController!)
         let listNavigationController: UINavigationController = UINavigationController(rootViewController: self.listViewController!)
@@ -263,8 +267,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         listNavigationController.tabBarItem = listTabBarItem
         settingsNavigationController.tabBarItem = settingsTabBarItem
         
-        tabBarController!.delegate = self
-        tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
+        self.tabBarController!.delegate = self
+        self.tabBarController!.viewControllers = [feedNavigationController, listNavigationController, settingsNavigationController]
         
         let locationAuthorizationStatus = CLLocationManager.authorizationStatus()
         if CLLocationManager.locationServicesEnabled() {
@@ -285,8 +289,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                 print("other case, possibly restricted")
             }
         }
-        
-        navController!.setViewControllers([initialViewController!, tabBarController!], animated: true)
+        navController!.pushViewController(self.tabBarController!, animated: true)
     }
 
     
@@ -306,7 +309,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Delete device token so pushes aren't attempted for an old or logged out device
         if NSUserDefaults.standardUserDefaults().objectForKey("uid") as? String != nil {
             let uid = NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String
-            DataService.dataService.BASE_REF.childByAppendingPath("devices/\(uid)").removeValue()
+            DataService.dataService.BASE_REF.child("devices/\(uid)").removeValue()
         }
         
         // Log out of Facebook
@@ -316,7 +319,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
         // Clear Amplitude userId
         Amplitude.instance().setUserId(nil)
         
-        DataService.dataService.BASE_REF.unauth()
+        try! FIRAuth.auth()!.signOut()
     }
     
     
@@ -355,7 +358,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                 for venue in sortedVenues {
                     let visitDistanceFromVenue = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude).distanceFromLocation(CLLocation(latitude: venue.latitude!, longitude: venue.longitude!))
                     if  visitDistanceFromVenue < 66 {
-                        DataService.dataService.USER_ACTIVITIES_REF.childByAppendingPath("\(uid)/visits/\(venue.objectId!)").childByAutoId().updateChildValues(["startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
+                        DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits/\(venue.objectId!)").childByAutoId().updateChildValues(["startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
                         
                         Amplitude.instance().logEvent("Visited Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
                         Amplitude.instance().identify(AMPIdentify().add("Visits", value: 1))
@@ -367,8 +370,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                 for venue in sortedVenues {
                     let visitDistanceFromVenue = CLLocation(latitude: visit.coordinate.latitude, longitude: visit.coordinate.longitude).distanceFromLocation(CLLocation(latitude: venue.latitude!, longitude: venue.longitude!))
                     if visitDistanceFromVenue < 66 {
-                        DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venue.objectId!)/visitors/private/\(uid)").childByAutoId().updateChildValues(["endedAt": dateFormatter().stringFromDate(visit.departureDate), "startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
-                        DataService.dataService.VENUE_ACTIVITIES_REF.childByAppendingPath("\(venue.objectId!)/visitors/public/\(uid)").setValue(true)
+                        DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venue.objectId!)/visitors/private/\(uid)").childByAutoId().updateChildValues(["endedAt": dateFormatter().stringFromDate(visit.departureDate), "startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
+                        DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venue.objectId!)/visitors/public/\(uid)").setValue(true)
                     }
                 }
             }

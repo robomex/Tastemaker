@@ -17,15 +17,13 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     var nickname: String? = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as? String ?? ""
     var updatedNickname: String?
-    var authHandle = UInt()
-    var userHandle = UInt()
+    var authHandle = FIRAuthStateDidChangeListenerHandle?()
+    var userHandle = FIRDatabaseHandle()
     var notificationPeriod = String()
     var settingsTableView: UITableView!
     private var usesPassword: Bool?
-    private var oldPassword: String?
     private var newPassword: String?
     private var newPasswordReentry: String?
-    private var email: String?
     private var needToFixPermissions: Bool?
     let pscope = PermissionScope()
     
@@ -71,42 +69,52 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         self.navigationController!.view.backgroundColor = UIColor.whiteColor()
         self.tabBarController?.tabBar.hidden = false
 
-        authHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
-            authData in
+        if isMovingToParentViewController() {
             
-            if authData == nil {
-                (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
-            } else if authData.provider == "password" {
-                self.usesPassword = true
-                self.email = (authData.providerData["email"] as! String)
-                self.settingsTableView.reloadData()
+            authHandle = FIRAuth.auth()!.addAuthStateDidChangeListener() {
+                [weak self] (auth, user) in
+                
+                if let throwawaySettingsVC = self {
+                    if user != nil {
+                        for profile in (user?.providerData)! {
+                            let providerId = profile.providerID
+                            if providerId == "password" {
+                                throwawaySettingsVC.usesPassword = true
+                                throwawaySettingsVC.settingsTableView.reloadData()
+                            }
+                        }
+                    } else {
+                        DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").removeObserverWithHandle(throwawaySettingsVC.userHandle)
+                        FIRAuth.auth()!.removeAuthStateDidChangeListener(throwawaySettingsVC.authHandle!)
+                        
+                        (UIApplication.sharedApplication().delegate as! AppDelegate).navController?.popToRootViewControllerAnimated(true)
+                    }
+                }
             }
-        })
-        
-        userHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").observeEventType(.Value, withBlock: {
-            snapshot in
             
-            if snapshot.exists() {
-                self.notificationPeriod = snapshot.value as! String
-                self.settingsTableView.reloadData()
-            }
-        })
+            userHandle = DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").observeEventType(.Value, withBlock: {
+                snapshot in
+                
+                if snapshot.exists() {
+                    self.notificationPeriod = snapshot.value as! String
+                    self.settingsTableView.reloadData()
+                }
+            })
+        }
         
         if PermissionScope().statusLocationAlways() == .Unauthorized || PermissionScope().statusNotifications() == .Unauthorized {
             needToFixPermissions = true
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").removeObserverWithHandle(self.userHandle)
-    }
-    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
-        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authHandle)
+        if isMovingFromParentViewController() {
+            
+            DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").removeObserverWithHandle(self.userHandle)
+            FIRAuth.auth()!.removeAuthStateDidChangeListener(authHandle!)
+        }
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -278,31 +286,31 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let notificationPeriodMenu = UIAlertController(title: nil, message: "After you post to a venue's chat, receive notifications about new chats", preferredStyle: .ActionSheet)
                 let fifteenMinutesAction = UIAlertAction(title: "For 15 Minutes", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("fifteen minutes")
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("fifteen minutes")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "15 Minutes"])
                 })
                 notificationPeriodMenu.addAction(fifteenMinutesAction)
                 let oneHourAction = UIAlertAction(title: "For 1 Hour", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one hour")
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one hour")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Hour"])
                 })
                 notificationPeriodMenu.addAction(oneHourAction)
                 let eightHoursAction = UIAlertAction(title: "For 8 Hours", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("eight hours")
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("eight hours")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "8 Hours"])
                 })
                 notificationPeriodMenu.addAction(eightHoursAction)
                 let oneDayAction = UIAlertAction(title: "For 1 Day", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("one day")
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one day")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Day"])
                 })
                 notificationPeriodMenu.addAction(oneDayAction)
                 let threeDaysAction = UIAlertAction(title: "For 3 Days", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.childByAppendingPath("notificationPeriod").setValue("three days")
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("three days")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "3 Days"])
                 })
                 notificationPeriodMenu.addAction(threeDaysAction)
@@ -311,33 +319,23 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 self.presentViewController(notificationPeriodMenu, animated: true, completion: nil)
             } else if indexPath.row == 3 {
                 let changePasswordAlert = SCLAlertView()
-                let oldPasswordTextField = changePasswordAlert.addTextField("Old Password")
                 let newPasswordTextField = changePasswordAlert.addTextField("New Password")
                 let newPasswordReentryTextField = changePasswordAlert.addTextField("Re-enter New Password")
-                oldPasswordTextField.autocorrectionType = .No
                 newPasswordTextField.autocorrectionType = .No
                 newPasswordReentryTextField.autocorrectionType = .No
-                oldPasswordTextField.autocapitalizationType = .None
                 newPasswordTextField.autocapitalizationType = .None
                 newPasswordReentryTextField.autocapitalizationType = .None
-                oldPasswordTextField.keyboardType = .Default
                 newPasswordTextField.keyboardType = .Default
                 newPasswordReentryTextField.keyboardType = .Default
-                oldPasswordTextField.secureTextEntry = true
                 newPasswordTextField.secureTextEntry = true
                 newPasswordReentryTextField.secureTextEntry = true
                 
                 changePasswordAlert.addButton("Change Password", validationBlock: {
-                    self.oldPassword = oldPasswordTextField.text!
                     self.newPassword = newPasswordTextField.text!
                     self.newPasswordReentry = newPasswordReentryTextField.text!
                     
                     let regex = try! NSRegularExpression(pattern: ".*[^A-Za-z0-9].*", options: NSRegularExpressionOptions())
-                    if self.oldPassword! == "" {
-                        showSimpleAlertWithTitle("Please enter your old password", message: "", actionTitle: "OK", viewController: self)
-                        oldPasswordTextField.becomeFirstResponder()
-                        return false
-                    } else if self.newPassword! == "" {
+                    if self.newPassword! == "" {
                         showSimpleAlertWithTitle("Please enter a new password", message: "", actionTitle: "OK", viewController: self)
                         newPasswordTextField.becomeFirstResponder()
                         return false
@@ -365,25 +363,24 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     return true
                     }, actionBlock: {
                         
-                        DataService.dataService.BASE_REF.changePasswordForUser(self.email!, fromOld: self.oldPassword!, toNew: self.newPassword!, withCompletionBlock: {
-                            error in
-                            
-                            if error != nil {
-                                showSimpleAlertWithTitle("We were unable to change your password right now, you may have entered your old password incorrectly", message: "", actionTitle: "OK", viewController: self)
+                        let user = FIRAuth.auth()?.currentUser
+                        user?.updatePassword(self.newPassword!) { error in
+                            if let error = error {
+                                showSimpleAlertWithTitle("We were unable to change your password right now", message: "", actionTitle: "OK", viewController: self)
                                 print(error)
                             } else {
                                 showSimpleAlertWithTitle("You successfully changed your password", message: "", actionTitle: "OK", viewController: self)
                                 DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["updatedOn": dateFormatter().stringFromDate(NSDate())])
                                 Amplitude.instance().logEvent("Changed Password")
                             }
-                        })
+                        }
                 })
                 changePasswordAlert.showAnimationType = .SlideInToCenter
                 changePasswordAlert.hideAnimationType = .FadeOut
                 changePasswordAlert.customViewColor = kPurple
                 changePasswordAlert.backgroundType = .Blur
                 changePasswordAlert.shouldDismissOnTapOutside = true
-                changePasswordAlert.showEdit(view.window?.rootViewController, title: nil, subTitle: "Enter your old password and choose a new password 6+ characters long ", closeButtonTitle: "Cancel", duration: 0)
+                changePasswordAlert.showEdit(view.window?.rootViewController, title: nil, subTitle: "Choose a new password 6+ characters long ", closeButtonTitle: "Cancel", duration: 0)
             }
         } else if indexPath.section == 1 {
             if (needToFixPermissions != nil) && needToFixPermissions! {

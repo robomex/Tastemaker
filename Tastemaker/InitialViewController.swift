@@ -15,7 +15,9 @@ import Amplitude_iOS
 class InitialViewController: UIViewController {
 
     let pscope = PermissionScope()
-    var authHandle = UInt()
+    var authHandle = FIRAuthStateDidChangeListenerHandle?()
+    // Had to add userLoggedIn flag since addAuthStateDidChangeListener was firing twice as of May 26
+    var userLoggedIn: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,20 +36,19 @@ class InitialViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        authHandle = DataService.dataService.BASE_REF.observeAuthEventWithBlock({
-            authData in
+
+        authHandle = FIRAuth.auth()!.addAuthStateDidChangeListener() {
+            (auth, user) in
             
-            if authData == nil {
-                
-                // Clear NSUserDefaults
-                let appDomain = NSBundle.mainBundle().bundleIdentifier!
-                NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
-                
-                self.performSegueWithIdentifier("toLogin", sender: self)
-            } else {
+            if user != nil {
                 if NSUserDefaults.standardUserDefaults().objectForKey("uid") == nil || NSUserDefaults.standardUserDefaults().objectForKey("nickname") ==  nil {
-                    DataService.dataService.BASE_REF.unauth()
+                    
+                    // Clear NSUserDefaults
+                    let appDomain = NSBundle.mainBundle().bundleIdentifier!
+                    NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                    
+                    self.userLoggedIn = false
+                    try! FIRAuth.auth()!.signOut()
                     Amplitude.instance().setUserId(nil)
                 }
                 
@@ -56,11 +57,16 @@ class InitialViewController: UIViewController {
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     
-                    DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
+                    DataService.dataService.USERS_PUBLIC_REF.child(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String).observeSingleEventOfType(.Value, withBlock: {
                         snapshot in
                         
                         if !snapshot.exists() {
-                            DataService.dataService.BASE_REF.unauth()
+                            // Clear NSUserDefaults
+                            let appDomain = NSBundle.mainBundle().bundleIdentifier!
+                            NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                            
+                            self.userLoggedIn = false
+                            try! FIRAuth.auth()!.signOut()
                             Amplitude.instance().setUserId(nil)
                         }
                     })
@@ -105,11 +111,22 @@ class InitialViewController: UIViewController {
                         self.view.backgroundColor = kPurple
                     })
                 } else {
-                    // Present Tastemaker UI
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+                    
+                    if !self.userLoggedIn {
+                        // Present Tastemaker UI
+                        (UIApplication.sharedApplication().delegate as! AppDelegate).presentTabBarController()
+                        self.userLoggedIn = true
+                    }
                 }
+            } else {
+                // Clear NSUserDefaults
+                let appDomain = NSBundle.mainBundle().bundleIdentifier!
+                NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain)
+                Amplitude.instance().setUserId(nil)
+                
+                self.performSegueWithIdentifier("toLogin", sender: self)
             }
-        })
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -120,7 +137,7 @@ class InitialViewController: UIViewController {
         }
         self.view.backgroundColor = UIColor.whiteColor()
         
-        DataService.dataService.BASE_REF.removeAuthEventObserverWithHandle(authHandle)
+        FIRAuth.auth()!.removeAuthStateDidChangeListener(authHandle!)
     }
     
     override func didReceiveMemoryWarning() {

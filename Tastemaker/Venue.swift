@@ -27,15 +27,15 @@ private let openingDateFormat = "yyyy-MM-dd"
 
 class VenueListener {
 
-    var currentHandle: UInt?
+    var currentHandle: FIRDatabaseHandle?
     
     init (endDate: NSDate, callback: ([Venue]) -> ()) {
-        let handle = DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FEventType.Value, withBlock: {
+        let handle = DataService.dataService.VENUES_REF.queryOrderedByChild(kVenueOpeningDate).queryEndingAtValue(openingDateFormatter().stringFromDate(endDate)).queryStartingAtValue(openingDateFormatter().stringFromDate(NSCalendar.currentCalendar().dateByAddingUnit(NSCalendarUnit.Day, value: -(kStandardDaysOfOpeningsCovered), toDate: endDate, options: [])!)).observeEventType(FIRDataEventType.Value, withBlock: {
             snapshot in
             var venues = Array<Venue>()
             let enumerator = snapshot.children
             
-            while let data = enumerator.nextObject() as? FDataSnapshot {
+            while let data = enumerator.nextObject() as? FIRDataSnapshot {
                 venues.insert(snapshotToVenue(data), atIndex: 0)
             }
             
@@ -45,7 +45,7 @@ class VenueListener {
                 let enumerator = snap.children
                 let reversed = enumerator.reverse()
                 for features in reversed {
-                    var featuredVenue: Venue = snapshotToVenue(features as! FDataSnapshot)
+                    var featuredVenue: Venue = snapshotToVenue(features as! FIRDataSnapshot)
                     featuredVenue.foodType = "Featured"
                     venues.insert(featuredVenue, atIndex: 0)
                 }
@@ -69,18 +69,18 @@ func openingDateFormatter() -> NSDateFormatter {
     return openingDateFormatter
 }
 
-func snapshotToVenue(snapshot: FDataSnapshot) -> Venue {
+func snapshotToVenue(snapshot: FIRDataSnapshot) -> Venue {
     let objectId = snapshot.key
-    let name = snapshot.value.objectForKey(kVenueName) as? String
-    let openingDate = snapshot.value.objectForKey(kVenueOpeningDate) as? String
-    let latitude = snapshot.value.objectForKey(kVenueLatitude) as? Double
-    let longitude = snapshot.value.objectForKey(kVenueLongitude) as? Double
-    let address = snapshot.value.objectForKey(kVenueAddress) as? String
-    let neighborhood = snapshot.value.objectForKey(kVenueNeighborhood) as? String
-    let phoneNumber = snapshot.value.objectForKey(kVenuePhoneNumber) as? String
-    let foodType = snapshot.value.objectForKey(kVenueFoodType) as? String
-    let description = snapshot.value.objectForKey(kVenueDescription) as? String
-    let website = snapshot.value.objectForKey(kVenueWebsite) as? String
+    let name = snapshot.value!.objectForKey(kVenueName) as? String
+    let openingDate = snapshot.value!.objectForKey(kVenueOpeningDate) as? String
+    let latitude = snapshot.value!.objectForKey(kVenueLatitude) as? Double
+    let longitude = snapshot.value!.objectForKey(kVenueLongitude) as? Double
+    let address = snapshot.value!.objectForKey(kVenueAddress) as? String
+    let neighborhood = snapshot.value!.objectForKey(kVenueNeighborhood) as? String
+    let phoneNumber = snapshot.value!.objectForKey(kVenuePhoneNumber) as? String
+    let foodType = snapshot.value!.objectForKey(kVenueFoodType) as? String
+    let description = snapshot.value!.objectForKey(kVenueDescription) as? String
+    let website = snapshot.value!.objectForKey(kVenueWebsite) as? String
     return Venue(objectId: objectId, name: name, openingDate: openingDate, address: address, latitude: latitude, longitude: longitude, neighborhood: neighborhood, phoneNumber: phoneNumber, foodType: foodType, description: description, website: website)
 }
 

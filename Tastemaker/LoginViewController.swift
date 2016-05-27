@@ -308,27 +308,27 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         }
         
         if email != "" && password != "" {
-            DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
-                error, authData in
+            FIRAuth.auth()?.signInWithEmail(email, password: password!) {
+                (user, error) in
                 
                 if error != nil {
                     showSimpleAlertWithTitle("Whoops!", message: "Please check your login email and password", actionTitle: "OK", viewController: self)
                 } else {
-                    NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
+                    NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: "uid")
                     
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     
-                    DataService.dataService.CURRENT_USER_PRIVATE_REF.observeSingleEventOfType(FEventType.Value, withBlock: {
+                    DataService.dataService.CURRENT_USER_PRIVATE_REF.observeSingleEventOfType(FIRDataEventType.Value, withBlock: {
                         snapshot in
                         
-                        NSUserDefaults.standardUserDefaults().setValue(snapshot.value["nickname"], forKey: "nickname")
+                        NSUserDefaults.standardUserDefaults().setValue(snapshot.value!["nickname"], forKey: "nickname")
                         
                         Amplitude.instance().logEvent("Logged In")
                         
                         self.navigationController?.popToRootViewControllerAnimated(true)
                     })
                 }
-            })
+            }
         }
     }
     
@@ -377,36 +377,33 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         }
         
         if email != "" && password != "" && nickname != "" {
-            DataService.dataService.BASE_REF.createUser(email, password: password, withValueCompletionBlock: {
-                error, result in
+            FIRAuth.auth()?.createUserWithEmail(email, password: password!) {
+                (user, error) in
                 
                 if error != nil {
                     showSimpleAlertWithTitle("Whoops!", message: "We were unable to create your account, please try again", actionTitle: "OK", viewController: self)
                 } else {
-                    DataService.dataService.BASE_REF.authUser(email, password: password, withCompletionBlock: {
-                        err, authData in
                         
-                        let user = ["provider": authData.provider!, "email": email, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
-                        let publicUser = ["nickname": nickname]
-                        DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
-                        DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
-                        
-                        // Store the uid for future access
-                        NSUserDefaults.standardUserDefaults().setValue(result["uid"], forKey: "uid")
-                        NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
-                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
-                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
-                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
-                        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
-                        
-                        Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
-                        Amplitude.instance().logEvent("Signed Up")
-                        
-                        // Enter the app
-                        self.navigationController?.popToRootViewControllerAnimated(true)
-                    })
+                    let userData = ["provider": user!.providerID, "email": email, "nickname": nickname, "createdOn": dateFormatter().stringFromDate(NSDate()), "updatedOn": dateFormatter().stringFromDate(NSDate()), "notificationPeriod": "eight hours"]
+                    let publicUser = ["nickname": nickname]
+                    DataService.dataService.createNewPrivateAccount(user!.uid, user: userData)
+                    DataService.dataService.createNewPublicAccount(user!.uid, publicUser: publicUser)
+                    
+                    // Store the uid for future access
+                    NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: "uid")
+                    NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                    NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                    
+                    Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                    Amplitude.instance().logEvent("Signed Up")
+                    
+                    // Enter the app
+                    self.navigationController?.popToRootViewControllerAnimated(true)
                 }
-            })
+            }
         }
     }
     
@@ -478,7 +475,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         }
         
         if email != "" {
-            DataService.dataService.BASE_REF.resetPasswordForUser(email, withCompletionBlock: {
+            FIRAuth.auth()?.sendPasswordResetWithEmail(email) {
                 error in
                 
                 if error != nil {
@@ -487,7 +484,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     Amplitude.instance().logEvent("Reset Password")
                     showSimpleAlertWithTitle("Sent!", message: "Check the email we just sent for details about resetting your password", actionTitle: "OK", viewController: self)
                 }
-            })
+            }
         }
     }
     
@@ -560,65 +557,68 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
             print("Facebook login was cancelled")
         } else {
             
-            let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
+            let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
             
-            DataService.dataService.BASE_REF.authWithOAuthProvider("facebook", token: accessToken, withCompletionBlock: { error, authData in
+            FIRAuth.auth()?.signInWithCredential(credential) { (user, error) in
                 
                 if error != nil {
                     print("Firebase authentication of Facebook token failed: \(error)")
                 } else {
                     
-                    let separator = " "
-                    let displayName = authData.providerData["displayName"] as! String
-                    let elements = displayName.componentsSeparatedByString(separator)
-                    var nickname = elements[0]
-                    if nickname.characters.count > 20 {
-                        nickname = String(nickname.characters.prefix(20))
+                    for profile in (user?.providerData)! {
+                        let providerId = profile.providerID
+                        let facebookId = profile.uid
+                        let displayName = profile.displayName
+                        let email = profile.email
+                        let photoUrl = profile.photoURL
+                        
+                        let separator = " "
+                        let elements = displayName!.componentsSeparatedByString(separator)
+                        var nickname = elements[0]
+                        if nickname.characters.count > 20 {
+                            nickname = String(nickname.characters.prefix(20))
+                        }
+                        
+                        DataService.dataService.USERS_PRIVATE_REF.child(user!.uid).observeSingleEventOfType(.Value, withBlock: {
+                            snapshot in
+                            
+                            var userData = ["provider": providerId, "nickname": nickname, "updatedOn": dateFormatter().stringFromDate(NSDate()), "facebookId": facebookId]
+                            let publicUser = ["nickname": nickname]
+                            userData["email"] = email
+                            userData["profileImageURL"] = String(photoUrl!)
+                            
+                            if snapshot.exists() {
+                                DataService.dataService.USERS_PRIVATE_REF.child(user!.uid).updateChildValues(userData)
+                                DataService.dataService.USERS_PUBLIC_REF.child(user!.uid).updateChildValues(publicUser)
+                                NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: "uid")
+                                NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                                
+                                Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                                Amplitude.instance().logEvent("Logged In Via Facebook")
+                                
+                                self.navigationController?.popToRootViewControllerAnimated(true)
+                            } else {
+                                userData["createdOn"] = dateFormatter().stringFromDate(NSDate())
+                                userData["notificationPeriod"] = "eight hours"
+                                DataService.dataService.createNewPrivateAccount(user!.uid, user: userData)
+                                DataService.dataService.createNewPublicAccount(user!.uid, publicUser: publicUser)
+                                
+                                NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: "uid")
+                                NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
+                                NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
+                                NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
+                                NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
+                                NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
+                                
+                                Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                                Amplitude.instance().logEvent("Signed Up Via Facebook")
+                                
+                                self.navigationController?.popToRootViewControllerAnimated(true)
+                            }
+                        })
                     }
-                    
-                    DataService.dataService.USERS_PRIVATE_REF.childByAppendingPath(authData.uid).observeSingleEventOfType(.Value, withBlock: {
-                        snapshot in
-                        
-                        var user = ["provider": authData.provider!, "nickname": nickname, "updatedOn": dateFormatter().stringFromDate(NSDate()), "facebookId": authData.providerData["id"] as! String]
-                        let publicUser = ["nickname": nickname]
-                        if authData.providerData["email"] != nil {
-                            user["email"] = authData.providerData["email"] as? String
-                        }
-                        if authData.providerData["profileImageURL"] != nil {
-                            user["profileImageURL"] = authData.providerData["profileImageURL"] as? String
-                        }
-                        
-                        if snapshot.exists() {
-                            DataService.dataService.USERS_PRIVATE_REF.childByAppendingPath(authData.uid).updateChildValues(user)
-                            DataService.dataService.USERS_PUBLIC_REF.childByAppendingPath(authData.uid).updateChildValues(publicUser)
-                            NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
-                            NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
-                            
-                            Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
-                            Amplitude.instance().logEvent("Logged In Via Facebook")
-                            
-                            self.navigationController?.popToRootViewControllerAnimated(true)
-                        } else {
-                            user["createdOn"] = dateFormatter().stringFromDate(NSDate())
-                            user["notificationPeriod"] = "eight hours"
-                            DataService.dataService.createNewPrivateAccount(authData.uid, user: user)
-                            DataService.dataService.createNewPublicAccount(authData.uid, publicUser: publicUser)
-                            
-                            NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: "uid")
-                            NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
-                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenInstructions")
-                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "LaunchedBefore")
-                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
-                            NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
-                            
-                            Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
-                            Amplitude.instance().logEvent("Signed Up Via Facebook")
-                            
-                            self.navigationController?.popToRootViewControllerAnimated(true)
-                        }
-                    })
                 }
-            })
+            }
         }
     }
     

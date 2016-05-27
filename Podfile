@@ -5,7 +5,9 @@ use_frameworks!
 def pods
 	#CORE
 	pod 'JSQMessagesViewController', '~> 7.2'
-	pod 'Firebase', '~> 2.5.0'
+	pod 'Firebase/Core'
+	pod 'Firebase/Database'
+	pod 'Firebase/Auth'
 
 	#FUNCTIONALITY/UI
 	pod 'TTTAttributedLabel'
