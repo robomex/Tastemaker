@@ -398,6 +398,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
+        FIRAnalytics.logEventWithName("viewed_venue", parameters: ["from": "home", "from_format": "list", "venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
         Amplitude.instance().logEvent("Viewed Venue From Home List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
@@ -447,6 +448,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             })
             DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venueId)/voters/\(uid)").setValue(dateFormatter().stringFromDate(NSDate()))
             
+            FIRAnalytics.logEventWithName("voted_venue", parameters: ["venue_name": (venueCellView.venue?.name)!, "venue_neighborhood": (venueCellView.venue?.neighborhood)!, "venue_food_type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().logEvent("Voted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: 1))
         } else {
@@ -465,6 +467,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
             }
             DataService.dataService.VENUE_ACTIVITIES_REF.child("\(venueId)/voters/\(uid)").removeValue()
             
+            FIRAnalytics.logEventWithName("unvoted_venue", parameters: ["venue_name": (venueCellView.venue?.name)!, "venue_neighborhood": (venueCellView.venue?.neighborhood)!, "venue_food_type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().logEvent("Unvoted Venue", withEventProperties: ["Venue Name": (venueCellView.venue?.name)!, "Venue Neighborhood": (venueCellView.venue?.neighborhood)!, "Venue Food Type": (venueCellView.venue?.foodType)!])
             Amplitude.instance().identify(AMPIdentify().add("Votes", value: -1))
         }
@@ -627,6 +630,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         mapView.hidden = false
         navigationItem.rightBarButtonItem = nil
         configureListViewButton()
+        
+        FIRAnalytics.logEventWithName("viewed_map", parameters: [:])
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -675,6 +680,7 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         navigationController!.view.backgroundColor = UIColor.whiteColor()
         navigationController?.pushViewController(vc, animated: true)
         
+        FIRAnalytics.logEventWithName("viewed_venue", parameters: ["from": "home", "from_format": "map", "venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
         Amplitude.instance().logEvent("Viewed Venue From Map", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
@@ -684,6 +690,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
         tableView.scrollEnabled = true
         configureMapViewButton()
         configureSortButton()
+        
+        FIRAnalytics.logEventWithName("viewed_list", parameters: [:])
     }
     
     func configureMapViewButton() {
@@ -723,6 +731,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 self.sortedBy = "Opening Date"
                 self.venues = self.dateSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "opening_date"])
             })
             sortMenu.addAction(sortByOpeningDate)
         } else {
@@ -732,6 +742,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 self.sortedBy = "Opening Date"
                 self.venues = self.dateSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "opening_date"])
             })
             sortMenu.addAction(sortByOpeningDate)
         }
@@ -748,6 +760,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 self.venues = self.voteSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "votes"])
             })
             sortMenu.addAction(sortByVotes)
         } else {
@@ -762,6 +776,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 self.venues = self.voteSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "votes"])
             })
             sortMenu.addAction(sortByVotes)
         }
@@ -776,6 +792,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 self.venues = self.chatSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "recent_chats"])
             })
             sortMenu.addAction(sortByChats)
         } else {
@@ -788,6 +806,8 @@ class FeedTableViewController: UITableViewController, VenueCellViewDelegate, MKM
                 }
                 self.venues = self.chatSort
                 self.tableView.reloadData()
+                
+                FIRAnalytics.logEventWithName("sorted_venues", parameters: ["sorted_by": "recent_chats"])
             })
             sortMenu.addAction(sortByChats)
         }

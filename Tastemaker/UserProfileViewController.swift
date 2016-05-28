@@ -187,6 +187,30 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
     }
     
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        let vc = VenueViewController()
+        
+        let venue = self.usersSavedListVenues[indexPath.row]
+        vc.venue = venue
+        vc.venueID = venue.objectId
+        if self.banned != nil {
+            vc.banned = self.banned
+        }
+        
+        let venueName: String = venue.name!
+        vc.title = venueName
+        vc.hidesBottomBarWhenPushed = true
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationController?.pushViewController(vc, animated: true)
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        FIRAnalytics.logEventWithName("viewed_venue", parameters: ["from": "user_profile", "from_format": "list", "venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
+        Amplitude.instance().logEvent("Viewed Venue From User Profile", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
+    }
+    
+    
     // MARK:- ()
     
     func muteButtonAction(sender: AnyObject) {
@@ -219,6 +243,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
             chatVC.collectionView.reloadData()
         }
         
+        FIRAnalytics.logEventWithName("muted_user", parameters: ["muted_user_id": userId])
         Amplitude.instance().logEvent("Muted User", withEventProperties: ["Muted User ID": userId, "Muted User Nickname": userNickname])
         Amplitude.instance().identify(AMPIdentify().add("Mutes", value: 1))
     }
@@ -240,6 +265,7 @@ class UserProfileViewController: FeedTableViewController, DZNEmptyDataSetSource,
             chatVC.userIdList = originalUserIdList
         }
         
+        FIRAnalytics.logEventWithName("unmuted_user", parameters: ["unmuted_user_id": userId])
         Amplitude.instance().logEvent("Unmuted User", withEventProperties: ["Unmuted User ID": userId, "Unmuted User Nickname": userNickname])
         Amplitude.instance().identify(AMPIdentify().add("Mutes", value: -1))
     }

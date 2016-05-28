@@ -323,6 +323,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                         
                         NSUserDefaults.standardUserDefaults().setValue(snapshot.value!["nickname"], forKey: "nickname")
                         
+                        FIRAnalytics.logEventWithName("logged_in", parameters: ["with": "email"])
                         Amplitude.instance().logEvent("Logged In")
                         
                         self.navigationController?.popToRootViewControllerAnimated(true)
@@ -397,6 +398,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenSilenceInstructions")
                     NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
                     
+                    FIRAnalytics.logEventWithName("signed_up", parameters: ["with": "email"])
                     Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
                     Amplitude.instance().logEvent("Signed Up")
                     
@@ -481,6 +483,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                 if error != nil {
                     showSimpleAlertWithTitle("Whoops!", message: "We ran into an error trying to reset your password", actionTitle: "OK", viewController: self)
                 } else {
+                    FIRAnalytics.logEventWithName("requested_password_reset_email", parameters: ["from": "login"])
                     Amplitude.instance().logEvent("Reset Password")
                     showSimpleAlertWithTitle("Sent!", message: "Check the email we just sent for details about resetting your password", actionTitle: "OK", viewController: self)
                 }
@@ -508,8 +511,10 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
         self.presentViewController(safariVC, animated: true, completion: nil)
         
         if url == NSURL(string: kTermsOfServiceURL) {
+            FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "login", "type": "terms"])
             Amplitude.instance().logEvent("Viewed Terms", withEventProperties: ["Viewed From": "Sign Up"])
         } else if url == NSURL(string: kPrivacyPolicyURL) {
+            FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "login", "type": "privacy"])
             Amplitude.instance().logEvent("Viewed Privacy", withEventProperties: ["Viewed From": "Sign Up"])
         }
     }
@@ -594,6 +599,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                                 NSUserDefaults.standardUserDefaults().setValue(nickname, forKey: "nickname")
                                 
                                 Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                                FIRAnalytics.logEventWithName("logged_in", parameters: ["with": "facebook"])
                                 Amplitude.instance().logEvent("Logged In Via Facebook")
                                 
                                 self.navigationController?.popToRootViewControllerAnimated(true)
@@ -611,6 +617,7 @@ class LoginViewController: UIViewController, TTTAttributedLabelDelegate, SFSafar
                                 NSUserDefaults.standardUserDefaults().setBool(false, forKey: "HasSeenChatInstructions")
                                 
                                 Amplitude.instance().setUserId(NSUserDefaults.standardUserDefaults().objectForKey("uid") as! String)
+                                FIRAnalytics.logEventWithName("signed_up", parameters: ["with": "facebook"])
                                 Amplitude.instance().logEvent("Signed Up Via Facebook")
                                 
                                 self.navigationController?.popToRootViewControllerAnimated(true)

@@ -11,6 +11,7 @@ import MapKit
 import Contacts
 import Amplitude_iOS
 import SafariServices
+import Firebase
 
 class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
 
@@ -153,6 +154,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
                         tempVenueDetailsVC.mapItem?.openInMapsWithLaunchOptions(launchOptions)
                         
+                        FIRAnalytics.logEventWithName("navigated_to_venue", parameters: ["venue_name": self!.venue!.name!, "venue_neighborhood": self!.venue!.neighborhood!, "venue_food_type": self!.venue!.foodType!])
                         Amplitude.instance().logEvent("Opened Maps")
                     }
                 }
@@ -165,6 +167,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             if let url = NSURL(string: "tel://\(phoneNumber)") {
                 UIApplication.sharedApplication().openURL(url)
                 
+                FIRAnalytics.logEventWithName("called_venue", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
                 Amplitude.instance().logEvent("Called Venue")
             }
         case 2:
@@ -173,6 +176,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 safariVC.delegate = self
                 self.presentViewController(safariVC, animated: true, completion: nil)
                 
+                FIRAnalytics.logEventWithName("viewed_venue_website", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
                 Amplitude.instance().logEvent("Viewed Venue Website")
             }
         default:

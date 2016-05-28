@@ -102,7 +102,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
             })
         }
         
-        if PermissionScope().statusLocationAlways() == .Unauthorized || PermissionScope().statusNotifications() == .Unauthorized {
+        if PermissionScope().statusLocationAlways() == .Unauthorized || PermissionScope().statusLocationAlways() == .Unknown || PermissionScope().statusNotifications() == .Unauthorized || PermissionScope().statusNotifications() == .Unknown {
             needToFixPermissions = true
         }
     }
@@ -269,6 +269,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         self.nickname = self.updatedNickname
                         self.settingsTableView.reloadData()
                         
+                        FIRAnalytics.logEventWithName("changed_nickname", parameters: ["from": "settings"])
                         Amplitude.instance().logEvent("Changed Nickname")
                 })
                 nicknameAlert.showAnimationType = .SlideInToCenter
@@ -287,30 +288,35 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 let fifteenMinutesAction = UIAlertAction(title: "For 15 Minutes", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("fifteen minutes")
+                    FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "fifteen_minutes"])
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "15 Minutes"])
                 })
                 notificationPeriodMenu.addAction(fifteenMinutesAction)
                 let oneHourAction = UIAlertAction(title: "For 1 Hour", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one hour")
+                    FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "one_hour"])
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Hour"])
                 })
                 notificationPeriodMenu.addAction(oneHourAction)
                 let eightHoursAction = UIAlertAction(title: "For 8 Hours", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("eight hours")
+                    FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "eight_hours"])
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "8 Hours"])
                 })
                 notificationPeriodMenu.addAction(eightHoursAction)
                 let oneDayAction = UIAlertAction(title: "For 1 Day", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one day")
+                    FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "one_day"])
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Day"])
                 })
                 notificationPeriodMenu.addAction(oneDayAction)
                 let threeDaysAction = UIAlertAction(title: "For 3 Days", style: .Default, handler: {
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("three days")
+                    FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "three_days"])
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "3 Days"])
                 })
                 notificationPeriodMenu.addAction(threeDaysAction)
@@ -371,6 +377,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             } else {
                                 showSimpleAlertWithTitle("You successfully changed your password", message: "", actionTitle: "OK", viewController: self)
                                 DataService.dataService.CURRENT_USER_PRIVATE_REF.updateChildValues(["updatedOn": dateFormatter().stringFromDate(NSDate())])
+                                FIRAnalytics.logEventWithName("changed_password", parameters: ["from": "settings"])
                                 Amplitude.instance().logEvent("Changed Password")
                             }
                         }
@@ -385,6 +392,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         } else if indexPath.section == 1 {
             if (needToFixPermissions != nil) && needToFixPermissions! {
                 
+                FIRAnalytics.logEventWithName("viewed_update_permissions", parameters: ["from": "settings"])
                 Amplitude.instance().logEvent("Viewed Update Permissions")
                 
                 pscope.show({
@@ -395,23 +403,29 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                         if results[0].status == .Authorized {
                             UIApplication.sharedApplication().registerForRemoteNotifications()
                             
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "authorized"])
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Authorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                         } else if results[0].status == .Unauthorized {
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "unauthorized"])
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Unauthorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Unauthorized"))
                         } else if results[0].status == .Disabled {
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "disabled"])
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Disabled"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Disabled"))
                         }
                         
                         if results[1].status == .Authorized {
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "authorized"])
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Authorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Authorized"))
                         } else if results[1].status == .Unauthorized {
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "unauthorized"])
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Unauthorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Unauthorized"))
                         } else if results[1].status == .Disabled {
+                            FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "disabled"])
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Disabled"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
                         }
@@ -433,12 +447,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     safariVC.delegate = self
                     self.presentViewController(safariVC, animated: true, completion: nil)
                     
+                    FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "settings", "type": "privacy"])
                     Amplitude.instance().logEvent("Viewed Privacy", withEventProperties: ["Viewed From": "Settings"])
                 case 1:
                     let safariVC = SFSafariViewController(URL: NSURL(string: kTermsOfServiceURL)!)
                     safariVC.delegate = self
                     self.presentViewController(safariVC, animated: true, completion: nil)
                     
+                    FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "settings", "type": "terms"])
                     Amplitude.instance().logEvent("Viewed Terms", withEventProperties: ["Viewed From": "Settings"])
                 default:
                     return
@@ -452,12 +468,14 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     safariVC.delegate = self
                     self.presentViewController(safariVC, animated: true, completion: nil)
                     
+                    FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "settings", "type": "privacy"])
                     Amplitude.instance().logEvent("Viewed Privacy", withEventProperties: ["Viewed From": "Settings"])
                 case 1:
                     let safariVC = SFSafariViewController(URL: NSURL(string: kTermsOfServiceURL)!)
                     safariVC.delegate = self
                     self.presentViewController(safariVC, animated: true, completion: nil)
                     
+                    FIRAnalytics.logEventWithName("viewed_safari", parameters: ["from": "settings", "type": "terms"])
                     Amplitude.instance().logEvent("Viewed Terms", withEventProperties: ["Viewed From": "Settings"])
                 default:
                     return
@@ -468,6 +486,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     print("Cancel")
                 }))
                 alertController.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                    
+                    FIRAnalytics.logEventWithName("logged_out", parameters: ["from": "settings"])
                     Amplitude.instance().logEvent("Logged Out")
                     (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
                 }))
@@ -479,6 +499,8 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 print("Cancel")
             }))
             alertController.addAction(UIAlertAction(title: "Log Out", style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) in
+                
+                FIRAnalytics.logEventWithName("logged_out", parameters: ["from": "settings"])
                 Amplitude.instance().logEvent("Logged Out")
                 (UIApplication.sharedApplication().delegate as! AppDelegate).logOut()
             }))

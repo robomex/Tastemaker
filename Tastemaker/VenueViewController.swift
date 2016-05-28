@@ -199,6 +199,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSaveRef?.child(self.venue!.objectId!).setValue(dateFormatter().stringFromDate(NSDate()))
         venueActivitiesSaverRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         
+        FIRAnalytics.logEventWithName("saved_venue", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
         Amplitude.instance().logEvent("Saved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
         Amplitude.instance().identify(AMPIdentify().add("Saves", value: 1))
     }
@@ -210,6 +211,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSaveRef?.child(self.venue!.objectId!).removeValue()
         venueActivitiesSaverRef?.removeValue()
         
+        FIRAnalytics.logEventWithName("unsaved_venue", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
         Amplitude.instance().logEvent("Unsaved Venue", withEventProperties: ["Venue Name": (venue?.name)!, "Venue Neighborhood": (venue?.neighborhood)!, "Venue Food Type": (venue?.foodType)!])
     }
     
@@ -231,6 +233,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSilenceRef?.setValue(dateFormatter().stringFromDate(NSDate()))
         configureUnsilenceButton()
         
+        FIRAnalytics.logEventWithName("silenced_venue", parameters: ["venue_name": venue!.name!])
         Amplitude.instance().logEvent("Silenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
     
@@ -239,6 +242,7 @@ class VenueViewController: UIViewController, PagingMenuControllerDelegate, Coach
         userActivitiesSilenceRef?.removeValue()
         configureSilenceButton()
         
+        FIRAnalytics.logEventWithName("unsilenced_venue", parameters: ["venue_name": venue!.name!])
         Amplitude.instance().logEvent("Unsilenced Venue", withEventProperties: ["Venue Name": (venue?.name)!])
     }
     

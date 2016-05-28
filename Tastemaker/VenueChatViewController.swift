@@ -238,6 +238,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "HasSeenSilenceInstructions")
         }
         
+        FIRAnalytics.logEventWithName("sent_chat", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
         Amplitude.instance().logEvent("Chat", withEventProperties: ["Venue Name": venue!.name!, "Venue Neighborhood": venue!.neighborhood!, "Venue Food Type": venue!.foodType!])
         Amplitude.instance().identify(AMPIdentify().add("Chats", value: 1))
         
@@ -375,6 +376,8 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
             vc.userId = message.senderId
             vc.userNickname = message.senderDisplayName
             navigationController?.pushViewController(vc, animated: true)
+            
+            FIRAnalytics.logEventWithName("viewed_user_profile", parameters: ["user_id_viewed": message.senderId])
         }
     }
     
@@ -407,6 +410,7 @@ class VenueChatViewController: JSQMessagesViewController, DZNEmptyDataSetSource,
         let message = messages[indexPath.row]
         DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/reports").childByAutoId().updateChildValues(["date": dateFormatter().stringFromDate(NSDate()), "reportedMessage": message.text, "reportedUser": message.senderId, "reportedNickname": message.senderDisplayName])
         
+        FIRAnalytics.logEventWithName("reported_chat", parameters: ["reported_user_id": message.senderId, "reported_message": message.text])
         Amplitude.instance().logEvent("Reported Message", withEventProperties: ["Reported User ID": message.senderId, "Reported User Nickname": message.senderDisplayName, "Reported Message": message.text])
         Amplitude.instance().identify(AMPIdentify().add("Reports", value: 1))
     }

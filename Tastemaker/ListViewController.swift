@@ -102,7 +102,30 @@ class ListViewController: FeedTableViewController, DZNEmptyDataSetSource, DZNEmp
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
+        FIRAnalytics.logEventWithName("viewed_venue", parameters: ["from": "my_list", "from_format": "list", "venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
         Amplitude.instance().logEvent("Viewed Venue From My List", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
+    }
+    
+    override func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        let vc = VenueViewController()
+        
+        let venueAnnotation = view.annotation as! VenueAnnotation
+        let venue = venueAnnotation.venue
+        vc.venue = venue
+        vc.venueID = venue.objectId
+        if banned != nil {
+            vc.banned = banned
+        }
+        
+        let venueName: String = venue.name!
+        vc.title = venueName
+        vc.hidesBottomBarWhenPushed = true
+        navigationController!.view.backgroundColor = UIColor.whiteColor()
+        navigationController?.pushViewController(vc, animated: true)
+        
+        FIRAnalytics.logEventWithName("viewed_venue", parameters: ["from": "my_list", "from_format": "map", "venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
+        Amplitude.instance().logEvent("Viewed Venue From My List Map", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
     }
     
     

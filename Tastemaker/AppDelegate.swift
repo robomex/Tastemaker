@@ -134,6 +134,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
                     self.feedTableViewController?.navigationController?.pushViewController(vc, animated: false)
                     
+                    FIRAnalytics.logEventWithName("launched_from_push", parameters: ["in_app_push": false, "venue_name": targetVenue.name!])
                     Amplitude.instance().logEvent("Launch From Push", withEventProperties: ["Venue Name": targetVenue.name!])
                 })
             }
@@ -163,6 +164,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                             self.feedTableViewController?.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
                             self.feedTableViewController?.navigationController?.pushViewController(vc, animated: true)
                             
+                            FIRAnalytics.logEventWithName("launched_from_push", parameters: ["in_app_push": true, "venue_name": targetVenue.name!])
                             Amplitude.instance().logEvent("Launch From In-App Push", withEventProperties: ["Venue Name": targetVenue.name!])
                         })
                     }
@@ -360,6 +362,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegat
                     if  visitDistanceFromVenue < 66 {
                         DataService.dataService.USER_ACTIVITIES_REF.child("\(uid)/visits/\(venue.objectId!)").childByAutoId().updateChildValues(["startedAt": dateFormatter().stringFromDate(visit.arrivalDate), "distanceFromVenue": String(visitDistanceFromVenue)])
                         
+                        FIRAnalytics.logEventWithName("visited_venue", parameters: ["venue_name": venue.name!, "venue_neighborhood": venue.neighborhood!, "venue_food_type": venue.foodType!])
                         Amplitude.instance().logEvent("Visited Venue", withEventProperties: ["Venue Name": venue.name!, "Venue Neighborhood": venue.neighborhood!, "Venue Food Type": venue.foodType!])
                         Amplitude.instance().identify(AMPIdentify().add("Visits", value: 1))
                     }
