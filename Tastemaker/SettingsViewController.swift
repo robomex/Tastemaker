@@ -29,7 +29,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     let pscope = PermissionScope()
     
     var settingsHeadings = ["My Account", "Permissions", "Additional Information", ""]
-    var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Text a Friend!", "Change Password"]
+    var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Text a Friend", "Change Password"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     var fixPermissionsRows = ["Update Permissions"]
     

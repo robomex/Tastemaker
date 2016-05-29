@@ -136,7 +136,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
             return cell
         case 3:
             let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
-            cell.textLabel?.text = "Text a Friend!"
+            cell.textLabel?.text = "Text a Friend"
             cell.textLabel?.font = UIFont.boldSystemFontOfSize(17.0)
             cell.textLabel?.textColor = kPurple
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
