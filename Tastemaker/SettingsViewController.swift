@@ -294,6 +294,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("fifteen minutes")
                     FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "fifteen_minutes"])
+                    FIRAnalytics.setUserPropertyString("fifteen_minutes", forName: "notification_period")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "15 Minutes"])
                 })
                 notificationPeriodMenu.addAction(fifteenMinutesAction)
@@ -301,6 +302,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one hour")
                     FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "one_hour"])
+                    FIRAnalytics.setUserPropertyString("one_hour", forName: "notification_period")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Hour"])
                 })
                 notificationPeriodMenu.addAction(oneHourAction)
@@ -308,6 +310,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("eight hours")
                     FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "eight_hours"])
+                    FIRAnalytics.setUserPropertyString("eight_hours", forName: "notification_period")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "8 Hours"])
                 })
                 notificationPeriodMenu.addAction(eightHoursAction)
@@ -315,6 +318,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("one day")
                     FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "one_day"])
+                    FIRAnalytics.setUserPropertyString("one_day", forName: "notification_period")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "1 Day"])
                 })
                 notificationPeriodMenu.addAction(oneDayAction)
@@ -322,6 +326,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                     (alert: UIAlertAction!) -> Void in
                     DataService.dataService.CURRENT_USER_PRIVATE_REF.child("notificationPeriod").setValue("three days")
                     FIRAnalytics.logEventWithName("changed_notification_period", parameters: ["to": "three_days"])
+                    FIRAnalytics.setUserPropertyString("three_days", forName: "notification_period")
                     Amplitude.instance().logEvent("Changed Notification Period", withEventProperties: ["Setting": "3 Days"])
                 })
                 notificationPeriodMenu.addAction(threeDaysAction)
@@ -418,28 +423,34 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                             UIApplication.sharedApplication().registerForRemoteNotifications()
                             
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "authorized"])
+                            FIRAnalytics.setUserPropertyString("authorized", forName: "notification_permission")
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Authorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                         } else if results[0].status == .Unauthorized {
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "unauthorized"])
+                            FIRAnalytics.setUserPropertyString("unauthorized", forName: "notification_permission")
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Unauthorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Unauthorized"))
                         } else if results[0].status == .Disabled {
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "notification", "status": "disabled"])
+                            FIRAnalytics.setUserPropertyString("disabled", forName: "notification_permission")
                             Amplitude.instance().logEvent("Subsequent Notification Permission", withEventProperties: ["Status": "Disabled"])
                             Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Disabled"))
                         }
                         
                         if results[1].status == .Authorized {
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "authorized"])
+                            FIRAnalytics.setUserPropertyString("authorized", forName: "location_permission")
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Authorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Authorized"))
                         } else if results[1].status == .Unauthorized {
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "unauthorized"])
+                            FIRAnalytics.setUserPropertyString("unauthorized", forName: "location_permission")
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Unauthorized"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Unauthorized"))
                         } else if results[1].status == .Disabled {
                             FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "settings", "type": "location", "status": "disabled"])
+                            FIRAnalytics.setUserPropertyString("disabled", forName: "location_permission")
                             Amplitude.instance().logEvent("Subsequent Location Permission", withEventProperties: ["Status": "Disabled"])
                             Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
                         }
@@ -554,6 +565,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         case MessageComposeResultFailed:
             controller.dismissViewControllerAnimated(true, completion: nil)
         case MessageComposeResultSent:
+            FIRAnalytics.setUserPropertyString("true", forName: "sent_sms_invite")
             FIRAnalytics.logEventWithName("sent_sms_invite", parameters: ["from": "settings"])
             controller.dismissViewControllerAnimated(true, completion: nil)
         default:

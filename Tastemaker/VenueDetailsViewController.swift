@@ -259,6 +259,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         case MessageComposeResultFailed:
             controller.dismissViewControllerAnimated(true, completion: nil)
         case MessageComposeResultSent:
+            FIRAnalytics.setUserPropertyString("true", forName: "sent_sms_invite")
             FIRAnalytics.logEventWithName("sent_sms_invite", parameters: ["from": "venue_details", "venue_name": venue!.name!])
             controller.dismissViewControllerAnimated(true, completion: nil)
         default:

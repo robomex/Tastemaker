@@ -157,28 +157,34 @@ class InitialViewController: UIViewController {
                     UIApplication.sharedApplication().registerForRemoteNotifications()
                     
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "notification", "status": "authorized"])
+                    FIRAnalytics.setUserPropertyString("authorized", forName: "notification_permission")
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Authorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Authorized"))
                 } else if results[0].status == .Unauthorized {
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "notification", "status": "unauthorized"])
+                    FIRAnalytics.setUserPropertyString("unauthorized", forName: "notification_permission")
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Unauthorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Unauthorized"))
                 } else if results[0].status == .Disabled {
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "notification", "status": "disabled"])
+                    FIRAnalytics.setUserPropertyString("disabled", forName: "notification_permission")
                     Amplitude.instance().logEvent("Initial Notification Permission", withEventProperties: ["Status": "Disabled"])
                     Amplitude.instance().identify(AMPIdentify().set("Notification Permission", value: "Disabled"))
                 }
                 
                 if results[1].status == .Authorized {
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "location", "status": "authorized"])
+                    FIRAnalytics.setUserPropertyString("authorized", forName: "location_permission")
                     Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Authorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Authorized"))
                 } else if results[1].status == .Unauthorized {
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "location", "status": "unauthorized"])
+                    FIRAnalytics.setUserPropertyString("unauthorized", forName: "location_permission")
                     Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Unauthorized"])
                     Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Unauthorized"))
                 } else if results[1].status == .Disabled {
                     FIRAnalytics.logEventWithName("permissioned", parameters: ["from": "login", "type": "location", "status": "disabled"])
+                    FIRAnalytics.setUserPropertyString("disabled", forName: "location_permission")
                     Amplitude.instance().logEvent("Initial Location Permission", withEventProperties: ["Status": "Disabled"])
                     Amplitude.instance().identify(AMPIdentify().set("Location Permission", value: "Disabled"))
                 }
