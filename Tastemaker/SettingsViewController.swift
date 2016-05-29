@@ -12,8 +12,9 @@ import SCLAlertView_Objective_C
 import Firebase
 import Amplitude_iOS
 import PermissionScope
+import MessageUI
 
-class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
+class SettingsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate, MFMessageComposeViewControllerDelegate {
     
     var nickname: String? = NSUserDefaults.standardUserDefaults().objectForKey("nickname") as? String ?? ""
     var updatedNickname: String?
@@ -28,7 +29,7 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     let pscope = PermissionScope()
     
     var settingsHeadings = ["My Account", "Permissions", "Additional Information", ""]
-    var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Change Password"]
+    var myAccountRows = ["Nickname", "Muted Users", "Notification Period", "Text a Friend!", "Change Password"]
     var additionalInformationRows = ["Privacy Policy", "Terms of Service"]
     var fixPermissionsRows = ["Update Permissions"]
     
@@ -127,9 +128,9 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
         switch section {
         case 0:
             if (usesPassword != nil) && usesPassword! {
-                return 4
+                return 5
             } else {
-                return 3
+                return 4
             }
         case 1:
             if (needToFixPermissions != nil) && needToFixPermissions! {
@@ -186,6 +187,10 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 default:
                     cell.detailTextLabel?.text = ""
                 }
+                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            case 3:
+                cell.textLabel?.textColor = kPurple
+                cell.textLabel?.font = UIFont.boldSystemFontOfSize(17.0)
                 cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             default:
                 cell.detailTextLabel?.text = ""
@@ -324,6 +329,15 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
                 notificationPeriodMenu.addAction(cancelAction)
                 self.presentViewController(notificationPeriodMenu, animated: true, completion: nil)
             } else if indexPath.row == 3 {
+                let messageComposeVC = configuredMessageComposeViewController()
+                if canSendText() {
+                    presentViewController(messageComposeVC, animated: true, completion: {
+                        UIApplication.sharedApplication().statusBarStyle = .LightContent
+                    })
+                } else {
+                    showSimpleAlertWithTitle("Sorry", message: "Your device is unable to send text messages", actionTitle: "OK", viewController: self)
+                }
+            } else if indexPath.row == 4 {
                 let changePasswordAlert = SCLAlertView()
                 let newPasswordTextField = changePasswordAlert.addTextField("New Password")
                 let newPasswordReentryTextField = changePasswordAlert.addTextField("Re-enter New Password")
@@ -512,5 +526,38 @@ class SettingsViewController: UIViewController, UITableViewDataSource, UITableVi
     
     func safariViewControllerDidFinish(controller: SFSafariViewController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    // MARK: SMS Invitations
+    
+    // A wrapper function to indicate whether or not a text message can be sent from the user's device
+    func canSendText() -> Bool {
+        return MFMessageComposeViewController.canSendText()
+    }
+    
+    // Configures and returns a MFMessageComposeViewController instance
+    func configuredMessageComposeViewController() -> MFMessageComposeViewController {
+        let messageComposeVC = MFMessageComposeViewController()
+        messageComposeVC.messageComposeDelegate = self
+        messageComposeVC.navigationBar.tintColor = UIColor.whiteColor()
+        messageComposeVC.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        messageComposeVC.body = "Check out the newest restaurants with me on Tastemaker! Get the iOS app at getTastemaker.com"
+        return messageComposeVC
+    }
+    
+    // MFMessageComposeViewControllerDelegate callback - dismisses the view controller when the user is finished with it
+    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+        switch result {
+        case MessageComposeResultCancelled:
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        case MessageComposeResultFailed:
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        case MessageComposeResultSent:
+            FIRAnalytics.logEventWithName("sent_sms_invite", parameters: ["from": "settings"])
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        default:
+            break
+        }
     }
 }

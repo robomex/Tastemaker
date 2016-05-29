@@ -12,8 +12,9 @@ import Contacts
 import Amplitude_iOS
 import SafariServices
 import Firebase
+import MessageUI
 
-class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate {
+class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, SFSafariViewControllerDelegate, MFMessageComposeViewControllerDelegate {
 
     var venue: Venue?
     let regionRadius: CLLocationDistance = 500
@@ -91,7 +92,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         // Address, neighborhood, phone number, and website label
         
         let addressNeighborhoodPhoneTableView = UITableView()
-        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 250, UIScreen.mainScreen().bounds.width, 132)
+        addressNeighborhoodPhoneTableView.frame = CGRectMake(0, 250, UIScreen.mainScreen().bounds.width, 176)
         addressNeighborhoodPhoneTableView.dataSource = self
         addressNeighborhoodPhoneTableView.delegate = self
         addressNeighborhoodPhoneTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -108,7 +109,7 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -131,6 +132,13 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         case 2:
             let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
             cell.textLabel?.text = venue?.website ?? "Website Not Found"
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            return cell
+        case 3:
+            let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+            cell.textLabel?.text = "Text a Friend!"
+            cell.textLabel?.font = UIFont.boldSystemFontOfSize(17.0)
+            cell.textLabel?.textColor = kPurple
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             return cell
         default:
@@ -179,6 +187,15 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
                 FIRAnalytics.logEventWithName("viewed_venue_website", parameters: ["venue_name": venue!.name!, "venue_neighborhood": venue!.neighborhood!, "venue_food_type": venue!.foodType!])
                 Amplitude.instance().logEvent("Viewed Venue Website")
             }
+        case 3:
+            let messageComposeVC = configuredMessageComposeViewController()
+            if canSendText() {
+                presentViewController(messageComposeVC, animated: true, completion: {
+                    UIApplication.sharedApplication().statusBarStyle = .LightContent
+                })
+            } else {
+                showSimpleAlertWithTitle("Sorry", message: "Your device is unable to send text messages", actionTitle: "OK", viewController: self)
+            }
         default:
             return
         }
@@ -214,5 +231,38 @@ class VenueDetailsViewController: UIViewController, MKMapViewDelegate, UITableVi
         }
         
         return pinView
+    }
+    
+    
+    // MARK: SMS Invitations
+    
+    // A wrapper function to indicate whether or not a text message can be sent from the user's device
+    func canSendText() -> Bool {
+        return MFMessageComposeViewController.canSendText()
+    }
+    
+    // Configures and returns a MFMessageComposeViewController instance
+    func configuredMessageComposeViewController() -> MFMessageComposeViewController {
+        let messageComposeVC = MFMessageComposeViewController()
+        messageComposeVC.messageComposeDelegate = self
+        messageComposeVC.navigationBar.tintColor = UIColor.whiteColor()
+        messageComposeVC.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFontOfSize(22), NSForegroundColorAttributeName: UIColor.whiteColor()]
+        messageComposeVC.body = "Check out \(venue!.name!), a new restaurant, with me on Tastemaker! Get the iOS app at getTastemaker.com"
+        return messageComposeVC
+    }
+    
+    // MFMessageComposeViewControllerDelegate callback - dismisses the view controller when the user is finished with it
+    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+        switch result {
+        case MessageComposeResultCancelled:
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        case MessageComposeResultFailed:
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        case MessageComposeResultSent:
+            FIRAnalytics.logEventWithName("sent_sms_invite", parameters: ["from": "venue_details", "venue_name": venue!.name!])
+            controller.dismissViewControllerAnimated(true, completion: nil)
+        default:
+            break
+        }
     }
 }

@@ -26,7 +26,7 @@ def pods
 	#NETWORKING
 	pod 'ReachabilitySwift'
 
-	#ANALYTICS
+	#ANALYTICS & REPORTING
 	pod 'Amplitude-iOS', '~> 3.5.0'
 end
 
